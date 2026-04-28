@@ -1,104 +1,55 @@
 package model;
 
 import java.awt.Color;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Objects;
 
-public class Tier {
-	String name, DEFAULT_NAME = "New Tier";
-	Color color, DEFAULT_COLOR = new Color(128, 128, 128);
-	RankedElements rankedElements;
+public class Tier extends ElementCollection {
 	
-	public Tier(String name, Color color, RankedElements rankedElements) {
-		this.name = name;
-		this.color = color;
-		this.rankedElements = rankedElements;
-	}
+	private String DEFAULT_NAME = "New Tier";
+	private Color DEFAULT_COLOR = Color.gray;
 	
-	public Tier(String name, Color color) {
-		this.name = name;
-		this.color = color;
-		this.rankedElements = new RankedElements();
-	}
+	private TierHeader header;
+	private List<Element> ranked;
 	
-	public Tier(String name) {
-		this.name = name;
-		this.color = DEFAULT_COLOR;
-		this.rankedElements = new RankedElements();
-	}
+	public Tier(String name, Color color, List<Element> ranked) {
+		this.header = new TierHeader(name, color);
+		super(ranked);
+	}	
+	public Tier(String name, Color color) { this.header = new TierHeader(name, color); this.ranked = new LinkedList<>(); }
+	public Tier(String name) { this.header = new TierHeader(name, DEFAULT_COLOR); this.ranked = new LinkedList<>(); }
+	public Tier() { this.header = new TierHeader(DEFAULT_NAME, DEFAULT_COLOR); this.ranked = new LinkedList<>(); }
 	
-	public Tier() {
-		this.name = DEFAULT_NAME;;
-		this.color = DEFAULT_COLOR;
-		this.rankedElements = new RankedElements();
-	}
+	// getters and setters
+	public String getName() { return header.name(); }
+	public void setName(String name) { this.header = new TierHeader(name, this.getColor());}
+	public Color getColor() { return header.color(); }
+	public void setColor(Color color) { this.header = new TierHeader(this.getName(), color);}
+	public TierHeader getHeader() { return this.header; }
+	public void setHeader(TierHeader header) { this.header = header; }
 
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public Color getColor() {
-		return color;
-	}
-
-	public void setColor(Color color) {
-		this.color = color;
-	}
-
-	public ElementCollection getRankedElements() {
-		return rankedElements.clone();
-	}
-	
-	public boolean addElement(Element e) {
-		boolean success = rankedElements.addElement(e);
-		if (success)
-			e.setRanked(true);
-		return success;
-	}
-	
-	public boolean removeElement(Element e) { 
-		boolean success = rankedElements.removeElement(e);
-		if (success)
-			e.setRanked(false);
-		return success;
-	}
-	
-	public boolean swapElements(Element a, Element b) {
-		return rankedElements.swap(a, b);
-	}
-	
-	public int indexOf(Element e) {
-		return rankedElements.indexOf(e);
-	}
-	
-	public Element get(int idx) {
-		return rankedElements.get(idx);
-	}
-	
 	@Override
 	public int hashCode() {
-		return Objects.hash(color, name, rankedElements);
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + Objects.hash(DEFAULT_COLOR, DEFAULT_NAME, header, ranked);
+		return result;
 	}
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (!(obj instanceof Tier)) {
-			return false;
-		}
-		Tier other = (Tier) obj;
-		return Objects.equals(color, other.color) && Objects.equals(name, other.name)
-				&& Objects.equals(rankedElements, other.rankedElements);
+		if (this == obj) { return true; }
+		if (!super.equals(obj)) { return false; }
+		
+		if (!(obj instanceof Tier other)) { return false; }
+		return Objects.equals(DEFAULT_COLOR, other.DEFAULT_COLOR) && Objects.equals(DEFAULT_NAME, other.DEFAULT_NAME)
+				&& Objects.equals(header, other.header) && Objects.equals(ranked, other.ranked);
 	}
 
 	@Override
 	public String toString() {
-		 return "Tier: " + name + System.lineSeparator() +
-				 rankedElements.toString();
+		 return "Tier: " + header.name() + System.lineSeparator() +
+				 ranked.toString();
 	}
 }

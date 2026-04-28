@@ -12,30 +12,14 @@ public class Element {
 		this.name = name;
 		this.imagePath = imagePath;
 	}
-
-	public boolean isRanked() {
-		return ranked;
-	}
-
-	public void setRanked(boolean ranked) {
-		this.ranked = ranked;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public String getImagePath() {
-		return imagePath;
-	}
-
-	public void setImagePath(String imagePath) {
-		this.imagePath = imagePath;
-	}
+	
+	// getters and setters
+	public boolean isRanked() { return ranked; }
+	public void setRanked(boolean ranked) { this.ranked = ranked; }
+	public String getName() { return name; }
+	public void setName(String name) { this.name = name; }
+	public String getImagePath() { return imagePath; }
+	public void setImagePath(String imagePath) { this.imagePath = imagePath; }
 	
 	@Override
 	public int hashCode() {
@@ -44,13 +28,8 @@ public class Element {
 	
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (!(obj instanceof Element)) {
-			return false;
-		}
-		Element other = (Element) obj;
+		if (this == obj) { return true; }
+		if (!(obj instanceof Element other)) { return false; }
 		return Objects.equals(imagePath, other.imagePath) && Objects.equals(name, other.name) && ranked == other.ranked;
 	}
 	
