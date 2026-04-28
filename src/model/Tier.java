@@ -1,7 +1,6 @@
 package model;
 
 import java.awt.Color;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
@@ -11,15 +10,14 @@ public class Tier extends ElementCollection {
 	private Color DEFAULT_COLOR = Color.gray;
 	
 	private TierHeader header;
-	private List<Element> ranked;
 	
 	public Tier(String name, Color color, List<Element> ranked) {
-		this.header = new TierHeader(name, color);
 		super(ranked);
+		this.header = new TierHeader(name, color);
 	}	
-	public Tier(String name, Color color) { this.header = new TierHeader(name, color); this.ranked = new LinkedList<>(); }
-	public Tier(String name) { this.header = new TierHeader(name, DEFAULT_COLOR); this.ranked = new LinkedList<>(); }
-	public Tier() { this.header = new TierHeader(DEFAULT_NAME, DEFAULT_COLOR); this.ranked = new LinkedList<>(); }
+	public Tier(String name, Color color) { super(); this.header = new TierHeader(name, color); }
+	public Tier(String name) { super(); this.header = new TierHeader(name, DEFAULT_COLOR); }
+	public Tier() { super(); this.header = new TierHeader(DEFAULT_NAME, DEFAULT_COLOR);  }
 	
 	// getters and setters
 	public String getName() { return header.name(); }
@@ -33,7 +31,7 @@ public class Tier extends ElementCollection {
 	public int hashCode() {
 		final int prime = 31;
 		int result = super.hashCode();
-		result = prime * result + Objects.hash(DEFAULT_COLOR, DEFAULT_NAME, header, ranked);
+		result = prime * result + Objects.hash(DEFAULT_COLOR, DEFAULT_NAME, header);
 		return result;
 	}
 
@@ -44,12 +42,12 @@ public class Tier extends ElementCollection {
 		
 		if (!(obj instanceof Tier other)) { return false; }
 		return Objects.equals(DEFAULT_COLOR, other.DEFAULT_COLOR) && Objects.equals(DEFAULT_NAME, other.DEFAULT_NAME)
-				&& Objects.equals(header, other.header) && Objects.equals(ranked, other.ranked);
+				&& Objects.equals(header, other.header);
 	}
 
 	@Override
 	public String toString() {
 		 return "Tier: " + header.name() + System.lineSeparator() +
-				 ranked.toString();
+				 super.toString();
 	}
 }
