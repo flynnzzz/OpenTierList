@@ -1,30 +1,61 @@
 package model;
 
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
-public class ElementCollection {
+/**
+ * Aggregation of {@link Element} instances, is {@link Iterable}
+ * 
+ * Wrapper class for a {@link List} of {@link Element};
+ * it's provided with wrappers for {@link List} methods and additional useful functions. 
+ * It's main purpose is to be inherited by {@link Tier}
+ * 
+ * @author flynnz
+ * @version 0.00
+ * @since v0.0.0
+ */
+
+public class ElementCollection implements Iterable<Element>{
 	private List<Element> elements;
 	
+	/**
+	 * Constructs a new {@link ElementCollection} object with the given list of {@link Element}
+	 * 
+	 * @param elements the list to encapsulate, must not be null or empty
+	 * @throws NullPointerException if elements is null
+	 * @throws IllegalArgumentException if elements is empty
+	 */
 	public ElementCollection(List<Element> elements) {
+		if (elements == null) throw new NullPointerException(
+				"The passed parameter must not be null");
+		if (!(elements instanceof List<Element>)) throw new IllegalArgumentException(
+				"The passed parameter must not be an instance of List<Element>");
+		if (elements.isEmpty()) throw new IllegalArgumentException(
+				"The passed list of elements must not be empty");
+		
 		this.elements = elements;
 	}
-	
+	/**
+	 * Constructs a new empty {@link ElementCollection} object
+	 */
 	public ElementCollection() {
 		this.elements = new LinkedList<Element>();
 	}
 	
-	// wrappers for LinkedList methods
-	public boolean addElement(Element e) { return elements.add(e); }
-	public boolean removeElement(Element e) { return elements.remove(e); }
-	public int size() { return elements.size(); }
-	public int indexOf(Element e) { return elements.indexOf(e); }
-	public Element get(int idx) { return elements.get(idx); }
-	
-	public ElementCollection clone() { return new ElementCollection(elements); }
-
+	/**
+	 * Swaps two given elements inside the collection
+	 * 
+	 * @param a fist element, must not be null
+	 * @param b second element, must not be null
+	 * @return true if the swap was successfull
+	 * @throws NullPointerException if either passed parameter is null
+	 */
 	public boolean swap(Element a, Element b) {
+		if (a == null) throw new NullPointerException("the parameter 'a' must not be null");
+		if (b == null) throw new NullPointerException("the parameter 'b' must not be null");
+		
 		int idxA = elements.indexOf(a), idxB = elements.indexOf(b);
 		if (idxA < 0 || idxB < 0)
 			return false;
@@ -32,12 +63,61 @@ public class ElementCollection {
 		elements.set(idxB, a);
 		return true;
 	}
-
-	public List<Element> getElements() { return List.copyOf(elements); }		
 	
+	/**
+	 * Returns the contents of the {@link ElementCollection} as an immutable list of {@link Element}
+	 * 
+	 * @return {@link List}
+	 */
+	public List<Element> getElements() { return List.copyOf(elements); }	
+	
+	
+	/**
+	 * Adds an {@link Element} to the collection
+	 * 
+	 * @see List#add(Object)
+	 */
+	public boolean addElement(Element e) { return elements.add(e); }
+	/**
+	 * Removes an {@link Element} from the collection
+	 * 
+	 * @see List#remove(Object)
+	 */
+	public boolean removeElement(Element e) { return elements.remove(e); }
+	/**
+	 * Returns the collection's size
+	 * 
+	 * @see List#size()
+	 */
+	public int size() { return elements.size(); }
+	/**
+	 * Returns the index of the given element
+	 * 
+	 * @see List#size()
+	 */
+	public int indexOf(Element e) { return elements.indexOf(e); }
+	/**
+	 * Returns {@link Element} given the index
+	 * 
+	 * @see List#get(int)
+	 */
+	public Element get(int idx) { return elements.get(idx); }
+	/**
+	 * Returns the copy of the {@link ElementCollection}
+	 * 
+	 * @return a copy of the current instance
+	 */
+	public ElementCollection clone() { return new ElementCollection(elements); }
+
+	/**
+	 * @see Objects#hashCode()
+	 */
 	@Override
 	public int hashCode() { return Objects.hash(elements); }
 
+	/**
+	 * @see Object#equals(Object)
+	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj) { return true; }
@@ -45,17 +125,38 @@ public class ElementCollection {
 		return Objects.equals(elements, other.elements);
 	}
 
+	/**
+	 * Returns the {@link ElementCollection} as {@link String}
+	 * 
+	 * Format:
+	 * 	"Elements: 
+	 * 	[
+	 * 		element1,
+	 * 		element2,
+	 * 		...		
+	 * 	]"
+	 * 
+	 * @return {@link String}
+	 */
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		sb.append("Elements: \n["); sb.append(System.lineSeparator());
-		for (int i = 0; i < elements.size(); i++) {	
+		sb.append("Elements: "); sb.append(System.lineSeparator()); sb.append("[");
+		for (Element e : elements) {	
 			sb.append("\t");
-			sb.append(elements.get(i)); 
+			sb.append(e); 
 			sb.append(",");
 			sb.append(System.lineSeparator());
 		}
 		sb.append("]");
 		return sb.toString();
+	}
+	
+	/**
+	 * @see List#iterator()
+	 */
+	@Override
+	public Iterator<Element> iterator() {
+		return elements.iterator();
 	}
 }
