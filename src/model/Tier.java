@@ -17,15 +17,19 @@ import java.util.Objects;
 public class Tier extends ElementCollection {
 	
 	/**
-	 * DEFAULT_NAME is set to {@link String} "New Tier"
+	 * The default name is set to {@link String} "New Tier"
 	 */
-	public static final String DEFAULT_NAME = "New Tier";
+	public static final String DEFAULT_TIER_NAME = "New Tier";
 	/**
-	 * DEFAULT_COLOR is set to {@link Color#gray}
+	 * The default color is set to {@link Color#gray}
 	 */
-	public static final Color DEFAULT_COLOR = Color.gray;
-	
+	public static final Color DEFAULT_TIER_COLOR = Color.gray;
 	private TierHeader header;
+	
+	
+	/***********************************************************************
+	 * 							Constructors
+	 **********************************************************************/
 	
 	/**
 	 * Constructs a new {@link Tier} object with the given list of {@link Element}.
@@ -51,18 +55,24 @@ public class Tier extends ElementCollection {
 	 * @param color {@link Tier} color as {@link java.awt.Color}
 	 */
 	public Tier(String name, Color color) { super(); this.header = new TierHeader(name, color); }
+	
 	/**
 	 * Constructs a new empty {@link Tier} object with specified name.
 	 * 
 	 * @param name {@link Tier} header name as {@link String}
 	 */
-	public Tier(String name) { super(); this.header = new TierHeader(name, DEFAULT_COLOR); }
+	public Tier(String name) { super(); this.header = new TierHeader(name, DEFAULT_TIER_COLOR); }
+	
 	/**
 	 * Constructs a new empty {@link Tier} object
 	 */
-	public Tier() { super(); this.header = new TierHeader(DEFAULT_NAME, DEFAULT_COLOR);  }
+	public Tier() { super(); this.header = new TierHeader(DEFAULT_TIER_NAME, DEFAULT_TIER_COLOR);  }
 	
-	// Getters and setters:
+	
+	/***********************************************************************
+	 * 						Setters and getters
+	 **********************************************************************/
+	
 	public String getName() { return header.name(); }
 	public void setName(String name) {
 		if (name == null) throw new NullPointerException();
@@ -80,6 +90,11 @@ public class Tier extends ElementCollection {
 		if (header == null) throw new NullPointerException();
 		this.header = header; 
 	}
+
+	
+	/***********************************************************************
+	 * 					hashCode, equals and toString
+	 **********************************************************************/
 	
 	/**
 	 * hashCode function
@@ -90,7 +105,7 @@ public class Tier extends ElementCollection {
 	public int hashCode() {
 		final int prime = 31;
 		int result = super.hashCode();
-		result = prime * result + Objects.hash(DEFAULT_COLOR, DEFAULT_NAME, header);
+		result = prime * result + Objects.hash(DEFAULT_TIER_COLOR, DEFAULT_TIER_NAME, header);
 		return result;
 	}
 

@@ -18,7 +18,13 @@ import java.util.Objects;
  */
 
 public class ElementCollection implements Iterable<Element>{
+	
 	private List<Element> elements;
+	
+	
+	/***********************************************************************
+	 * 							Constructors
+	 **********************************************************************/
 	
 	/**
 	 * Constructs a new {@link ElementCollection} object with the given list of {@link Element}
@@ -44,6 +50,11 @@ public class ElementCollection implements Iterable<Element>{
 		this.elements = new LinkedList<Element>();
 	}
 	
+	
+	/***********************************************************************
+	 * 							Class methods
+	 **********************************************************************/
+
 	/**
 	 * Swaps two given elements inside the collection
 	 * 
@@ -56,7 +67,7 @@ public class ElementCollection implements Iterable<Element>{
 		if (b == null) throw new NullPointerException("the parameter 'b' must not be null");
 		
 		int idxA = elements.indexOf(a), idxB = elements.indexOf(b);
-		if (idxA < 0 || idxB < 0)
+		if (idxA == -1 || idxB == -1)
 			return false;
 		elements.set(idxA, b);
 		elements.set(idxB, a);
@@ -66,10 +77,9 @@ public class ElementCollection implements Iterable<Element>{
 	/**
 	 * Returns the contents of the {@link ElementCollection} as an immutable list of {@link Element}.
 	 * 
-	 * @return {@link List}
+	 * @return collection as {@link List}
 	 */
 	public List<Element> getElements() { return List.copyOf(elements); }	
-	
 	
 	/**
 	 * Adds an {@link Element} to the collection.
@@ -82,6 +92,7 @@ public class ElementCollection implements Iterable<Element>{
 		if (e == null) throw new NullPointerException();
 		return elements.add(e); 
 	}
+	
 	/**
 	 * Removes an {@link Element} from the collection.
 	 *
@@ -93,6 +104,7 @@ public class ElementCollection implements Iterable<Element>{
 		if (e == null) throw new NullPointerException();
 		return elements.remove(e); 
 	}
+	
 	/**
 	 * Returns the collection's size.
 	 * 
@@ -100,6 +112,7 @@ public class ElementCollection implements Iterable<Element>{
 	 * @see List#size()
 	 */
 	public int size() { return elements.size(); }
+	
 	/**
 	 * Returns the index of the given element.
 	 *
@@ -111,6 +124,7 @@ public class ElementCollection implements Iterable<Element>{
 		if (e == null) throw new NullPointerException();
 		return elements.indexOf(e); 
 	}
+	
 	/**
 	 * Returns {@link Element} given the index.
 	 * 
@@ -119,6 +133,7 @@ public class ElementCollection implements Iterable<Element>{
 	 * @see List#get(int)
 	 */
 	public Element get(int idx) { return elements.get(idx); }
+	
 	/**
 	 * Returns the copy of the {@link ElementCollection}
 	 * 
@@ -126,6 +141,20 @@ public class ElementCollection implements Iterable<Element>{
 	 */
 	public ElementCollection clone() { return new ElementCollection(elements); }
 
+	/**
+	 * iterator function.
+	 * 
+	 * @see List#iterator()
+	 */
+	@Override
+	public Iterator<Element> iterator() {
+		return elements.iterator();
+	}
+	
+	/***********************************************************************
+	 * 					hashCode, equals and toString
+	 **********************************************************************/
+	
 	/**
 	 * hashCode function.
 	 * 
@@ -171,15 +200,5 @@ public class ElementCollection implements Iterable<Element>{
 		}
 		sb.append("]");
 		return sb.toString();
-	}
-	
-	/**
-	 * iterator function.
-	 * 
-	 * @see List#iterator()
-	 */
-	@Override
-	public Iterator<Element> iterator() {
-		return elements.iterator();
 	}
 }

@@ -13,13 +13,19 @@ public class Element {
 	private boolean ranked;
 	private String name, imagePath;
 	/**
-	 * DEFAULT_NAME is set to "element"
+	 * The default name is set to "element"
 	 */
-	public static final String DEFAULT_NAME = "element";
+	public static final String DEFAULT_ELEMENT_NAME = "element";
 	/**
-	 * DEFAULT_IMAGE_PATH is set to "NONE"
+	 * The default image path is set to "NONE"
 	 */
-	public static final String DEFAULT_IMAGE_PATH = "NONE";
+	
+	
+	/***********************************************************************
+	 * 							Constructors
+	 **********************************************************************/
+	
+	public static final String DEFAULT_ELEMENT_IMAGE_PATH = "NONE";
 	
 	/**
 	 * Constructs a {@link TierList} entry given the following parameters.
@@ -45,12 +51,12 @@ public class Element {
 	 * @param isRanked boolean representing state
 	 * @param name the entry's name
 	 * 
-	 * The element's image path will be set to {@link Element#DEFAULT_IMAGE_PATH}
+	 * The element's image path will be set to {@link Element#DEFAULT_ELEMENT_IMAGE_PATH}
 	 */
 	public Element(boolean isRanked,  String name) {
 		this.ranked = isRanked;
 		this.name = name;
-		this.imagePath = DEFAULT_IMAGE_PATH;
+		this.imagePath = DEFAULT_ELEMENT_IMAGE_PATH;
 	}
 	/**
 	 * Constructs a {@link TierList} entry given the following parameters.
@@ -58,14 +64,19 @@ public class Element {
 	 * All parameters must not be null:
 	 * @param isRanked boolean representing state
 	 * 
-	 * The element's name will be set to {@link Element#DEFAULT_NAME}
-	 * and the image path will be set to {@link Element#DEFAULT_IMAGE_PATH}
+	 * The element's name will be set to {@link Element#DEFAULT_ELEMENT_NAME}
+	 * and the image path will be set to {@link Element#DEFAULT_ELEMENT_IMAGE_PATH}
 	 */
 	public Element(boolean isRanked) {
 		this.ranked = isRanked;
-		this.name = DEFAULT_NAME;
-		this.imagePath = DEFAULT_IMAGE_PATH;
+		this.name = DEFAULT_ELEMENT_NAME;
+		this.imagePath = DEFAULT_ELEMENT_IMAGE_PATH;
 	}
+	
+	
+	/***********************************************************************
+	 * 						Setters and getters
+	 **********************************************************************/
 	
 	/**
 	 * Returns whether or not the {@link Element} was ranked
@@ -110,6 +121,11 @@ public class Element {
 				"Image path to set must not be null");
 		this.imagePath = imagePath; 
 	}
+
+	
+	/***********************************************************************
+	 * 					hashCode, equals and toString
+	 **********************************************************************/
 	
 	/**
 	 * hashCode function
