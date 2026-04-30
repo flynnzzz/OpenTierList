@@ -4,9 +4,9 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * A class representing the concept of tier list
+ * A class representing the concept of tier list.
  * 
- * Container of a {@link Map} with keys: {@link TierHeader} and values: {@link ElementCollection} 
+ * Container of a {@link Map} with keys: {@link TierHeader} and values: {@link ElementCollection}
  * 
  * @author flynnz
  * @version 0.00

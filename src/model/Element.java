@@ -5,9 +5,6 @@ import java.util.Objects;
 /**
  * Class representing a single {@link TierList} "entry"
  * 
- * @param DEFAULT_NAME the default name is "element"
- * @param DEFAULT_IMAGE_PATH the default image path is "NONE"
- * 
  * @author flynnz
  * @version 0.00
  * @since v0.0.0
@@ -15,12 +12,19 @@ import java.util.Objects;
 public class Element {
 	private boolean ranked;
 	private String name, imagePath;
-	public static final String DEFAULT_NAME = "element", DEFAULT_IMAGE_PATH = "NONE";
+	/**
+	 * DEFAULT_NAME is set to "element"
+	 */
+	public static final String DEFAULT_NAME = "element";
+	/**
+	 * DEFAULT_IMAGE_PATH is set to "NONE"
+	 */
+	public static final String DEFAULT_IMAGE_PATH = "NONE";
 	
 	/**
-	 * Constructs a {@link TierList} entry given the following parameters
+	 * Constructs a {@link TierList} entry given the following parameters.
 	 * 
-	 * all parameters must not be null:
+	 * All parameters must not be null:
 	 * @param isRanked boolean representing state
 	 * @param name the entry's name
 	 * @param imagePath path to the entry image
@@ -35,9 +39,9 @@ public class Element {
 		this.imagePath = imagePath;
 	}
 	/**
-	 * Constructs a {@link TierList} entry given the following parameters
+	 * Constructs a {@link TierList} entry given the following parameters.
 	 * 
-	 * all parameters must not be null:
+	 * All parameters must not be null:
 	 * @param isRanked boolean representing state
 	 * @param name the entry's name
 	 * 
@@ -49,9 +53,9 @@ public class Element {
 		this.imagePath = DEFAULT_IMAGE_PATH;
 	}
 	/**
-	 * Constructs a {@link TierList} entry given the following parameters
+	 * Constructs a {@link TierList} entry given the following parameters.
 	 * 
-	 * all parameters must not be null:
+	 * All parameters must not be null:
 	 * @param isRanked boolean representing state
 	 * 
 	 * The element's name will be set to {@link Element#DEFAULT_NAME}
@@ -64,32 +68,42 @@ public class Element {
 	}
 	
 	/**
+	 * Returns whether or not the {@link Element} was ranked
+	 * 
 	 * @return true if the {@link Element} was ranked
 	 */
 	public boolean isRanked() { return ranked; }
 	/**
+	 * Set the {@link Element} to ranked or not
+	 * 
 	 * @param ranked value to set
 	 */
 	public void setRanked(boolean ranked) { this.ranked = ranked; }
 	/**
+	 * Returns the function name
+	 * 
 	 * @return name the {@link Element} name
 	 */
 	public String getName() { return name; }
 	/**
+	 * Sets the {@link Element} name.
+	 * 
 	 * @param name value to set, must not be null
-	 * @throws NullPointerException if the passed parameter is null
 	 */
 	public void setName(String name) { 
 		if (name == null) throw new NullPointerException("Name to set must not be null");
 		this.name = name; 
 	}
 	/**
+	 * Returns the image path of the {@link Element}
+	 * 
 	 * @return imagePath the {@link Element} image path
 	 */
 	public String getImagePath() { return imagePath; }
 	/**
+	 * Sets the image path of the {@link Element}
+	 * 
 	 * @param imagePath value to set, must not be null
-	 * @throws NullPointerException if the passed parameter is null
 	 */
 	public void setImagePath(String imagePath) {
 		if (imagePath == null) throw new NullPointerException(
@@ -98,6 +112,8 @@ public class Element {
 	}
 	
 	/**
+	 * hashCode function
+	 * 
 	 * @see Objects#hashCode()
 	 */
 	@Override
@@ -106,6 +122,8 @@ public class Element {
 	}
 	
 	/**
+	 * equals function
+	 * 
 	 *  @see Objects#equals(Object)
 	 */
 	@Override
@@ -119,7 +137,7 @@ public class Element {
 	 * Returns the {@link Element} as a {@link String}
 	 * 
 	 * Format:
-	 * 	"name: [not] ranked"
+	 * 	"name: [not] ranked".
 	 * 
 	 * @return {@link String}
 	 */

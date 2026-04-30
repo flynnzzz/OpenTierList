@@ -6,9 +6,9 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * Aggregation of {@link Element} instances, is {@link Iterable}
+ * Aggregation of {@link Element} instances, is {@link Iterable}.
  * 
- * Wrapper class for a {@link List} of {@link Element};
+ * Wrapper class for a {@link List} of {@link Element} ,
  * it's provided with wrappers for {@link List} methods and additional useful functions. 
  * It's main purpose is to be inherited by {@link Tier}
  * 
@@ -50,7 +50,6 @@ public class ElementCollection implements Iterable<Element>{
 	 * @param a fist element, must not be null
 	 * @param b second element, must not be null
 	 * @return true if the swap was successfull
-	 * @throws NullPointerException if either passed parameter is null
 	 */
 	public boolean swap(Element a, Element b) {
 		if (a == null) throw new NullPointerException("the parameter 'a' must not be null");
@@ -65,7 +64,7 @@ public class ElementCollection implements Iterable<Element>{
 	}
 	
 	/**
-	 * Returns the contents of the {@link ElementCollection} as an immutable list of {@link Element}
+	 * Returns the contents of the {@link ElementCollection} as an immutable list of {@link Element}.
 	 * 
 	 * @return {@link List}
 	 */
@@ -73,32 +72,50 @@ public class ElementCollection implements Iterable<Element>{
 	
 	
 	/**
-	 * Adds an {@link Element} to the collection
+	 * Adds an {@link Element} to the collection.
 	 * 
+	 * @param e {@link Element} to add
+	 * @return true if addition was successful
 	 * @see List#add(Object)
 	 */
-	public boolean addElement(Element e) { return elements.add(e); }
+	public boolean addElement(Element e) { 
+		if (e == null) throw new NullPointerException();
+		return elements.add(e); 
+	}
 	/**
-	 * Removes an {@link Element} from the collection
-	 * 
+	 * Removes an {@link Element} from the collection.
+	 *
+	 * @param e {@link Element} to remove
+	 * @return true if removal was successful
 	 * @see List#remove(Object)
 	 */
-	public boolean removeElement(Element e) { return elements.remove(e); }
+	public boolean removeElement(Element e) { 
+		if (e == null) throw new NullPointerException();
+		return elements.remove(e); 
+	}
 	/**
-	 * Returns the collection's size
+	 * Returns the collection's size.
 	 * 
+	 * @return the collection's size
 	 * @see List#size()
 	 */
 	public int size() { return elements.size(); }
 	/**
-	 * Returns the index of the given element
-	 * 
+	 * Returns the index of the given element.
+	 *
+	 * @param e {@link Element} to find index for
+	 * @return index
 	 * @see List#size()
 	 */
-	public int indexOf(Element e) { return elements.indexOf(e); }
+	public int indexOf(Element e) {
+		if (e == null) throw new NullPointerException();
+		return elements.indexOf(e); 
+	}
 	/**
-	 * Returns {@link Element} given the index
+	 * Returns {@link Element} given the index.
 	 * 
+	 * @param idx index of {@link Element} to get
+	 * @return {@link Element} to get
 	 * @see List#get(int)
 	 */
 	public Element get(int idx) { return elements.get(idx); }
@@ -110,12 +127,16 @@ public class ElementCollection implements Iterable<Element>{
 	public ElementCollection clone() { return new ElementCollection(elements); }
 
 	/**
+	 * hashCode function.
+	 * 
 	 * @see Objects#hashCode()
 	 */
 	@Override
 	public int hashCode() { return Objects.hash(elements); }
 
 	/**
+	 * equals function.
+	 * 
 	 * @see Object#equals(Object)
 	 */
 	@Override
@@ -134,7 +155,7 @@ public class ElementCollection implements Iterable<Element>{
 	 * 		element1,
 	 * 		element2,
 	 * 		...		
-	 * 	]"
+	 * 	]".
 	 * 
 	 * @return {@link String}
 	 */
@@ -153,6 +174,8 @@ public class ElementCollection implements Iterable<Element>{
 	}
 	
 	/**
+	 * iterator function.
+	 * 
 	 * @see List#iterator()
 	 */
 	@Override

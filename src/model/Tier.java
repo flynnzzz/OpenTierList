@@ -5,10 +5,10 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * Extention class of {@link ElementCollection}
+ * Extention class of {@link ElementCollection}.
  * 
  * Aggregation of {@link Element} , with the added extention of 
- * a {@link TierHeader} 
+ * a {@link TierHeader}
  * 
  * @author flynnz
  * @version 0.00
@@ -16,20 +16,25 @@ import java.util.Objects;
  */
 public class Tier extends ElementCollection {
 	
+	/**
+	 * DEFAULT_NAME is set to {@link String} "New Tier"
+	 */
 	public static final String DEFAULT_NAME = "New Tier";
+	/**
+	 * DEFAULT_COLOR is set to {@link Color#gray}
+	 */
 	public static final Color DEFAULT_COLOR = Color.gray;
 	
 	private TierHeader header;
 	
 	/**
-	 * Constructs a new {@link Tier} object with the given list of {@link Element}
+	 * Constructs a new {@link Tier} object with the given list of {@link Element}.
 	 * 
 	 * All parameters must not be null:
 	 * @param name {@link Tier} header name as {@link String}
 	 * @param color {@link Tier} color as {@link java.awt.Color}
-	 * @param elements the list to encapsulate
-	 * @throws NullPointerException if either parameter is null
-	 * @throws IllegalArgumentException if elements is empty
+	 * @param ranked the list to encapsulate
+	 * @throws IllegalArgumentException if the list passed in is empty
 	 */
 	public Tier(String name, Color color, List<Element> ranked) {
 		if (name == null) throw new NullPointerException("Tier name must not be null");
@@ -39,20 +44,17 @@ public class Tier extends ElementCollection {
 		this.header = new TierHeader(name, color);
 	}	
 	/**
-	 * Constructs a new empty {@link Tier} object
+	 * Constructs a new empty {@link Tier} object with name and color.
 	 * 
 	 * All parameters must not be null:
 	 * @param name {@link Tier} header name as {@link String}
 	 * @param color {@link Tier} color as {@link java.awt.Color}
-	 * 
-	 * @throws NullPointerException if either parameter is null
 	 */
 	public Tier(String name, Color color) { super(); this.header = new TierHeader(name, color); }
 	/**
-	 * Constructs a new empty {@link Tier} object
+	 * Constructs a new empty {@link Tier} object with specified name.
 	 * 
 	 * @param name {@link Tier} header name as {@link String}
-	 * @throws NullPointerException if the passed parameter is null
 	 */
 	public Tier(String name) { super(); this.header = new TierHeader(name, DEFAULT_COLOR); }
 	/**
@@ -62,13 +64,26 @@ public class Tier extends ElementCollection {
 	
 	// Getters and setters:
 	public String getName() { return header.name(); }
-	public void setName(String name) { this.header = new TierHeader(name, this.getColor());}
+	public void setName(String name) {
+		if (name == null) throw new NullPointerException();
+		this.header = new TierHeader(name, this.getColor());
+	}
+	
 	public Color getColor() { return header.color(); }
-	public void setColor(Color color) { this.header = new TierHeader(this.getName(), color);}
+	public void setColor(Color color) { 
+		if (color == null) throw new NullPointerException();
+		this.header = new TierHeader(this.getName(), color);
+	}
+	
 	public TierHeader getHeader() { return this.header; }
-	public void setHeader(TierHeader header) { this.header = header; }
+	public void setHeader(TierHeader header) { 
+		if (header == null) throw new NullPointerException();
+		this.header = header; 
+	}
 	
 	/**
+	 * hashCode function
+	 * 
 	 * @see Objects#hashCode()
 	 */
 	@Override
@@ -80,6 +95,8 @@ public class Tier extends ElementCollection {
 	}
 
 	/**
+	 * equals function
+	 * 
 	 *  @see Objects#equals(Object)
 	 */
 	@Override
@@ -102,7 +119,7 @@ public class Tier extends ElementCollection {
 	 * 		element1,
 	 * 		element2,
 	 * 		...		
-	 * 	]"
+	 * 	]".
 	 * 
 	 * @return {@link String}
 	 */
