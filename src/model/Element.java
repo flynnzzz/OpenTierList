@@ -19,13 +19,12 @@ public class Element {
 	/**
 	 * The default image path is set to "NONE"
 	 */
+	public static final String DEFAULT_ELEMENT_IMAGE_PATH = "NONE";
 	
 	
 	/***********************************************************************
 	 * 							Constructors
 	 **********************************************************************/
-	
-	public static final String DEFAULT_ELEMENT_IMAGE_PATH = "NONE";
 	
 	/**
 	 * Constructs a {@link TierList} entry given the following parameters.
@@ -54,6 +53,7 @@ public class Element {
 	 * The element's image path will be set to {@link Element#DEFAULT_ELEMENT_IMAGE_PATH}
 	 */
 	public Element(boolean isRanked,  String name) {
+		Objects.requireNonNull(name);
 		this.ranked = isRanked;
 		this.name = name;
 		this.imagePath = DEFAULT_ELEMENT_IMAGE_PATH;

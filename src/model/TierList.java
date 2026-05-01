@@ -3,6 +3,7 @@ package model;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * A class representing the concept of tier list.
@@ -39,8 +40,7 @@ public class TierList {
 	 * @throws IllegalArgumentException if name is blank
 	 */
 	public TierList(String name, ElementCollection unranked) {
-		if (name == null) throw new NullPointerException();
-		if (unranked == null) throw new NullPointerException();
+		Objects.requireNonNull(name); Objects.requireNonNull(unranked);
 		if (name.isBlank()) throw new IllegalArgumentException();
 		
 		this.name = name;
@@ -58,8 +58,7 @@ public class TierList {
 	 * @param unranked elements to rank
 	 */
 	public TierList(ElementCollection unranked) {
-		if (name == null) throw new NullPointerException();
-		if (unranked == null) throw new NullPointerException();
+		Objects.requireNonNull(unranked);
 		if (name.isBlank()) throw new IllegalArgumentException();
 		
 		this.name = DEFAULT_TIERLIST_NAME;
@@ -76,10 +75,6 @@ public class TierList {
 	 * 
 	 */
 	public TierList() {
-		if (name == null) throw new NullPointerException();
-		if (unranked == null) throw new NullPointerException();
-		if (name.isBlank()) throw new IllegalArgumentException();
-		
 		this.name = DEFAULT_TIERLIST_NAME;
 		this.unranked = new ElementCollection();
 		this.contents = new HashMap<>();
@@ -100,10 +95,8 @@ public class TierList {
 	 */
 	public TierList(String name, ElementCollection unranked, 
 			List<TierHeader> headers, List<ElementCollection> tierListRows) {
-		if (name == null) throw new NullPointerException();
-		if (unranked == null) throw new NullPointerException();
-		if (headers == null) throw new NullPointerException();
-		if (tierListRows == null) throw new NullPointerException();
+		Objects.requireNonNull(name); Objects.requireNonNull(unranked); 
+		Objects.requireNonNull(headers); Objects.requireNonNull(tierListRows);
 		
 		if (name.isBlank()) throw new IllegalArgumentException();
 		if (headers.size() < tierListRows.size()) throw new IllegalArgumentException(
@@ -121,6 +114,54 @@ public class TierList {
 		}
 	}
 	
+	/***********************************************************************
+	 * 							Class methods
+	 **********************************************************************/
+	
+	/**
+	 * Adds a tier to the {@link TierList}.
+	 * 
+	 * @param t tier to add
+	 * @return @see Map#put(Object, Object)
+	 */
+	public ElementCollection addTier(Tier t) {
+		Objects.requireNonNull(t);
+		return contents.put(t.getHeader(), t);
+	}
+	
+	/**
+	 * Removes a tier to the {@link TierList}.
+	 * 
+	 * @param t tier to remove
+	 * @return @see Map#remove(Object)
+	 */
+	public ElementCollection removeTier(Tier t) {
+		Objects.requireNonNull(t);
+		return contents.remove(t.getHeader());
+	}
+	
+	public boolean addUnranked(Element e) {
+		Objects.requireNonNull(e);
+		return unranked.addElement(e);
+	}
+	
+	public boolean addTo(Element e, TierHeader to) {
+		Objects.requireNonNull(e); Objects.requireNonNull(to);
+		if (contents.containsKey(to)) {
+			contents.get(to).addElement(e);
+			return true;
+		}
+		return false;
+	}
+	
+	public boolean removeFrom(Element e, TierHeader from) {
+		Objects.requireNonNull(e); Objects.requireNonNull(from);
+		if (contents.containsKey(from)) {
+			contents.get(from).removeElement(e);
+			return true;
+		}
+		return false;
+	}
 	
 	/***********************************************************************
 	 * 						Setters and getters
@@ -130,18 +171,22 @@ public class TierList {
 		return name;
 	}
 	public void setName(String name) {
+		Objects.requireNonNull(name);
+		if (name.isBlank()) throw new IllegalArgumentException("Tier list name must not be blank");
 		this.name = name;
 	}
 	public Map<TierHeader, ElementCollection> getContents() {
 		return contents;
 	}
 	public void setContents(Map<TierHeader, ElementCollection> contents) {
+		Objects.requireNonNull(contents);
 		this.contents = contents;
 	}
 	public ElementCollection getUnranked() {
 		return unranked;
 	}
 	public void setUnranked(ElementCollection unranked) {
+		Objects.requireNonNull(unranked);
 		this.unranked = unranked;
 	}
 
