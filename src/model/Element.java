@@ -33,11 +33,14 @@ public class Element {
 	 * @param isRanked boolean representing state
 	 * @param name the entry's name
 	 * @param imagePath path to the entry image
+	 * 
+	 * @throws IllegalArgumentException if either name or image path are blank
 	 */
 	public Element(boolean isRanked,  String name, String imagePath) {
-		if (name == null) throw new NullPointerException("Element name must not be null");
-		if (imagePath == null) throw new NullPointerException(
-				"Element image path must not be null");
+		Objects.requireNonNull(name);
+		Objects.requireNonNull(imagePath);
+		if (name.isBlank()) throw new IllegalArgumentException();
+		if (imagePath.isBlank()) throw new IllegalArgumentException();
 		
 		this.ranked = isRanked;
 		this.name = name;
@@ -51,9 +54,11 @@ public class Element {
 	 * @param name the entry's name
 	 * 
 	 * The element's image path will be set to {@link Element#DEFAULT_ELEMENT_IMAGE_PATH}
+	 * @throws IllegalArgumentException if name is blank
 	 */
 	public Element(boolean isRanked,  String name) {
 		Objects.requireNonNull(name);
+		if (name.isBlank()) throw new IllegalArgumentException();
 		this.ranked = isRanked;
 		this.name = name;
 		this.imagePath = DEFAULT_ELEMENT_IMAGE_PATH;
@@ -100,9 +105,11 @@ public class Element {
 	 * Sets the {@link Element} name.
 	 * 
 	 * @param name value to set, must not be null
+	 * @throws IllegalArgumentException if name is blank 
 	 */
 	public void setName(String name) { 
-		if (name == null) throw new NullPointerException("Name to set must not be null");
+		Objects.requireNonNull(name);
+		if (name.isBlank()) throw new IllegalArgumentException();
 		this.name = name; 
 	}
 	/**
@@ -115,10 +122,11 @@ public class Element {
 	 * Sets the image path of the {@link Element}
 	 * 
 	 * @param imagePath value to set, must not be null
+	 * @throws IllegalArgumentException if image path is blank
 	 */
 	public void setImagePath(String imagePath) {
-		if (imagePath == null) throw new NullPointerException(
-				"Image path to set must not be null");
+		Objects.requireNonNull(name);
+		if (imagePath.isBlank()) throw new IllegalArgumentException();
 		this.imagePath = imagePath; 
 	}
 
