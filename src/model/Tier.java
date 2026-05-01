@@ -47,6 +47,7 @@ public class Tier extends ElementCollection {
 		super(ranked);
 		this.header = new TierHeader(name, color);
 	}	
+	
 	/**
 	 * Constructs a new empty {@link Tier} object with name and color.
 	 * 
@@ -54,14 +55,18 @@ public class Tier extends ElementCollection {
 	 * @param name {@link Tier} header name as {@link String}
 	 * @param color {@link Tier} color as {@link java.awt.Color}
 	 */
-	public Tier(String name, Color color) { super(); this.header = new TierHeader(name, color); }
+	public Tier(String name, Color color) { 
+		Objects.requireNonNull(name); Objects.requireNonNull(color);
+		super(); this.header = new TierHeader(name, color); 
+	}
 	
 	/**
 	 * Constructs a new empty {@link Tier} object with specified name.
 	 * 
 	 * @param name {@link Tier} header name as {@link String}
 	 */
-	public Tier(String name) { super(); this.header = new TierHeader(name, DEFAULT_TIER_COLOR); }
+	public Tier(String name) { Objects.requireNonNull(name); super();
+		this.header = new TierHeader(name, DEFAULT_TIER_COLOR); }
 	
 	/**
 	 * Constructs a new empty {@link Tier} object
@@ -75,19 +80,19 @@ public class Tier extends ElementCollection {
 	
 	public String getName() { return header.name(); }
 	public void setName(String name) {
-		if (name == null) throw new NullPointerException();
+		Objects.requireNonNull(name);
 		this.header = new TierHeader(name, this.getColor());
 	}
 	
 	public Color getColor() { return header.color(); }
 	public void setColor(Color color) { 
-		if (color == null) throw new NullPointerException();
+		Objects.requireNonNull(color);
 		this.header = new TierHeader(this.getName(), color);
 	}
 	
 	public TierHeader getHeader() { return this.header; }
 	public void setHeader(TierHeader header) { 
-		if (header == null) throw new NullPointerException();
+		Objects.requireNonNull(header);
 		this.header = header; 
 	}
 
