@@ -3,6 +3,7 @@ package tests;
 import model.Element;
 import model.ElementCollection;
 import model.Tier;
+import model.TierHeader;
 
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -13,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class MainTest {
 		Element e = new Element(false, "Goku", "gokusuperpower.jpg");
 		ElementCollection ec = new ElementCollection();
-		Tier t = new Tier("S");
+		Tier t = new Tier(new TierHeader("S", Tier.DEFAULT_TIER_COLOR));
 			
 	@Test
 	public void testElement() {
@@ -62,8 +63,8 @@ public class MainTest {
 		t.addElement(new Element(false, "GokuDaima", "gokussj4Daima.png"));
 		t.addElement(new Element(false, "VegitoSSJ", "supervegito.png"));
 		t.addElement(e);
-		assertEquals(t.getElements().size(), 4);
-		assertTrue(t.getElements().get(3).equals(e));
+		assertEquals(t.size(), 4);
+		assertTrue(t.get(3).equals(e));
 		t.swap(t.get(0), t.get(3));
 		assertEquals(t.indexOf(e), 0);
 		IO.println(t.toString());
