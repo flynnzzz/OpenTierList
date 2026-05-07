@@ -40,12 +40,11 @@ public class Tier extends ElementCollection {
 	 * @param ranked the list to encapsulate
 	 * @throws IllegalArgumentException if the list passed in is empty
 	 */
-	public Tier(String name, Color color, List<Element> ranked) {
-		if (name == null) throw new NullPointerException("Tier name must not be null");
-		if (color == null) throw new NullPointerException("Tier color must not be null");
+	public Tier(TierHeader th, List<Element> ranked) {
+		Objects.requireNonNull(th);
 		
 		super(ranked);
-		this.header = new TierHeader(name, color);
+		this.header = th;
 	}	
 	
 	/**
@@ -55,18 +54,10 @@ public class Tier extends ElementCollection {
 	 * @param name {@link Tier} header name as {@link String}
 	 * @param color {@link Tier} color as {@link java.awt.Color}
 	 */
-	public Tier(String name, Color color) { 
-		Objects.requireNonNull(name); Objects.requireNonNull(color);
-		super(); this.header = new TierHeader(name, color); 
+	public Tier(TierHeader th) { 
+		Objects.requireNonNull(th);
+		super(); this.header = th; 
 	}
-	
-	/**
-	 * Constructs a new empty {@link Tier} object with specified name.
-	 * 
-	 * @param name {@link Tier} header name as {@link String}
-	 */
-	public Tier(String name) { Objects.requireNonNull(name); super();
-		this.header = new TierHeader(name, DEFAULT_TIER_COLOR); }
 	
 	/**
 	 * Constructs a new empty {@link Tier} object
@@ -78,25 +69,13 @@ public class Tier extends ElementCollection {
 	 * 						Setters and getters
 	 **********************************************************************/
 	
-	public String getName() { return header.name(); }
-	public void setName(String name) {
-		Objects.requireNonNull(name);
-		this.header = new TierHeader(name, this.getColor());
-	}
-	
-	public Color getColor() { return header.color(); }
-	public void setColor(Color color) { 
-		Objects.requireNonNull(color);
-		this.header = new TierHeader(this.getName(), color);
-	}
-	
 	public TierHeader getHeader() { return this.header; }
 	public void setHeader(TierHeader header) { 
 		Objects.requireNonNull(header);
 		this.header = header; 
 	}
 
-	
+
 	/***********************************************************************
 	 * 					hashCode, equals and toString
 	 **********************************************************************/

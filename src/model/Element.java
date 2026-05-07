@@ -11,7 +11,8 @@ import java.util.Objects;
  */
 public class Element {
 	private boolean ranked;
-	private String name, imagePath;
+	private String name, imagePath; //TODO: change imagePath class to Path class
+	
 	/**
 	 * The default name is set to "element"
 	 */
@@ -36,6 +37,8 @@ public class Element {
 	 * 
 	 * @throws IllegalArgumentException if either name or image path are blank
 	 */
+
+	//TODO: add keyword "extend" where needed
 	public Element(boolean isRanked,  String name, String imagePath) {
 		Objects.requireNonNull(name);
 		Objects.requireNonNull(imagePath);

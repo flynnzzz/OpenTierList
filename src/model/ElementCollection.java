@@ -75,13 +75,6 @@ public class ElementCollection implements Iterable<Element>{
 	}
 	
 	/**
-	 * Returns the contents of the {@link ElementCollection} as an immutable list of {@link Element}.
-	 * 
-	 * @return collection as {@link List}
-	 */
-	public List<Element> getElements() { return List.copyOf(elements); }	
-	
-	/**
 	 * Adds an {@link Element} to the collection.
 	 * 
 	 * @param e {@link Element} to add

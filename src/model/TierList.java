@@ -1,7 +1,6 @@
 package model;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -88,30 +87,18 @@ public class TierList {
 	 * 
 	 * @param name the tier list's name
 	 * @param unranked elements to rank
-	 * @param headers {@link List} of {@link TierHeader}
-	 * @param tierListRows {@link List} of {@link ElementCollection} representing the tier list's rows
+	 * @param contents contents to put
 	 * @throws IllegalArgumentException if name is blank
-	 * @throws IllegalArgumentException if the size of the headers list is smaller than rows list's
 	 */
-	public TierList(String name, ElementCollection unranked, 
-			List<TierHeader> headers, List<ElementCollection> tierListRows) {
+	public TierList(String name, ElementCollection unranked, Map<TierHeader, ElementCollection> contents) {
 		Objects.requireNonNull(name); Objects.requireNonNull(unranked); 
-		Objects.requireNonNull(headers); Objects.requireNonNull(tierListRows);
-		
+		Objects.requireNonNull(contents);	
+
 		if (name.isBlank()) throw new IllegalArgumentException();
-		if (headers.size() < tierListRows.size()) throw new IllegalArgumentException(
-				"the size of 'headers' must be bigger than the size of 'tierListRows");
 		
 		this.name = name;
 		this.unranked = unranked;
-		this.contents = new HashMap<>();
-		
-		int i = 0; ElementCollection ec;
-		for (TierHeader th : headers) {
-			ec = tierListRows.get(i);				
-			contents.put(th, ec);
-			i++;
-		}
+		this.contents = contents;
 	}
 	
 	/***********************************************************************
@@ -145,7 +132,7 @@ public class TierList {
 		return unranked.addElement(e);
 	}
 	
-	public boolean addTo(Element e, TierHeader to) {
+	public boolean addTo(TierHeader to, Element e) {
 		Objects.requireNonNull(e); Objects.requireNonNull(to);
 		if (contents.containsKey(to)) {
 			contents.get(to).addElement(e);
@@ -154,7 +141,7 @@ public class TierList {
 		return false;
 	}
 	
-	public boolean removeFrom(Element e, TierHeader from) {
+	public boolean removeFrom(TierHeader from, Element e) {
 		Objects.requireNonNull(e); Objects.requireNonNull(from);
 		if (contents.containsKey(from)) {
 			contents.get(from).removeElement(e);
@@ -175,19 +162,9 @@ public class TierList {
 		if (name.isBlank()) throw new IllegalArgumentException("Tier list name must not be blank");
 		this.name = name;
 	}
-	public Map<TierHeader, ElementCollection> getContents() {
-		return contents;
-	}
-	public void setContents(Map<TierHeader, ElementCollection> contents) {
-		Objects.requireNonNull(contents);
-		this.contents = contents;
-	}
+
 	public ElementCollection getUnranked() {
-		return unranked;
-	}
-	public void setUnranked(ElementCollection unranked) {
-		Objects.requireNonNull(unranked);
-		this.unranked = unranked;
+		return unranked.clone();
 	}
 
 }
