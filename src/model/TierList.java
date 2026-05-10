@@ -1,8 +1,9 @@
 package model;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 /**
  * A class representing the concept of tier list.
@@ -17,7 +18,7 @@ public class TierList {
 
 	private String name;
 	private ElementCollection unranked;
-	private Map<TierHeader, ElementCollection> contents;
+	private SortedMap<TierHeader, ElementCollection> contents;
 
 	/**
 	 * The default name is set to {@link String} "New Tierlist"
@@ -44,7 +45,7 @@ public class TierList {
 		
 		this.name = name;
 		this.unranked = unranked;
-		this.contents = new HashMap<>();
+		this.contents = new TreeMap<>();
 	}
 	
 	/**
@@ -62,7 +63,7 @@ public class TierList {
 		
 		this.name = DEFAULT_TIERLIST_NAME;
 		this.unranked = unranked;
-		this.contents = new HashMap<>();
+		this.contents = new TreeMap<>();
 	}
 	
 	/**
@@ -76,7 +77,7 @@ public class TierList {
 	public TierList() {
 		this.name = DEFAULT_TIERLIST_NAME;
 		this.unranked = new ElementCollection();
-		this.contents = new HashMap<>();
+		this.contents = new TreeMap<>();
 	}
 	
 	/**
@@ -90,7 +91,7 @@ public class TierList {
 	 * @param contents contents to put
 	 * @throws IllegalArgumentException if name is blank
 	 */
-	public TierList(String name, ElementCollection unranked, Map<TierHeader, ElementCollection> contents) {
+	public TierList(String name, ElementCollection unranked, SortedMap<TierHeader, ElementCollection> contents) {
 		Objects.requireNonNull(name); Objects.requireNonNull(unranked); 
 		Objects.requireNonNull(contents);	
 
@@ -132,19 +133,34 @@ public class TierList {
 		return unranked.addElement(e);
 	}
 	
-	public boolean addTo(TierHeader to, Element e) {
+	public boolean addTo(Tier to, Element e) {
 		Objects.requireNonNull(e); Objects.requireNonNull(to);
-		if (contents.containsKey(to)) {
-			contents.get(to).addElement(e);
+		if (contents.containsKey(to.getHeader())) {
+			contents.get(to.getHeader()).addElement(e);
 			return true;
 		}
 		return false;
 	}
 	
-	public boolean removeFrom(TierHeader from, Element e) {
+	public void swapTiers(Tier a, Tier b) {
+		ElementCollection a_values = contents.get(a.getHeader()),
+						  b_values = contents.get(b.getHeader());
+		contents.put(a.getHeader(), b_values);
+		contents.put(b.getHeader(), a_values);
+	}
+
+	public void swapElements(Tier t, Element a, Element b) {
+		
+	}
+
+	public void swapUnrankedElements(Element a, Element b) {
+		
+	}
+	
+	public boolean removeFrom(Tier from, Element e) {
 		Objects.requireNonNull(e); Objects.requireNonNull(from);
-		if (contents.containsKey(from)) {
-			contents.get(from).removeElement(e);
+		if (contents.containsKey(from.getHeader())) {
+			contents.get(from.getHeader()).removeElement(e);
 			return true;
 		}
 		return false;
@@ -166,5 +182,40 @@ public class TierList {
 	public ElementCollection getUnranked() {
 		return unranked.clone();
 	}
+	
+	
+	/***********************************************************************
+	 * 					hashCode, equals and toString
+	 **********************************************************************/
+	
+	@Override
+	public int hashCode() {
+		return Objects.hash(contents, name, unranked);
+	}
 
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (!(obj instanceof TierList)) {
+			return false;
+		}
+		TierList other = (TierList) obj;
+		return Objects.equals(contents, other.contents) && Objects.equals(name, other.name)
+				&& Objects.equals(unranked, other.unranked);
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append(this.name + System.lineSeparator());
+		sb.append(System.lineSeparator());
+		for (TierHeader th : contents.keySet()) {
+			sb.append(contents.get(th).toString());
+			sb.append(System.lineSeparator());
+			sb.append(System.lineSeparator());
+		}
+		return sb.toString();
+	}
 }

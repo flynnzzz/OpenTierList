@@ -123,7 +123,7 @@ public class Tier extends ElementCollection {
 	 * @return {@link String}
 	 */
 	public String toString() {
-		 return "Tier: " + header.name() + System.lineSeparator() +
+		 return header.name() + ":" + System.lineSeparator() +
 				 super.toString();
 	}
 }

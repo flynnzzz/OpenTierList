@@ -40,6 +40,6 @@ public interface TierListController {
 
 	public void swapElements(Tier t, Element a, Element b);
 
-	public void swapElements(Element a, Element b);
+	public void swapUnrankedElements(Element a, Element b);
 	
 }

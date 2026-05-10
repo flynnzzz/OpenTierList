@@ -38,7 +38,7 @@ public class Element {
 	 * @throws IllegalArgumentException if either name or image path are blank
 	 */
 
-	//TODO: add keyword "extend" where needed
+	//TODO: add keyword "throws" where needed
 	public Element(boolean isRanked,  String name, String imagePath) {
 		Objects.requireNonNull(name);
 		Objects.requireNonNull(imagePath);

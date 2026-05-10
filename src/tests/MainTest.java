@@ -1,72 +1,38 @@
 package tests;
 
+import java.awt.Color;
+
+import controller.StandardTierListController;
+import controller.TierListController;
 import model.Element;
-import model.ElementCollection;
 import model.Tier;
 import model.TierHeader;
-
-import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import model.TierList;
 
 public class MainTest {
-		Element e = new Element(false, "Goku", "gokusuperpower.jpg");
-		ElementCollection ec = new ElementCollection();
-		Tier t = new Tier(new TierHeader("S", Tier.DEFAULT_TIER_COLOR));
+		public static void main() {
+			TierList tl = new TierList();
+			TierListController tlc = new StandardTierListController(tl);
 			
-	@Test
-	public void testElement() {
-		Element dr = new Element(true, "Ritchie", "DennisRitchie.png");
-		assertEquals(true, dr.isRanked());
-		assertEquals("Ritchie", dr.getName());
-		assertNotEquals("DennisRitchie.jpg", dr.getImagePath());
-	}
-	
-	@Test
-	public void testElementCollection() {
-		Element dr = new Element(true, "Ritchie", "DennisRitchie.png");
-		Element goku = new Element(false, "Goku", "gokusuperpower.jpg");
-		Element simba = new Element(true, "Simba", "lion.png");
-		ec.addElement(dr);
-		ec.addElement(goku);
-		ec.addElement(simba);
-		assertEquals(ec.removeElement(simba), true);
-		assertEquals(2, ec.size());
-		assertTrue(ec.addElement(goku));
-		assertTrue(ec.removeElement(goku));
-		assertTrue(ec.removeElement(dr));
-	}
-	
-	@Test
-	public void testSwapElementCollection() {
-		Element dr = new Element(true, "Ritchie", "DennisRitchie.png");
-		Element goku = new Element(false, "Goku", "gokusuperpower.jpg");
-		ec.addElement(dr);
-		ec.addElement(goku);
-		ec.swap(goku, dr);
-		ElementCollection swapped = new ElementCollection();
-		swapped.addElement(goku);
-		swapped.addElement(dr);
-		assertTrue(swapped.equals(ec));
-		swapped.swap(dr, goku);
-		ec.swap(goku, dr);
-		assertTrue(swapped.equals(ec));
-		Element notInList = new Element(false, "", "");
-		assertFalse(swapped.swap(goku, notInList));
-	}
-	
-	@Test
-	public void testTier() {
-		t.addElement(new Element(false, "GokuGT", "gokussj4GT.png"));
-		t.addElement(new Element(false, "GokuDaima", "gokussj4Daima.png"));
-		t.addElement(new Element(false, "VegitoSSJ", "supervegito.png"));
-		t.addElement(e);
-		assertEquals(t.size(), 4);
-		assertTrue(t.get(3).equals(e));
-		t.swap(t.get(0), t.get(3));
-		assertEquals(t.indexOf(e), 0);
-		IO.println(t.toString());
-	}
+			Tier s = new Tier(new TierHeader("S", Color.ORANGE)),
+				a = new Tier(new TierHeader("A", Color.ORANGE)),
+				b = new Tier(new TierHeader("B", Color.ORANGE));
+			
+			tlc.addTier(s);
+			IO.println(tl);
+			
+			
+			tlc.addTier(a);
+			tlc.addTier(b);
+			tlc.addTier(new Tier());
+			IO.println(tl);
+		
+			tlc.rank(new Element(true, "Goku"), s);
+			tlc.rank(new Element(true, "Wukong"), a);
+			tlc.rank(new Element(true, "Jinwoo"), a);
+			IO.println(tl);
+			
+			tlc.swapTiers(s, a);
+			IO.println(tl);
+		}
 }

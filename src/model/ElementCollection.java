@@ -184,7 +184,8 @@ public class ElementCollection implements Iterable<Element>{
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		sb.append("Elements: "); sb.append(System.lineSeparator()); sb.append("[");
+		sb.append("[");
+		sb.append(System.lineSeparator());
 		for (Element e : elements) {	
 			sb.append("\t");
 			sb.append(e); 

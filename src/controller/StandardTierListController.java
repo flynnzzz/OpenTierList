@@ -18,7 +18,7 @@ public class StandardTierListController implements TierListController {
 	private TierList tl;
 	
 	/**
-	 * Factory that returns a controller for {@link TierList}.
+	 * Factory that creates a controller for {@link TierList}.
 	 * 
 	 * Instanciates an empty {@link TierList}
 	 */
@@ -27,7 +27,7 @@ public class StandardTierListController implements TierListController {
 	}
 	
 	/**
-	 * Factory that returns a controller for {@link TierList}.
+	 * Factory that creates a controller for {@link TierList}.
 	 * 
 	 * Instanciates an {@link TierList} with the given parameter
 	 * 
@@ -40,12 +40,11 @@ public class StandardTierListController implements TierListController {
 	
 	@Override
 	public void setTierListName(String name) {
-		Objects.requireNonNull(name);
 		try {
 			tl.setName(name);
 		}
 		catch(IllegalArgumentException e) {
-			tl.setName(TierList.DEFAULT_TIERLIST_NAME);
+			
 		}
 	}
 
@@ -65,7 +64,7 @@ public class StandardTierListController implements TierListController {
 			tl.removeTier(t);
 		}
 		catch(NullPointerException npe) {
-			// TODO error message
+			System.err.println("Tier removal failed.");
 		}
 	}
 
@@ -75,30 +74,31 @@ public class StandardTierListController implements TierListController {
 			tl.addUnranked(e);
 		}
 		catch(NullPointerException npe) {
-			tl.addUnranked(new Element(false));
+			System.err.println("Addition to unranked failed.");
 		}
 	}
 
 	@Override
 	public void rank(Element e, Tier to) {
 		try {
-			
+			tl.addTo(to, e);
 		}
 		catch(NullPointerException npe) {
-			// TODO error message
+			System.err.println("Addition to tier failed.");
 		}		
 	}
+	
+	// TODO rank and unrank variants with String as second parameter -> rank(Element e, String to)
 
 	@Override
 	public void unrank(Element e, Tier from) {
-		// TODO Auto-generated method stub
-		
+		tl.removeFrom(from, e);
 	}
+	
 
 	@Override
 	public void swapTiers(Tier a, Tier b) {
-		// TODO Auto-generated method stub
-		
+		tl.swapTiers(a, b);
 	}
 
 	@Override
@@ -108,7 +108,7 @@ public class StandardTierListController implements TierListController {
 	}
 
 	@Override
-	public void swapElements(Element a, Element b) {
+	public void swapUnrankedElements(Element a, Element b) {
 		// TODO Auto-generated method stub
 		
 	}
