@@ -135,11 +135,7 @@ public class TierList {
 	
 	public boolean addTo(Tier to, Element e) {
 		Objects.requireNonNull(e); Objects.requireNonNull(to);
-		if (contents.containsKey(to.getHeader())) {
-			contents.get(to.getHeader()).addElement(e);
-			return true;
-		}
-		return false;
+		return contents.get(to.getHeader()).addElement(e);
 	}
 	
 	public void swapTiers(Tier a, Tier b) {
@@ -159,11 +155,7 @@ public class TierList {
 	
 	public boolean removeFrom(Tier from, Element e) {
 		Objects.requireNonNull(e); Objects.requireNonNull(from);
-		if (contents.containsKey(from.getHeader())) {
-			contents.get(from.getHeader()).removeElement(e);
-			return true;
-		}
-		return false;
+		return contents.get(from.getHeader()).removeElement(e);
 	}
 	
 	/***********************************************************************
