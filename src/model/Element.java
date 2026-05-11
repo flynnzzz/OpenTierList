@@ -93,11 +93,18 @@ public class Element {
 	 */
 	public boolean isRanked() { return ranked; }
 	/**
-	 * Set the {@link Element} to ranked or not
+	 * Set the {@link Element} to ranked or unranked
 	 * 
 	 * @param ranked value to set
+	 * 
+	 * @return new Element with changed status
 	 */
-	public void setRanked(boolean ranked) { this.ranked = ranked; }
+	public Element changeTo(boolean ranked) { 
+		if (ranked)
+			return new RankedElement(this);
+		else
+			return new UnrankedElement(this);
+	}
 	/**
 	 * Returns the function name
 	 * 

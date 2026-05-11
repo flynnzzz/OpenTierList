@@ -1,20 +1,19 @@
 package model;
 
 import java.awt.Color;
-import java.util.List;
+import java.util.Collections;
 import java.util.Objects;
 
 /**
- * Extention class of {@link ElementCollection}.
+ * Class representing the concept of a 'Tier'.
  * 
- * Aggregation of {@link Element} , with the added extention of 
- * a {@link TierHeader}
+ * Each Tier contains a {@link TierHeader} and a collection of {@link Element}
  * 
  * @author flynnz
- * @version 0.00
+ * @version 1.00
  * @since v0.0.0
  */
-public class Tier extends ElementCollection {
+public class Tier {
 	
 	/**
 	 * The default name is set to {@link String} "New Tier"
@@ -24,87 +23,112 @@ public class Tier extends ElementCollection {
 	 * The default color is set to {@link Color#gray}
 	 */
 	public static final Color DEFAULT_TIER_COLOR = Color.gray;
-	private TierHeader header;
 	
+	private TierHeader header;
+	private ElementCollection elements;
 	
 	/***********************************************************************
 	 * 							Constructors
 	 **********************************************************************/
 	
 	/**
-	 * Constructs a new {@link Tier} object with the given list of {@link Element}.
+	 * Constructs a new {@link Tier} object with the given {@link ElementCollection}.
 	 * 
-	 * All parameters must not be null:
-	 * @param name {@link Tier} header name as {@link String}
-	 * @param color {@link Tier} color as {@link java.awt.Color}
-	 * @param ranked the list to encapsulate
-	 * @throws IllegalArgumentException if the list passed in is empty
+	 * @param header {@link TierHeader} 
+	 * @param elements collection to add
+	 * @throws IllegalArgumentException if @param ranked is empty
 	 */
-	public Tier(TierHeader th, List<Element> ranked) {
-		Objects.requireNonNull(th);
+	public Tier(TierHeader header, ElementCollection elements) {
+		Objects.requireNonNull(header); Objects.requireNonNull(elements);
+		if (elements.isEmpty()) throw new IllegalArgumentException();
 		
-		super(ranked);
-		this.header = th;
+		this.header = header;
+		this.elements = elements;
 	}	
 	
 	/**
-	 * Constructs a new empty {@link Tier} object with name and color.
+	 * Constructs a new empty {@link Tier} object with given {@link TierHeader}.
 	 * 
-	 * All parameters must not be null:
-	 * @param name {@link Tier} header name as {@link String}
-	 * @param color {@link Tier} color as {@link java.awt.Color}
+	 * @param th {@link TierHeader}
 	 */
-	public Tier(TierHeader th) { 
-		Objects.requireNonNull(th);
-		super(); this.header = th; 
+	public Tier(TierHeader header) { 
+		Objects.requireNonNull(header);
+
+		this.header = header;
+		this.elements = new ElementCollection();
 	}
 	
 	/**
 	 * Constructs a new empty {@link Tier} object
 	 */
-	public Tier() { super(); this.header = new TierHeader(DEFAULT_TIER_NAME, DEFAULT_TIER_COLOR);  }
+	public Tier() { 
+		this.header = new TierHeader(DEFAULT_TIER_NAME, DEFAULT_TIER_COLOR);
+		this.elements = new ElementCollection();  
+	}
 	
+	/***********************************************************************
+	 * 							Class methods
+	 **********************************************************************/
+	
+	public boolean add(Element e) {
+		return this.getElements().add(e);
+	}
+	
+	public Element add(Element e, int i) {
+		return this.getElements().set(i, e);
+	}
+	
+	public boolean remove(Element e) {
+		return this.getElements().remove(e);
+	}
+	
+	public Element remove(int i) {
+		return this.getElements().remove(i);
+	}
+	
+	public void swap(Element a, Element b) {
+		int ia = getElements().indexOf(a),
+			ib = getElements().indexOf(b);
+		
+		Collections.swap(getElements(), ia, ib);
+	}
+	
+	public void swap(int a, int b) {
+		Collections.swap(getElements(), a, b);
+	}
 	
 	/***********************************************************************
 	 * 						Setters and getters
 	 **********************************************************************/
 	
-	public TierHeader getHeader() { return this.header; }
 	public void setHeader(TierHeader header) { 
 		Objects.requireNonNull(header);
-		this.header = header; 
+		this.header = header;
 	}
+	public TierHeader getHeader() { return header; }
+	
+	public ElementCollection getElements() { return elements; }
 
 
 	/***********************************************************************
 	 * 					hashCode, equals and toString
 	 **********************************************************************/
 	
-	/**
-	 * hashCode function
-	 * 
-	 * @see Objects#hashCode()
-	 */
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = super.hashCode();
-		result = prime * result + Objects.hash(DEFAULT_TIER_COLOR, DEFAULT_TIER_NAME, header);
-		return result;
+		return Objects.hash(elements, header);
 	}
 
-	/**
-	 * equals function
-	 * 
-	 *  @see Objects#equals(Object)
-	 */
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj) { return true; }
-		if (!super.equals(obj)) { return false; }
-		
-		if (!(obj instanceof Tier other)) { return false; }
-		return Objects.equals(header, other.header);
+		if (this == obj) {
+			return true;
+		}
+		if (!(obj instanceof Tier)) {
+			return false;
+		}
+		Tier other = (Tier) obj;
+		return Objects.equals(elements, other.elements) && Objects.equals(header, other.header);
 	}
 
 	@Override
@@ -112,8 +136,7 @@ public class Tier extends ElementCollection {
 	 * Returns the {@link Tier} as {@link String}
 	 * 
 	 * Format:
-	 * 	"Tier: header name
-	 * 	Elements: 
+	 * 	"header name:
 	 * 	[
 	 * 		element1,
 	 * 		element2,
@@ -123,7 +146,7 @@ public class Tier extends ElementCollection {
 	 * @return {@link String}
 	 */
 	public String toString() {
-		 return header.name() + ":" + System.lineSeparator() +
-				 super.toString();
+		 return getHeader().name() + ":" + System.lineSeparator() 
+		 + getElements().toString();
 	}
 }

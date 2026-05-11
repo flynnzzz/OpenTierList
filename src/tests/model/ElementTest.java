@@ -65,21 +65,21 @@ class ElementTest {
 
 	@Test
 	void testSetRanked_trueToFalse() {
-		immortal.setRanked(false);
+		immortal.changeTo(false);
 		assertFalse(immortal.isRanked());
 		// restore for other tests
-		immortal.setRanked(true);
+		immortal.changeTo(true);
 	}
 
 	@Test
 	void testSetRanked_falseToTrue() {
-		whole.setRanked(true);
+		whole.changeTo(true);
 		assertTrue(whole.isRanked());
 	}
 
 	@Test
 	void testSetRanked_noChange() {
-		whole.setRanked(false);
+		whole.changeTo(false);
 		assertFalse(whole.isRanked());
 	}
 
@@ -237,7 +237,7 @@ class ElementTest {
 
 	@Test
 	void testToString_afterSetRanked() {
-		whole.setRanked(true);
+		whole.changeTo(true);
 		assertEquals(whole.toString(), "monkey king: ranked");
 	}
 

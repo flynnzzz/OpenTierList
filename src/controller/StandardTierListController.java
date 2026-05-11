@@ -37,7 +37,8 @@ public class StandardTierListController implements TierListController {
 		Objects.requireNonNull(tl);
 		this.tl = tl;
 	}
-	
+
+	// TODO major rework
 	@Override
 	public void setTierListName(String name) {
 		try {
@@ -71,7 +72,7 @@ public class StandardTierListController implements TierListController {
 	@Override
 	public void addUnranked(Element e) {
 		try {
-			tl.addUnranked(e);
+			tl.addToUnranked(e);
 		}
 		catch(NullPointerException npe) {
 			System.err.println("Addition to unranked failed.");
@@ -81,7 +82,7 @@ public class StandardTierListController implements TierListController {
 	@Override
 	public void rank(Element e, Tier to) {
 		try {
-			tl.addTo(to, e);
+			tl.addToTier(to, e);
 		}
 		catch(NullPointerException npe) {
 			System.err.println("Addition to tier failed.");
@@ -92,12 +93,12 @@ public class StandardTierListController implements TierListController {
 
 	@Override
 	public void unrank(Element e, Tier from) {
-		tl.removeFrom(from, e);
+		tl.removeFromTier(from, e);
 	}
 	
 
 	@Override
-	public void swapTiers(Tier a, Tier b) {
+	public void swapTiers(int a, int b) {
 		tl.swapTiers(a, b);
 	}
 

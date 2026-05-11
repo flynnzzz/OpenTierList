@@ -36,7 +36,7 @@ public interface TierListController {
 
 	public void unrank(Element e, Tier from);
 	
-	public void swapTiers(Tier a, Tier b);
+	public void swapTiers(int a, int b);
 
 	public void swapElements(Tier t, Element a, Element b);
 

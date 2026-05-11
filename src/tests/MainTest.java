@@ -8,6 +8,7 @@ import model.Element;
 import model.Tier;
 import model.TierHeader;
 import model.TierList;
+import model.UnrankedElement;
 
 public class MainTest {
 		public static void main() {
@@ -19,20 +20,19 @@ public class MainTest {
 				b = new Tier(new TierHeader("B", Color.ORANGE));
 			
 			tlc.addTier(s);
-			IO.println(tl);
-			
-			
 			tlc.addTier(a);
 			tlc.addTier(b);
 			tlc.addTier(new Tier());
-			IO.println(tl);
-		
 			tlc.rank(new Element(true, "Goku"), s);
 			tlc.rank(new Element(true, "Wukong"), a);
 			tlc.rank(new Element(true, "Jinwoo"), a);
 			IO.println(tl);
 			
-			tlc.swapTiers(s, a);
+			tlc.swapTiers(0, 1);
+			tlc.addTier(new Tier(new TierHeader("S", Color.ORANGE)));
+			tlc.addUnranked(new UnrankedElement("Ayanokoji"));
+			tlc.addUnranked(new UnrankedElement("Ringo Star"));
+			
 			IO.println(tl);
 		}
 }
