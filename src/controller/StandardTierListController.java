@@ -2,7 +2,7 @@ package controller;
 
 import java.util.Objects;
 
-import model.Element;
+import model.TierElement;
 import model.Tier;
 import model.TierList;
 
@@ -70,7 +70,7 @@ public class StandardTierListController implements TierListController {
 	}
 
 	@Override
-	public void addUnranked(Element e) {
+	public void addUnranked(TierElement e) {
 		try {
 			tl.addToUnranked(e);
 		}
@@ -80,7 +80,7 @@ public class StandardTierListController implements TierListController {
 	}
 
 	@Override
-	public void rank(Element e, Tier to) {
+	public void rank(TierElement e, Tier to) {
 		try {
 			tl.addToTier(to, e);
 		}
@@ -92,7 +92,7 @@ public class StandardTierListController implements TierListController {
 	// TODO rank and unrank variants with String as second parameter -> rank(Element e, String to)
 
 	@Override
-	public void unrank(Element e, Tier from) {
+	public void unrank(TierElement e, Tier from) {
 		tl.removeFromTier(from, e);
 	}
 	
@@ -103,13 +103,13 @@ public class StandardTierListController implements TierListController {
 	}
 
 	@Override
-	public void swapElements(Tier t, Element a, Element b) {
+	public void swapElements(Tier t, TierElement a, TierElement b) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void swapUnrankedElements(Element a, Element b) {
+	public void swapUnrankedElements(TierElement a, TierElement b) {
 		// TODO Auto-generated method stub
 		
 	}

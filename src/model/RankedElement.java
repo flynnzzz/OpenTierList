@@ -1,8 +1,8 @@
 package model;
 
-public class RankedElement extends Element {
+public class RankedElement extends TierElement {
 	
-	public RankedElement(Element e) {
+	public RankedElement(TierElement e) {
 		super(true, e.getName(), e.getImagePath());
 	}
 	
@@ -19,7 +19,7 @@ public class RankedElement extends Element {
 	}
 	
 	/**
-	 * Returns the {@link Element} as a {@link String}
+	 * Returns the {@link TierElement} as a {@link String}
 	 * 
 	 * Format:
 	 * 	"name"

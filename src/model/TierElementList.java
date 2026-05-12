@@ -11,27 +11,27 @@ import java.util.Collection;
  * @since v0.0.0
  */
 
-public class ElementCollection extends ArrayList<Element> {
+public class TierElementList extends ArrayList<TierElement> {
 	
 	private static final long serialVersionUID = -386249859978810016L;
 
 	/**
-	 * Constructs a new {@link ElementCollection} object with the given {@link Collection} of {@link Element}
+	 * Constructs a new {@link TierElementList} object with the given {@link Collection} of {@link TierElement}
 	 * 
 	 * @param elements collection to initialize instance
 	 */
-	public ElementCollection(Collection<Element> elements) {
+	public TierElementList(Collection<TierElement> elements) {
 		super(elements);
 	}
 	/**
-	 * Constructs a new empty {@link ElementCollection} object
+	 * Constructs a new empty {@link TierElementList} object
 	 */
-	public ElementCollection() {
+	public TierElementList() {
 		super();
 	}
 	
 	/**
-	 * Returns the {@link ElementCollection} as {@link String}
+	 * Returns the {@link TierElementList} as {@link String}
 	 * 
 	 * Format:
 	 * 	[
@@ -44,10 +44,24 @@ public class ElementCollection extends ArrayList<Element> {
 	 */
 	@Override
 	public String toString() {
+		var sb = new StringBuilder();
+		sb.append("[ ");
+		for (TierElement e : this) {	
+			sb.append(e); 
+			if (!this.getLast().equals(e)) 
+				sb.append(", ");
+			else
+				sb.append(".");
+		}
+		sb.append(" ]");
+		return sb.toString();
+	}
+	/*
+	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("[");
 		sb.append(System.lineSeparator());
-		for (Element e : this) {	
+		for (TierElement e : this) {	
 			sb.append("\t");
 			sb.append(e); 
 			if (!this.getLast().equals(e))
@@ -59,4 +73,5 @@ public class ElementCollection extends ArrayList<Element> {
 		sb.append("]");
 		return sb.toString();
 	}
+	*/
 }

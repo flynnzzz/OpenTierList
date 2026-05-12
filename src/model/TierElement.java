@@ -6,12 +6,12 @@ import java.util.Objects;
  * Class representing a single {@link TierList} "entry"
  * 
  * @author flynnz
- * @version 0.00
+ * @version 1.00
  * @since v0.0.0
  */
-public class Element {
+public class TierElement {
 	private boolean ranked;
-	private String name, imagePath; //TODO: change imagePath class to Path class
+	private String name, imagePath;
 	
 	/**
 	 * The default name is set to "element"
@@ -38,10 +38,8 @@ public class Element {
 	 * @throws IllegalArgumentException if either name or image path are blank
 	 */
 
-	//TODO: add keyword "throws" where needed
-	public Element(boolean isRanked,  String name, String imagePath) {
-		Objects.requireNonNull(name);
-		Objects.requireNonNull(imagePath);
+	public TierElement(boolean isRanked,  String name, String imagePath) throws IllegalArgumentException {
+		Objects.requireNonNull(name); Objects.requireNonNull(imagePath);
 		if (name.isBlank()) throw new IllegalArgumentException();
 		if (imagePath.isBlank()) throw new IllegalArgumentException();
 		
@@ -56,10 +54,10 @@ public class Element {
 	 * @param isRanked boolean representing state
 	 * @param name the entry's name
 	 * 
-	 * The element's image path will be set to {@link Element#DEFAULT_ELEMENT_IMAGE_PATH}
+	 * The element's image path will be set to {@link TierElement#DEFAULT_ELEMENT_IMAGE_PATH}
 	 * @throws IllegalArgumentException if name is blank
 	 */
-	public Element(boolean isRanked,  String name) {
+	public TierElement(boolean isRanked,  String name) throws IllegalArgumentException {
 		Objects.requireNonNull(name);
 		if (name.isBlank()) throw new IllegalArgumentException();
 		this.ranked = isRanked;
@@ -72,10 +70,10 @@ public class Element {
 	 * All parameters must not be null:
 	 * @param isRanked boolean representing state
 	 * 
-	 * The element's name will be set to {@link Element#DEFAULT_ELEMENT_NAME}
-	 * and the image path will be set to {@link Element#DEFAULT_ELEMENT_IMAGE_PATH}
+	 * The element's name will be set to {@link TierElement#DEFAULT_ELEMENT_NAME}
+	 * and the image path will be set to {@link TierElement#DEFAULT_ELEMENT_IMAGE_PATH}
 	 */
-	public Element(boolean isRanked) {
+	public TierElement(boolean isRanked) {
 		this.ranked = isRanked;
 		this.name = DEFAULT_ELEMENT_NAME;
 		this.imagePath = DEFAULT_ELEMENT_IMAGE_PATH;
@@ -87,58 +85,62 @@ public class Element {
 	 **********************************************************************/
 	
 	/**
-	 * Returns whether or not the {@link Element} was ranked
+	 * Returns whether or not the {@link TierElement} was ranked
 	 * 
-	 * @return true if the {@link Element} was ranked
+	 * @return true if the {@link TierElement} was ranked
 	 */
 	public boolean isRanked() { return ranked; }
+	
 	/**
-	 * Set the {@link Element} to ranked or unranked
+	 * Set the {@link TierElement} to ranked or unranked
 	 * 
 	 * @param ranked value to set
 	 * 
-	 * @return new Element with changed status
+	 * @return new Element with updated status
 	 */
-	public Element changeTo(boolean ranked) { 
+	public TierElement changeTo(boolean ranked) { 
 		if (ranked)
 			return new RankedElement(this);
 		else
 			return new UnrankedElement(this);
 	}
+	
 	/**
-	 * Returns the function name
-	 * 
-	 * @return name the {@link Element} name
-	 */
-	public String getName() { return name; }
-	/**
-	 * Sets the {@link Element} name.
+	 * Sets the {@link TierElement} name.
 	 * 
 	 * @param name value to set, must not be null
 	 * @throws IllegalArgumentException if name is blank 
 	 */
-	public void setName(String name) { 
+	public void setName(String name) throws IllegalArgumentException { 
 		Objects.requireNonNull(name);
 		if (name.isBlank()) throw new IllegalArgumentException();
 		this.name = name; 
 	}
 	/**
-	 * Returns the image path of the {@link Element}
+	 * Returns the function name
 	 * 
-	 * @return imagePath the {@link Element} image path
+	 * @return name the {@link TierElement} name
 	 */
-	public String getImagePath() { return imagePath; }
+	public String getName() { return name; }
+	
 	/**
-	 * Sets the image path of the {@link Element}
+	 * Sets the image path of the {@link TierElement}
 	 * 
 	 * @param imagePath value to set, must not be null
 	 * @throws IllegalArgumentException if image path is blank
 	 */
-	public void setImagePath(String imagePath) {
+	public void setImagePath(String imagePath) throws IllegalArgumentException {
 		Objects.requireNonNull(name);
 		if (imagePath.isBlank()) throw new IllegalArgumentException();
 		this.imagePath = imagePath; 
 	}
+	
+	/**
+	 * Returns the image path of the {@link TierElement}
+	 * 
+	 * @return imagePath the {@link TierElement} image path
+	 */
+	public String getImagePath() { return imagePath; }
 
 	
 	/***********************************************************************
@@ -163,12 +165,12 @@ public class Element {
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj) { return true; }
-		if (!(obj instanceof Element other)) { return false; }
+		if (!(obj instanceof TierElement other)) { return false; }
 		return Objects.equals(imagePath, other.imagePath) && Objects.equals(name, other.name) && ranked == other.ranked;
 	}
 	
 	/**
-	 * Returns the {@link Element} as a {@link String}
+	 * Returns the {@link TierElement} as a {@link String}
 	 * 
 	 * Format:
 	 * 	"name: [not] ranked".

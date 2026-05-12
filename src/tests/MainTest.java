@@ -4,7 +4,8 @@ import java.awt.Color;
 
 import controller.StandardTierListController;
 import controller.TierListController;
-import model.Element;
+import enums.TierStringFormat;
+import model.TierElement;
 import model.Tier;
 import model.TierHeader;
 import model.TierList;
@@ -23,10 +24,10 @@ public class MainTest {
 			tlc.addTier(a);
 			tlc.addTier(b);
 			tlc.addTier(new Tier());
-			tlc.rank(new Element(true, "Goku"), s);
-			tlc.rank(new Element(true, "Wukong"), a);
-			tlc.rank(new Element(true, "Jinwoo"), a);
-			IO.println(tl);
+			tlc.rank(new TierElement(true, "Goku"), s);
+			tlc.rank(new TierElement(true, "Wukong"), a);
+			tlc.rank(new TierElement(true, "Jinwoo"), a);
+			IO.println(tl.toString(TierStringFormat.EXTENDED));
 			
 			tlc.swapTiers(0, 1);
 			tlc.addTier(new Tier(new TierHeader("S", Color.ORANGE)));

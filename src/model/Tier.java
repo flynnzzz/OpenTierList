@@ -4,10 +4,12 @@ import java.awt.Color;
 import java.util.Collections;
 import java.util.Objects;
 
+import enums.TierStringFormat;
+
 /**
  * Class representing the concept of a 'Tier'.
  * 
- * Each Tier contains a {@link TierHeader} and a collection of {@link Element}
+ * Each Tier contains a {@link TierHeader} and a collection of {@link TierElement}
  * 
  * @author flynnz
  * @version 1.00
@@ -25,20 +27,20 @@ public class Tier {
 	public static final Color DEFAULT_TIER_COLOR = Color.gray;
 	
 	private TierHeader header;
-	private ElementCollection elements;
+	private TierElementList elements;
 	
 	/***********************************************************************
 	 * 							Constructors
 	 **********************************************************************/
 	
 	/**
-	 * Constructs a new {@link Tier} object with the given {@link ElementCollection}.
+	 * Constructs a new {@link Tier} object with the given {@link TierElementList}.
 	 * 
 	 * @param header {@link TierHeader} 
 	 * @param elements collection to add
 	 * @throws IllegalArgumentException if @param ranked is empty
 	 */
-	public Tier(TierHeader header, ElementCollection elements) {
+	public Tier(TierHeader header, TierElementList elements) {
 		Objects.requireNonNull(header); Objects.requireNonNull(elements);
 		if (elements.isEmpty()) throw new IllegalArgumentException();
 		
@@ -55,7 +57,7 @@ public class Tier {
 		Objects.requireNonNull(header);
 
 		this.header = header;
-		this.elements = new ElementCollection();
+		this.elements = new TierElementList();
 	}
 	
 	/**
@@ -63,38 +65,38 @@ public class Tier {
 	 */
 	public Tier() { 
 		this.header = new TierHeader(DEFAULT_TIER_NAME, DEFAULT_TIER_COLOR);
-		this.elements = new ElementCollection();  
+		this.elements = new TierElementList();  
 	}
 	
 	/***********************************************************************
 	 * 							Class methods
 	 **********************************************************************/
 	
-	public boolean add(Element e) {
-		return this.getElements().add(e);
+	public boolean add(TierElement e) {
+		return elements.add(e);
 	}
 	
-	public Element add(Element e, int i) {
-		return this.getElements().set(i, e);
+	public TierElement add(TierElement e, int i) throws IndexOutOfBoundsException {
+		return elements.set(i, e);
 	}
 	
-	public boolean remove(Element e) {
-		return this.getElements().remove(e);
+	public boolean remove(TierElement e) {
+		return elements.remove(e);
 	}
 	
-	public Element remove(int i) {
-		return this.getElements().remove(i);
+	public TierElement remove(int i) throws IndexOutOfBoundsException {
+		return elements.remove(i);
 	}
 	
-	public void swap(Element a, Element b) {
-		int ia = getElements().indexOf(a),
-			ib = getElements().indexOf(b);
+	public void swap(TierElement a, TierElement b) throws IndexOutOfBoundsException {
+		int ia = elements.indexOf(a),
+			ib = elements.indexOf(b);
 		
-		Collections.swap(getElements(), ia, ib);
+		Collections.swap(elements, ia, ib);
 	}
 	
-	public void swap(int a, int b) {
-		Collections.swap(getElements(), a, b);
+	public void swap(int a, int b) throws IndexOutOfBoundsException {
+		Collections.swap(elements, a, b);
 	}
 	
 	/***********************************************************************
@@ -105,9 +107,9 @@ public class Tier {
 		Objects.requireNonNull(header);
 		this.header = header;
 	}
-	public TierHeader getHeader() { return header; }
+	public TierHeader getHeader() { return new TierHeader(header.name(), header.color()); }
 	
-	public ElementCollection getElements() { return elements; }
+	public TierElementList getElements() { return new TierElementList(elements); }
 
 
 	/***********************************************************************
@@ -130,18 +132,13 @@ public class Tier {
 		Tier other = (Tier) obj;
 		return Objects.equals(elements, other.elements) && Objects.equals(header, other.header);
 	}
-
+	
 	@Override
 	/**
 	 * Returns the {@link Tier} as {@link String}
 	 * 
 	 * Format:
-	 * 	"header name:
-	 * 	[
-	 * 		element1,
-	 * 		element2,
-	 * 		...		
-	 * 	]".
+	 * 	"header name: [ element1, element2, ... ]"
 	 * 
 	 * @return {@link String}
 	 */
@@ -149,4 +146,47 @@ public class Tier {
 		 return getHeader().name() + ":" + System.lineSeparator() 
 		 + getElements().toString();
 	}
+	
+	/**
+	 * Returns the {@link Tier} as {@link String} with the specified {@link TierStringFormat}
+	 * 
+	 * Format {@link TierStringFormat#EXTENDED}:
+	 * 	"header name:
+	 * 	[
+	 * 		element1,
+	 * 		element2,
+	 * 		...		
+	 * 	]"
+	 * 
+	 * Format {@link TierStringFormat#COMPACT}:
+	 * 	"header name: [ element1, element2, ... ]"
+	 * 
+	 * @return {@link String}
+	 */
+	public String toString(TierStringFormat format) {
+		var sb = new StringBuilder();
+		sb.append(getHeader().name() + ":" + System.lineSeparator());
+		switch (format) {
+			case EXTENDED: {
+				sb.append("[");
+				sb.append(System.lineSeparator());
+				for (TierElement e : elements) {	
+					sb.append("\t");
+					sb.append(e); 
+					if (!elements.getLast().equals(e))
+						sb.append(",");
+					else
+						sb.append(".");
+					sb.append(System.lineSeparator());
+				}
+				sb.append("]");
+				return sb.toString();
+			}
+			default: {
+				sb.append(getElements().toString());
+				return sb.toString();
+			}
+		}
+	}
 }
+

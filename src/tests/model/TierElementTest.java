@@ -8,15 +8,15 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import model.Element;
+import model.TierElement;
 
-class ElementTest {
-	private static Element immortal;
-	private Element whole, noImage, noNameNoImage;
+class TierElementTest {
+	private static TierElement immortal;
+	private TierElement whole, noImage, noNameNoImage;
 
 	@BeforeAll
 	static void setUpBeforeClass() throws Exception {
-		immortal = new Element(true, "immortal", "wheresomniman.jpg");
+		immortal = new TierElement(true, "immortal", "wheresomniman.jpg");
 	}
 
 	@AfterAll
@@ -25,9 +25,9 @@ class ElementTest {
 
 	@BeforeEach
 	void setUp() throws Exception {
-		whole = new Element(false, "monkey king", "sunwukong.png");
-		noImage = new Element(false, "makoto yuki");
-		noNameNoImage = new Element(false);
+		whole = new TierElement(false, "monkey king", "sunwukong.png");
+		noImage = new TierElement(false, "makoto yuki");
+		noNameNoImage = new TierElement(false);
 	}
 
 	@AfterEach
@@ -65,15 +65,15 @@ class ElementTest {
 
 	@Test
 	void testSetRanked_trueToFalse() {
-		immortal.changeTo(false);
+		immortal = immortal.changeTo(false);
 		assertFalse(immortal.isRanked());
 		// restore for other tests
-		immortal.changeTo(true);
+		immortal = immortal.changeTo(true);
 	}
 
 	@Test
 	void testSetRanked_falseToTrue() {
-		whole.changeTo(true);
+		whole = whole.changeTo(true);
 		assertTrue(whole.isRanked());
 	}
 
@@ -160,25 +160,25 @@ class ElementTest {
 
 	@Test
 	void testEquals_equalElements() {
-		Element a = new Element(false, "monkey king", "sunwukong.png");
+		TierElement a = new TierElement(false, "monkey king", "sunwukong.png");
 		assertTrue(whole.equals(a));
 	}
 
 	@Test
 	void testEquals_differentName() {
-		Element a = new Element(false, "nezha", "sunwukong.png");
+		TierElement a = new TierElement(false, "nezha", "sunwukong.png");
 		assertFalse(whole.equals(a));
 	}
 
 	@Test
 	void testEquals_differentImagePath() {
-		Element a = new Element(false, "monkey king", "other.png");
+		TierElement a = new TierElement(false, "monkey king", "other.png");
 		assertFalse(whole.equals(a));
 	}
 
 	@Test
 	void testEquals_differentRankedStatus() {
-		Element a = new Element(true, "monkey king", "sunwukong.png");
+		TierElement a = new TierElement(true, "monkey king", "sunwukong.png");
 		assertFalse(whole.equals(a));
 	}
 
@@ -194,8 +194,8 @@ class ElementTest {
 
 	@Test
 	void testEquals_twoDefaultElements() {
-		Element a = new Element(false);
-		Element b = new Element(false);
+		TierElement a = new TierElement(false);
+		TierElement b = new TierElement(false);
 		assertTrue(a.equals(b));
 	}
 
@@ -203,7 +203,7 @@ class ElementTest {
 
 	@Test
 	void testHashCode_equalObjectsSameHash() {
-		Element a = new Element(false, "monkey king", "sunwukong.png");
+		TierElement a = new TierElement(false, "monkey king", "sunwukong.png");
 		assertEquals(whole.hashCode(), a.hashCode());
 	}
 
@@ -222,7 +222,7 @@ class ElementTest {
 
 	@Test
 	void testToString_ranked() {
-		assertEquals(immortal.toString(), "immortal: ranked");
+		assertEquals(immortal.toString(), "immortal");
 	}
 
 	@Test
@@ -237,8 +237,8 @@ class ElementTest {
 
 	@Test
 	void testToString_afterSetRanked() {
-		whole.changeTo(true);
-		assertEquals(whole.toString(), "monkey king: ranked");
+		whole = whole.changeTo(true);
+		assertEquals(whole.toString(), "monkey king");
 	}
 
 	@Test
@@ -251,11 +251,11 @@ class ElementTest {
 
 	@Test
 	void testDefaultNameConstant() {
-		assertEquals(Element.DEFAULT_ELEMENT_NAME, "element");
+		assertEquals(TierElement.DEFAULT_ELEMENT_NAME, "element");
 	}
 
 	@Test
 	void testDefaultImagePathConstant() {
-		assertEquals(Element.DEFAULT_ELEMENT_IMAGE_PATH, "NONE");
+		assertEquals(TierElement.DEFAULT_ELEMENT_IMAGE_PATH, "NONE");
 	}
 }

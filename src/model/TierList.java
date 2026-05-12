@@ -5,13 +5,14 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
+import enums.TierStringFormat;
 import exceptions.ElementNotFoundException;
 import exceptions.TierNotFoundException;
 
 /**
  * A class representing the concept of tier list.
  * 
- * Container of a {@link Map} with keys: {@link TierHeader} and values: {@link ElementCollection}
+ * Container of a {@link Map} with keys: {@link TierHeader} and values: {@link TierElementList}
  * 
  * @author flynnz
  * @version 1.00
@@ -20,7 +21,7 @@ import exceptions.TierNotFoundException;
 public class TierList {
 
 	private String name;
-	private ElementCollection unranked;
+	private TierElementList unranked;
 	private List<Tier> tiers;
 
 	/**
@@ -36,14 +37,14 @@ public class TierList {
 	/**
 	 * Constructs {@link TierList} instance.
 	 * 
-	 * The instance will be constructed with a name and the given {@link ElementCollection} to rank;
+	 * The instance will be constructed with a name and the given {@link TierElementList} to rank;
 	 * It's initial 'ranked' contents will be set to empty.
 	 * 
 	 * @param name the tier list's name
 	 * @param unranked elements to rank
 	 * @throws IllegalArgumentException if name is blank
 	 */
-	public TierList(String name, ElementCollection unranked) {
+	public TierList(String name, TierElementList unranked) {
 		Objects.requireNonNull(name); Objects.requireNonNull(unranked);
 		if (name.isBlank()) throw new IllegalArgumentException("Tierlist name must not be blank");
 		
@@ -55,13 +56,13 @@ public class TierList {
 	/**
 	 * Constructs a {@link TierList} instance.
 	 * 
-	 * The instance will be constructed with the given {@link ElementCollection} to rank;
+	 * The instance will be constructed with the given {@link TierElementList} to rank;
 	 * The name will be set to {@link TierList#DEFAULT_TIERLIST_NAME};
 	 * It's initial 'ranked' contents will be set to empty
 	 * 
 	 * @param unranked elements to rank
 	 */
-	public TierList(ElementCollection unranked) {
+	public TierList(TierElementList unranked) {
 		Objects.requireNonNull(unranked);
 		if (name.isBlank()) throw new IllegalArgumentException();
 		
@@ -75,12 +76,12 @@ public class TierList {
 	 * 
 	 * The name will be set to {@link TierList#DEFAULT_TIERLIST_NAME};
 	 * It's initial 'ranked' contents will be set to empty;
-	 * {@link ElementCollection} to rank will be set to empty
+	 * {@link TierElementList} to rank will be set to empty
 	 * 
 	 */
 	public TierList() {
 		this.name = DEFAULT_TIERLIST_NAME;
-		this.unranked = new ElementCollection();
+		this.unranked = new TierElementList();
 		this.tiers = new ArrayList<>();
 	}
 	
@@ -88,14 +89,14 @@ public class TierList {
 	 * Constructs a {@link TierList} instance.
 	 * 
 	 * The tier list instance will be constructed with the given Lists of headers
-	 * and {@link ElementCollection}s.
+	 * and {@link TierElementList}s.
 	 * 
 	 * @param name the tier list's name
 	 * @param unranked elements to rank
 	 * @param contents contents to put
 	 * @throws IllegalArgumentException if name is blank
 	 */
-	public TierList(String name, ElementCollection unranked, List<Tier> contents) {
+	public TierList(String name, TierElementList unranked, List<Tier> contents) {
 		Objects.requireNonNull(name); Objects.requireNonNull(unranked); 
 		Objects.requireNonNull(contents);	
 
@@ -128,6 +129,7 @@ public class TierList {
 	 * @return @see List#remove(Object)
 	 * @throws TierNotFoundException if @param t is not in the Tierlist
 	 */
+	//TODO: delete?
 	public boolean removeTier(Tier t) throws TierNotFoundException {
 		Objects.requireNonNull(t);
 		checkTierExistence(t);
@@ -135,30 +137,38 @@ public class TierList {
 		return tiers.remove(t);
 	}
 	
-	public Tier removeTier(int i) throws IndexOutOfBoundsException {
+	public Tier removeTier(int i) throws TierNotFoundException  {
+		Tier t = tiers.get(i);
+		checkTierExistence(t);
+		
 		return tiers.remove(i);
 	}
 	
-	public boolean addToUnranked(Element e) {
+	public boolean addToUnranked(TierElement e) {
 		Objects.requireNonNull(e);
 
 		e = e.changeTo(false);
 		return unranked.add(e);
 	}
 	
-	public boolean removeFromUnranked(Element e) throws ElementNotFoundException {
+	public boolean removeFromUnranked(TierElement e) throws ElementNotFoundException {
 		Objects.requireNonNull(e);
 		checkElementExistence(e, unranked);
 		
-		e.changeTo(true);
+		e = e.changeTo(true);
 		return unranked.remove(e);
 	}
 	
-	public Element removeFromUnranked(int i) throws IndexOutOfBoundsException {
+	public TierElement removeFromUnranked(int i) throws ElementNotFoundException {
+		TierElement e = unranked.get(i);
+		checkElementExistence(e, unranked);
+		
+		e = e.changeTo(true);
 		return unranked.remove(i);
 	}
 	
-	public boolean addToTier(Tier to, Element e) throws TierNotFoundException {
+	// TODO: change param Tier to int (index)
+	public boolean addToTier(Tier to, TierElement e) throws TierNotFoundException {
 		Objects.requireNonNull(e); Objects.requireNonNull(to);
 		
 		int idx = checkTierExistence(to);
@@ -166,7 +176,8 @@ public class TierList {
 		return tiers.get(idx).add(e);
 	}
 	
-	public boolean removeFromTier(Tier from, Element e) throws TierNotFoundException, ElementNotFoundException{
+	// TODO: change param Tier to int (index)
+	public boolean removeFromTier(Tier from, TierElement e) throws TierNotFoundException, ElementNotFoundException{
 		Objects.requireNonNull(e); Objects.requireNonNull(from);
 		
 		int idx = checkTierExistence(from);
@@ -175,7 +186,8 @@ public class TierList {
 		return true;
 	}
 	
-	public Element removeFromTier(Tier from, int i) throws TierNotFoundException, IndexOutOfBoundsException {
+	// TODO: change param Tier to int (index)
+	public TierElement removeFromTier(Tier from, int i) throws TierNotFoundException, IndexOutOfBoundsException {
 		Objects.requireNonNull(from);
 		
 		int idx = checkTierExistence(from);
@@ -187,7 +199,8 @@ public class TierList {
 		Collections.swap(tiers, a, b);
 	}
 
-	public void swapTierElements(Tier t, Element a, Element b) throws TierNotFoundException, ElementNotFoundException {
+	// TODO: change param Tier to int (index)
+	public void swapTierElements(Tier t, TierElement a, TierElement b) throws TierNotFoundException, ElementNotFoundException {
 		int idx = checkTierExistence(t);
 		checkElementExistence(a, t.getElements()); 
 		checkElementExistence(b, t.getElements());
@@ -195,7 +208,7 @@ public class TierList {
 		tiers.get(idx).swap(a, b);
 	}
 
-	public void swapUnrankedElements(Element a, Element b) throws ElementNotFoundException {
+	public void swapUnrankedElements(TierElement a, TierElement b) throws ElementNotFoundException {
 		int ai = checkElementExistence(a, unranked), bi = checkElementExistence(b, unranked);
 		
 		Collections.swap(unranked, ai, bi);
@@ -214,7 +227,7 @@ public class TierList {
 		return idx;
 	}
 	
-	private int checkElementExistence(Element e, ElementCollection ec) throws ElementNotFoundException {
+	private int checkElementExistence(TierElement e, TierElementList ec) throws ElementNotFoundException {
 		int idx = ec.indexOf(e);
 		if (idx == -1) throw new ElementNotFoundException();
 		return idx;
@@ -235,16 +248,12 @@ public class TierList {
 		return name;
 	}
 	
-	public void setTierHeader(Tier t, TierHeader th) throws TierNotFoundException {
-		int idx = checkTierExistence(t);
-		
-		tiers.get(idx).setHeader(th);
+	public void setTierHeader(int tierIndex, TierHeader th) throws IndexOutOfBoundsException {
+		tiers.get(tierIndex).setHeader(th);
 	}
 	
-	public void getTierHeader(Tier t) throws TierNotFoundException {
-		int idx = checkTierExistence(t);
-		
-		tiers.get(idx).getHeader();
+	public void getTierHeader(int tierIndex) throws IndexOutOfBoundsException {
+		tiers.get(tierIndex).getHeader();
 	}
 	
 	
@@ -272,13 +281,31 @@ public class TierList {
 
 	@Override
 	public String toString() {
-		StringBuilder sb = new StringBuilder();
+		var sb = new StringBuilder();
 		sb.append(this.name + System.lineSeparator());
 		sb.append(System.lineSeparator());
 		for (Tier t : tiers) {
-			sb.append(t.toString());
-			sb.append(System.lineSeparator());
-			sb.append(System.lineSeparator());
+			if (!t.getElements().isEmpty()) {
+				sb.append(t.toString());
+				sb.append(System.lineSeparator());
+				sb.append(System.lineSeparator());
+			}
+		}
+		
+		sb.append("Unranked:" + System.lineSeparator() + unranked.toString());
+		return sb.toString();
+	}
+	
+	public String toString(TierStringFormat format) {
+		var sb = new StringBuilder();
+		sb.append(this.name + System.lineSeparator());
+		sb.append(System.lineSeparator());
+		for (Tier t : tiers) {
+			if (!t.getElements().isEmpty()) {
+				sb.append(t.toString(format));
+				sb.append(System.lineSeparator());
+				sb.append(System.lineSeparator());
+			}
 		}
 		
 		sb.append("Unranked:" + System.lineSeparator() + unranked.toString());
