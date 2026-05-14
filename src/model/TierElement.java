@@ -12,14 +12,8 @@ import java.util.Objects;
 public class TierElement {
 	private boolean ranked;
 	private String name, imagePath;
-	
-	/**
-	 * The default name is set to "element"
-	 */
+
 	public static final String DEFAULT_ELEMENT_NAME = "element";
-	/**
-	 * The default image path is set to "NONE"
-	 */
 	public static final String DEFAULT_ELEMENT_IMAGE_PATH = "NONE";
 	
 	

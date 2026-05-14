@@ -1,5 +1,6 @@
 package model;
 
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -12,10 +13,8 @@ import exceptions.TierNotFoundException;
 /**
  * A class representing the concept of tier list.
  * 
- * Container of a {@link Map} with keys: {@link TierHeader} and values: {@link TierElementList}
- * 
  * @author flynnz
- * @version 1.00
+ * @version 1.30
  * @since v0.0.0
  */
 public class TierList {
@@ -24,15 +23,9 @@ public class TierList {
 	private TierElementList unranked;
 	private List<Tier> tiers;
 
-	/**
-	 * The default name is set to {@link String} "New Tierlist"
-	 */
 	public static final String DEFAULT_TIERLIST_NAME = "New Tierlist";
 	
-	
-	/***********************************************************************
-	 * 							Constructors
-	 **********************************************************************/
+	//---------------------------------- Ctors ----------------------------------//
 	
 	/**
 	 * Constructs {@link TierList} instance.
@@ -107,159 +100,114 @@ public class TierList {
 		this.tiers = contents;
 	}
 	
-	/***********************************************************************
-	 * 							Class methods
-	 **********************************************************************/
+
+	//---------------------------------- methods ----------------------------------//
 	
-	/**
-	 * Adds a tier to the {@link TierList}.
-	 * 
-	 * @param t tier to add
-	 * @return @see List#add(Object)
-	 */
-	public boolean addTier(Tier t) {
-		Objects.requireNonNull(t);
-		return tiers.add(t);
+	public boolean rank(TierElement e, int tierIndex) throws IllegalArgumentException {
+		if (addToTier(tierIndex, e) && removeFromUnranked(e)) return true;
+		else throw new IllegalArgumentException();
 	}
 	
-	/**
-	 * Removes a tier to the {@link TierList}.
-	 * 
-	 * @param t tier to remove
-	 * @return @see List#remove(Object)
-	 * @throws TierNotFoundException if @param t is not in the Tierlist
-	 */
-	//TODO: delete?
+	public boolean unrank(TierElement e, int tierIndex) throws IllegalArgumentException {
+		checkElementExistenceInTier(e, tierIndex);
+		if (removeFromTier(tierIndex, e) && addToUnranked(e)) return true;
+		else throw new IllegalArgumentException();
+	}
+	
+	public boolean addTier(Tier t) { Objects.requireNonNull(t); return tiers.add(t); }
+	
+	public boolean addToUnranked(TierElement e) { e = e.changeTo(false); return unranked.add(e); }
+	
+	public boolean addToTier(int tierIndex, TierElement e) throws TierNotFoundException {
+		checkTierExistence(tiers.get(tierIndex));
+		return tiers.get(tierIndex).add(e);
+	}
+	
 	public boolean removeTier(Tier t) throws TierNotFoundException {
-		Objects.requireNonNull(t);
 		checkTierExistence(t);
-		
 		return tiers.remove(t);
 	}
 	
-	public Tier removeTier(int i) throws TierNotFoundException  {
-		Tier t = tiers.get(i);
-		checkTierExistence(t);
-		
-		return tiers.remove(i);
-	}
-	
-	public boolean addToUnranked(TierElement e) {
-		Objects.requireNonNull(e);
-
-		e = e.changeTo(false);
-		return unranked.add(e);
+	public Tier removeTier(int tierIndex) throws TierNotFoundException  {
+		checkTierExistence(tiers.get(tierIndex));
+		return tiers.remove(tierIndex);
 	}
 	
 	public boolean removeFromUnranked(TierElement e) throws ElementNotFoundException {
-		Objects.requireNonNull(e);
 		checkElementExistence(e, unranked);
-		
 		e = e.changeTo(true);
 		return unranked.remove(e);
 	}
 	
-	public TierElement removeFromUnranked(int i) throws ElementNotFoundException {
-		TierElement e = unranked.get(i);
-		checkElementExistence(e, unranked);
-		
-		e = e.changeTo(true);
-		return unranked.remove(i);
-	}
-	
-	// TODO: change param Tier to int (index)
-	public boolean addToTier(Tier to, TierElement e) throws TierNotFoundException {
-		Objects.requireNonNull(e); Objects.requireNonNull(to);
-		
-		int idx = checkTierExistence(to);
-		
-		return tiers.get(idx).add(e);
-	}
-	
-	// TODO: change param Tier to int (index)
-	public boolean removeFromTier(Tier from, TierElement e) throws TierNotFoundException, ElementNotFoundException{
-		Objects.requireNonNull(e); Objects.requireNonNull(from);
-		
-		int idx = checkTierExistence(from);
-		
-		if (!tiers.get(idx).remove(e)) throw new ElementNotFoundException();
+	public boolean removeFromTier(int tierIndex, TierElement e) throws TierNotFoundException, ElementNotFoundException{
+		checkTierExistence(tiers.get(tierIndex));
+		if (!tiers.get(tierIndex).remove(e)) throw new ElementNotFoundException();
 		return true;
 	}
 	
-	// TODO: change param Tier to int (index)
-	public TierElement removeFromTier(Tier from, int i) throws TierNotFoundException, IndexOutOfBoundsException {
-		Objects.requireNonNull(from);
-		
-		int idx = checkTierExistence(from);
-		
-		return tiers.get(idx).remove(i);
-	}
-	
-	public void swapTiers(int a, int b) throws IndexOutOfBoundsException {
-		Collections.swap(tiers, a, b);
-	}
+	public void swapTiers(int a, int b) throws IndexOutOfBoundsException { Collections.swap(tiers, a, b); }
 
-	// TODO: change param Tier to int (index)
-	public void swapTierElements(Tier t, TierElement a, TierElement b) throws TierNotFoundException, ElementNotFoundException {
-		int idx = checkTierExistence(t);
-		checkElementExistence(a, t.getElements()); 
-		checkElementExistence(b, t.getElements());
+	public void swapTierElements(int tierIndex, TierElement a, TierElement b) throws TierNotFoundException, ElementNotFoundException {
+		Tier t = tiers.get(tierIndex);
+		checkElementExistenceInTier(a, tierIndex); checkElementExistenceInTier(b, tierIndex);
 		
-		tiers.get(idx).swap(a, b);
+		t.swap(a, b);
 	}
 
 	public void swapUnrankedElements(TierElement a, TierElement b) throws ElementNotFoundException {
 		int ai = checkElementExistence(a, unranked), bi = checkElementExistence(b, unranked);
-		
 		Collections.swap(unranked, ai, bi);
 	}
 	
-	/**
-	 * Checks the presence of a Tier within the TierList
-	 * 
-	 * @param t Tier to check
-	 * @return index of the Tier in the TierList
-	 * @throws TierNotFoundException if no match found
-	 */
 	private int checkTierExistence(Tier t) throws TierNotFoundException {
+		Objects.requireNonNull(t);
 		int idx = tiers.indexOf(t);
 		if (idx == -1) throw new TierNotFoundException();
 		return idx;
 	}
 	
 	private int checkElementExistence(TierElement e, TierElementList ec) throws ElementNotFoundException {
+		Objects.requireNonNull(e); Objects.requireNonNull(ec);
 		int idx = ec.indexOf(e);
 		if (idx == -1) throw new ElementNotFoundException();
 		return idx;
 	}
 	
+	private void checkElementExistenceInTier(TierElement e, int tierIndex) throws ElementNotFoundException, TierNotFoundException {
+		checkTierExistence(tiers.get(tierIndex));
+		checkElementExistence(e, tiers.get(tierIndex).getElements());
+	}
 	
-	/***********************************************************************
-	 * 						Setters and getters
-	 **********************************************************************/
+	public int indexOf(Tier t) { return checkTierExistence(t); }
+	
+	
+	//---------------------------------- setters and getters ----------------------------------//
 
-	public void setName(String name) {
+	public void setTierListName(String name) throws IllegalArgumentException {
 		Objects.requireNonNull(name);
 		if (name.isBlank()) throw new IllegalArgumentException("Tier list name must not be blank");
 		this.name = name;
 	}
 	
-	public String getName() {
-		return name;
+	public void setTierName(int tierIndex, String name) { 
+		setTierHeader(tierIndex, new TierHeader(name, tiers.get(tierIndex).getHeader().color()));
 	}
 	
-	public void setTierHeader(int tierIndex, TierHeader th) throws IndexOutOfBoundsException {
+	public void setTierColor(int tierIndex, Color color) { 
+		setTierHeader(tierIndex, new TierHeader(tiers.get(tierIndex).getHeader().name(), color));
+	}
+	
+	private void setTierHeader(int tierIndex, TierHeader th) throws IndexOutOfBoundsException {
 		tiers.get(tierIndex).setHeader(th);
 	}
+	public String getTierListName() { return name; }
+	public String getTierName(int tierIndex) { return getTierHeader(tierIndex).name(); }
+	public String getTierColor(int tierIndex) { return getTierHeader(tierIndex).name(); }
+	private TierHeader getTierHeader(int tierIndex) { return tiers.get(tierIndex).getHeader(); }
+	public TierElementList getUnranked() { return new TierElementList(unranked); };
 	
-	public void getTierHeader(int tierIndex) throws IndexOutOfBoundsException {
-		tiers.get(tierIndex).getHeader();
-	}
 	
-	
-	/***********************************************************************
-	 * 					hashCode, equals and toString
-	 **********************************************************************/
+	//---------------------------------- hashCode, equals and toString ----------------------------------//
 	
 	@Override
 	public int hashCode() {

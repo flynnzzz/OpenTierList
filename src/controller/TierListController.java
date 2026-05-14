@@ -32,13 +32,13 @@ public interface TierListController {
 	
 	public void addUnranked(TierElement e);
 	
-	public void rank(TierElement e, Tier to);
+	public void rank(TierElement e, int to);
 
-	public void unrank(TierElement e, Tier from);
+	public void unrank(TierElement e, int from);
 	
 	public void swapTiers(int a, int b);
 
-	public void swapElements(Tier t, TierElement a, TierElement b);
+	public void swapElements(int t, TierElement a, TierElement b);
 
 	public void swapUnrankedElements(TierElement a, TierElement b);
 	

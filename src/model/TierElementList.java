@@ -56,22 +56,4 @@ public class TierElementList extends ArrayList<TierElement> {
 		sb.append(" ]");
 		return sb.toString();
 	}
-	/*
-	public String toString() {
-		StringBuilder sb = new StringBuilder();
-		sb.append("[");
-		sb.append(System.lineSeparator());
-		for (TierElement e : this) {	
-			sb.append("\t");
-			sb.append(e); 
-			if (!this.getLast().equals(e))
-				sb.append(",");
-			else
-				sb.append(".");
-			sb.append(System.lineSeparator());
-		}
-		sb.append("]");
-		return sb.toString();
-	}
-	*/
 }

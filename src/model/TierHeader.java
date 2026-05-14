@@ -3,7 +3,7 @@ package model;
 import java.awt.Color;
 
 /**
- * Data class used by the {@link Tier} class
+ * Record class used by the {@link Tier} class
  * 
  * @param name String representing a {@link Tier} header name
  * @param color {@link Color}

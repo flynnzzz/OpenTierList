@@ -29,9 +29,7 @@ public class Tier {
 	private TierHeader header;
 	private TierElementList elements;
 	
-	/***********************************************************************
-	 * 							Constructors
-	 **********************************************************************/
+	//---------------------------------- Ctors ----------------------------------//
 	
 	/**
 	 * Constructs a new {@link Tier} object with the given {@link TierElementList}.
@@ -68,9 +66,7 @@ public class Tier {
 		this.elements = new TierElementList();  
 	}
 	
-	/***********************************************************************
-	 * 							Class methods
-	 **********************************************************************/
+	//---------------------------------- methods  ----------------------------------//
 	
 	public boolean add(TierElement e) {
 		return elements.add(e);
@@ -99,9 +95,8 @@ public class Tier {
 		Collections.swap(elements, a, b);
 	}
 	
-	/***********************************************************************
-	 * 						Setters and getters
-	 **********************************************************************/
+	
+	//---------------------------------- setters and getters ----------------------------------//	
 	
 	public void setHeader(TierHeader header) { 
 		Objects.requireNonNull(header);
@@ -112,9 +107,7 @@ public class Tier {
 	public TierElementList getElements() { return new TierElementList(elements); }
 
 
-	/***********************************************************************
-	 * 					hashCode, equals and toString
-	 **********************************************************************/
+	//---------------------------------- hashCode, equals and toString ----------------------------------//
 	
 	@Override
 	public int hashCode() {
@@ -143,8 +136,7 @@ public class Tier {
 	 * @return {@link String}
 	 */
 	public String toString() {
-		 return getHeader().name() + ":" + System.lineSeparator() 
-		 + getElements().toString();
+		 return toStringCompact();
 	}
 	
 	/**
@@ -164,29 +156,35 @@ public class Tier {
 	 * @return {@link String}
 	 */
 	public String toString(TierStringFormat format) {
+		switch (format) {
+			case EXTENDED: return toStringExtended();
+			default: return toString();
+		}
+	}
+	
+	private String toStringCompact() {
 		var sb = new StringBuilder();
 		sb.append(getHeader().name() + ":" + System.lineSeparator());
-		switch (format) {
-			case EXTENDED: {
-				sb.append("[");
-				sb.append(System.lineSeparator());
-				for (TierElement e : elements) {	
-					sb.append("\t");
-					sb.append(e); 
-					if (!elements.getLast().equals(e))
-						sb.append(",");
-					else
-						sb.append(".");
-					sb.append(System.lineSeparator());
-				}
-				sb.append("]");
-				return sb.toString();
-			}
-			default: {
-				sb.append(getElements().toString());
-				return sb.toString();
-			}
+		sb.append(getElements().toString());
+		return sb.toString();
+	}
+	
+	private String toStringExtended() {
+		var sb = new StringBuilder();
+		sb.append(getHeader().name() + ":" + System.lineSeparator());
+		sb.append("[");
+		sb.append(System.lineSeparator());
+		for (TierElement e : elements) {	
+			sb.append("\t");
+			sb.append(e); 
+			if (!elements.getLast().equals(e))
+				sb.append(",");
+			else
+				sb.append(".");
+			sb.append(System.lineSeparator());
 		}
+		sb.append("]");
+		return sb.toString();
 	}
 }
 

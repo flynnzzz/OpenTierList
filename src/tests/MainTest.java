@@ -24,9 +24,9 @@ public class MainTest {
 			tlc.addTier(a);
 			tlc.addTier(b);
 			tlc.addTier(new Tier());
-			tlc.rank(new TierElement(true, "Goku"), s);
-			tlc.rank(new TierElement(true, "Wukong"), a);
-			tlc.rank(new TierElement(true, "Jinwoo"), a);
+			tlc.rank(new TierElement(true, "Goku"), tl.indexOf(s));
+			tlc.rank(new TierElement(true, "Wukong"), tl.indexOf(a));
+			tlc.rank(new TierElement(true, "Jinwoo"), tl.indexOf(a));
 			IO.println(tl.toString(TierStringFormat.EXTENDED));
 			
 			tlc.swapTiers(0, 1);

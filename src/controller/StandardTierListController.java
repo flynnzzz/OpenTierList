@@ -42,7 +42,7 @@ public class StandardTierListController implements TierListController {
 	@Override
 	public void setTierListName(String name) {
 		try {
-			tl.setName(name);
+			tl.setTierListName(name);
 		}
 		catch(IllegalArgumentException e) {
 			
@@ -80,7 +80,7 @@ public class StandardTierListController implements TierListController {
 	}
 
 	@Override
-	public void rank(TierElement e, Tier to) {
+	public void rank(TierElement e, int to) {
 		try {
 			tl.addToTier(to, e);
 		}
@@ -92,7 +92,7 @@ public class StandardTierListController implements TierListController {
 	// TODO rank and unrank variants with String as second parameter -> rank(Element e, String to)
 
 	@Override
-	public void unrank(TierElement e, Tier from) {
+	public void unrank(TierElement e, int from) {
 		tl.removeFromTier(from, e);
 	}
 	
@@ -103,7 +103,7 @@ public class StandardTierListController implements TierListController {
 	}
 
 	@Override
-	public void swapElements(Tier t, TierElement a, TierElement b) {
+	public void swapElements(int t, TierElement a, TierElement b) {
 		// TODO Auto-generated method stub
 		
 	}
