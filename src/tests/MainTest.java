@@ -4,12 +4,12 @@ import java.awt.Color;
 
 import controller.StandardTierListController;
 import controller.TierListController;
-import enums.TierStringFormat;
 import model.TierElement;
 import model.Tier;
 import model.TierHeader;
 import model.TierList;
 import model.UnrankedElement;
+import model.enums.TierStringFormat;
 
 public class MainTest {
 		public static void main() {

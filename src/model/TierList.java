@@ -6,9 +6,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-import enums.TierStringFormat;
-import exceptions.ElementNotFoundException;
-import exceptions.TierNotFoundException;
+import model.enums.TierStringFormat;
+import model.exceptions.ElementNotFoundException;
+import model.exceptions.TierNotFoundException;
 
 /**
  * A class representing the concept of tier list.

@@ -4,7 +4,7 @@ import java.awt.Color;
 import java.util.Collections;
 import java.util.Objects;
 
-import enums.TierStringFormat;
+import model.enums.TierStringFormat;
 
 /**
  * Class representing the concept of a 'Tier'.
