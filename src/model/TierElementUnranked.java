@@ -1,21 +1,23 @@
 package model;
 
+import static model.enums.TierElementStatus.*;
+
 public class TierElementUnranked extends TierElement {
 	
 	public TierElementUnranked(TierElement e) {
-		super(false, e.getName(), e.getImagePath());
+		super(UNRANKED, e.getName(), e.getImagePath());
 	}
 	
 	public TierElementUnranked(String name, String imagePath) {
-		super(false, name, imagePath);
+		super(UNRANKED, name, imagePath);
 	}
 	
 	public TierElementUnranked(String name) {
-		super(false, name);
+		super(UNRANKED, name);
 	}
 	
 	public TierElementUnranked() {
-		super(false);
+		super(UNRANKED);
 	}
 	
 	/**

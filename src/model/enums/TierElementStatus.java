@@ -2,7 +2,7 @@ package model.enums;
 
 // TODO: change TierElement status from boolean to TierElementStatus
 public enum TierElementStatus {
-	RANKED(true), NOTRANKED(false);
+	RANKED(true), UNRANKED(false);
 	
 	private boolean value;
 	

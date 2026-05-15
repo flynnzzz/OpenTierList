@@ -9,6 +9,7 @@ import model.Tier;
 import model.TierHeader;
 import model.TierList;
 import model.TierElementUnranked;
+import static model.enums.TierElementStatus.*;
 import model.enums.TierStringFormat;
 
 public class MainTest {
@@ -24,9 +25,9 @@ public class MainTest {
 			tlc.addTier(a);
 			tlc.addTier(b);
 			tlc.addTier(new Tier());
-			tlc.rank(new TierElement(true, "Goku"), tl.indexOf(s));
-			tlc.rank(new TierElement(true, "Wukong"), tl.indexOf(a));
-			tlc.rank(new TierElement(true, "Jinwoo"), tl.indexOf(a));
+			tlc.rank(new TierElement(RANKED, "Goku"), tl.indexOf(s));
+			tlc.rank(new TierElement(RANKED, "Wukong"), tl.indexOf(a));
+			tlc.rank(new TierElement(RANKED, "Jinwoo"), tl.indexOf(a));
 			IO.println(tl.toString(TierStringFormat.EXTENDED));
 			
 			tlc.swapTiers(0, 1);

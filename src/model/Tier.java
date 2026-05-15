@@ -13,7 +13,7 @@ import model.exceptions.ElementNotFoundException;
  * Each Tier contains a {@link TierHeader} and a collection of {@link TierElement}
  * 
  * @author flynnz
- * @version 1.00
+ * @version 1.30
  * @since v0.0.0
  */
 public class Tier {
@@ -105,14 +105,23 @@ public class Tier {
 	
 	//---------------------------------- setters and getters ----------------------------------//	
 	
+	public void setName(String name) throws IllegalArgumentException {
+		Objects.requireNonNull(name);
+		if (name.isBlank()) throw new IllegalArgumentException();
+		setHeader(new TierHeader(name, this.header.color()));
+	}
 	
-	// TODO: make set/getHeader private and implement set/getName and Color
-	public void setHeader(TierHeader header) { 
+	public void setColor(Color color) throws IllegalArgumentException {
+		Objects.requireNonNull(color);
+		setHeader(new TierHeader(this.header.name(), color));
+	}
+	
+	private void setHeader(TierHeader header) { 
 		Objects.requireNonNull(header);
 		this.header = header;
 	}
-	public TierHeader getHeader() { return new TierHeader(header.name(), header.color()); }
 	
+	public TierHeader getHeader() { return new TierHeader(this.header.name(), this.header.color()); }
 	public TierElementList getElements() { return new TierElementList(elements); }
 
 
