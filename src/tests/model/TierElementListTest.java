@@ -1,6 +1,7 @@
 package tests.model;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static model.enums.TierElementStatus.*;
 
 import java.util.List;
 
@@ -20,9 +21,9 @@ class TierElementListTest {
 	@BeforeAll
 	static void setUpBeforeClass() throws Exception {
 		emptyCtor = new TierElementList();
-		TierElement t1 = new TierElement(true, "Kuririn"),
-				t2 = new TierElement(false, "Furiza"),
-				t3 = new TierElement(false, "Bejeeta");
+		TierElement t1 = new TierElement(RANKED, "Kuririn"),
+				t2 = new TierElement(UNRANKED, "Furiza"),
+				t3 = new TierElement(UNRANKED, "Bejeeta");
 		collectionCtor = new TierElementList(List.of(t1, t2, t3));
 	}
 
@@ -34,9 +35,9 @@ class TierElementListTest {
 
 	@BeforeEach
 	void setUp() throws Exception {
-		TierElement t1 = new TierElement(true, "Kuririn"),
-				t2 = new TierElement(false, "Furiza"),
-				t3 = new TierElement(false, "Bejeeta");
+		TierElement t1 = new TierElement(RANKED, "Kuririn"),
+				t2 = new TierElement(UNRANKED, "Furiza"),
+				t3 = new TierElement(UNRANKED, "Bejeeta");
 		elements = new TierElementList();
 		elements.add(t1);
 		elements.add(t2);

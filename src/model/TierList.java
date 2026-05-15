@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
+import static model.enums.TierElementStatus.*;
 import model.enums.TierStringFormat;
 import model.exceptions.ElementNotFoundException;
 import model.exceptions.TierNotFoundException;
@@ -116,7 +117,7 @@ public class TierList {
 	
 	public boolean addTier(Tier t) { Objects.requireNonNull(t); return tiers.add(t); }
 	
-	public boolean addToUnranked(TierElement e) { e = e.changeTo(false); return unranked.add(e); }
+	public boolean addToUnranked(TierElement e) { e = e.changeTo(UNRANKED); return unranked.add(e); }
 	
 	public boolean addToTier(int tierIndex, TierElement e) throws TierNotFoundException {
 		checkTierExistence(tiers.get(tierIndex));
@@ -135,7 +136,7 @@ public class TierList {
 	
 	public boolean removeFromUnranked(TierElement e) throws ElementNotFoundException {
 		checkElementExistence(e, unranked);
-		e = e.changeTo(true);
+		e = e.changeTo(RANKED);
 		return unranked.remove(e);
 	}
 	
@@ -198,7 +199,8 @@ public class TierList {
 	}
 	
 	private void setTierHeader(int tierIndex, TierHeader th) throws IndexOutOfBoundsException {
-		tiers.get(tierIndex).setHeader(th);
+		tiers.get(tierIndex).setName(th.name());
+		tiers.get(tierIndex).setColor(th.color());
 	}
 	public String getTierListName() { return name; }
 	public String getTierName(int tierIndex) { return getTierHeader(tierIndex).name(); }
