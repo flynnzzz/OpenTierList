@@ -34,11 +34,7 @@ public class TierElementList extends ArrayList<TierElement> {
 	 * Returns the {@link TierElementList} as {@link String}
 	 * 
 	 * Format:
-	 * 	[
-	 * 		element1,
-	 * 		element2,
-	 * 		...		
-	 * 	]".
+	 * 	[ element1, element2, ...]".
 	 * 
 	 * @return {@link String}
 	 */

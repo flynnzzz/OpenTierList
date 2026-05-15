@@ -8,7 +8,7 @@ import model.TierElement;
 import model.Tier;
 import model.TierHeader;
 import model.TierList;
-import model.UnrankedElement;
+import model.TierElementUnranked;
 import model.enums.TierStringFormat;
 
 public class MainTest {
@@ -31,8 +31,8 @@ public class MainTest {
 			
 			tlc.swapTiers(0, 1);
 			tlc.addTier(new Tier(new TierHeader("S", Color.ORANGE)));
-			tlc.addUnranked(new UnrankedElement("Ayanokoji"));
-			tlc.addUnranked(new UnrankedElement("Ringo Star"));
+			tlc.addUnranked(new TierElementUnranked("Ayanokoji"));
+			tlc.addUnranked(new TierElementUnranked("Ringo Star"));
 			
 			IO.println(tl);
 		}

@@ -1,20 +1,20 @@
 package model;
 
-public class RankedElement extends TierElement {
+public class TierElementRanked extends TierElement {
 	
-	public RankedElement(TierElement e) {
+	public TierElementRanked(TierElement e) {
 		super(true, e.getName(), e.getImagePath());
 	}
 	
-	public RankedElement(String name, String imagePath) {
+	public TierElementRanked(String name, String imagePath) {
 		super(true, name, imagePath);
 	}
 	
-	public RankedElement(String name) {
+	public TierElementRanked(String name) {
 		super(true, name);
 	}
 	
-	public RankedElement() {
+	public TierElementRanked() {
 		super(true);
 	}
 	

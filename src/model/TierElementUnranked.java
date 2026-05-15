@@ -1,20 +1,20 @@
 package model;
 
-public class UnrankedElement extends TierElement {
+public class TierElementUnranked extends TierElement {
 	
-	public UnrankedElement(TierElement e) {
+	public TierElementUnranked(TierElement e) {
 		super(false, e.getName(), e.getImagePath());
 	}
 	
-	public UnrankedElement(String name, String imagePath) {
+	public TierElementUnranked(String name, String imagePath) {
 		super(false, name, imagePath);
 	}
 	
-	public UnrankedElement(String name) {
+	public TierElementUnranked(String name) {
 		super(false, name);
 	}
 	
-	public UnrankedElement() {
+	public TierElementUnranked() {
 		super(false);
 	}
 	

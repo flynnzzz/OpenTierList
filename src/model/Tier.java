@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.Objects;
 
 import model.enums.TierStringFormat;
+import model.exceptions.ElementNotFoundException;
 
 /**
  * Class representing the concept of a 'Tier'.
@@ -17,13 +18,7 @@ import model.enums.TierStringFormat;
  */
 public class Tier {
 	
-	/**
-	 * The default name is set to {@link String} "New Tier"
-	 */
 	public static final String DEFAULT_TIER_NAME = "New Tier";
-	/**
-	 * The default color is set to {@link Color#gray}
-	 */
 	public static final Color DEFAULT_TIER_COLOR = Color.gray;
 	
 	private TierHeader header;
@@ -68,16 +63,31 @@ public class Tier {
 	
 	//---------------------------------- methods  ----------------------------------//
 	
-	public boolean add(TierElement e) {
-		return elements.add(e);
+	public boolean add(TierElement e) throws IllegalArgumentException {
+		if (elements.contains(e)) throw new IllegalArgumentException("Tier already contains this element: " + e);
+		else return elements.add(e);
 	}
 	
-	public TierElement add(TierElement e, int i) throws IndexOutOfBoundsException {
-		return elements.set(i, e);
+	public TierElement moveTo(int to, TierElement e) throws IndexOutOfBoundsException, ElementNotFoundException {
+		if (!elements.contains(e)) throw new ElementNotFoundException();
+		
+		if (to < elements.indexOf(e)) {
+			for (int i = elements.indexOf(e); i > to; i--) {
+				elements.set(i, elements.get(i - 1));
+			}
+		}
+		else if (to > elements.indexOf(e)) {
+			for (int i = elements.indexOf(e); i < to; i++) {
+				elements.set(i, elements.get(i + 1));
+			}
+		}
+		
+		return elements.set(to, e);
 	}
 	
-	public boolean remove(TierElement e) {
-		return elements.remove(e);
+	public boolean remove(TierElement e) throws ElementNotFoundException {
+		if (!elements.remove(e)) throw new ElementNotFoundException();
+		else return true;
 	}
 	
 	public TierElement remove(int i) throws IndexOutOfBoundsException {
@@ -85,19 +95,18 @@ public class Tier {
 	}
 	
 	public void swap(TierElement a, TierElement b) throws IndexOutOfBoundsException {
-		int ia = elements.indexOf(a),
-			ib = elements.indexOf(b);
-		
-		Collections.swap(elements, ia, ib);
+		swap(elements.indexOf(a), elements.indexOf(b));
 	}
 	
-	public void swap(int a, int b) throws IndexOutOfBoundsException {
+	private void swap(int a, int b) throws IndexOutOfBoundsException {
 		Collections.swap(elements, a, b);
 	}
 	
 	
 	//---------------------------------- setters and getters ----------------------------------//	
 	
+	
+	// TODO: make set/getHeader private and implement set/getName and Color
 	public void setHeader(TierHeader header) { 
 		Objects.requireNonNull(header);
 		this.header = header;

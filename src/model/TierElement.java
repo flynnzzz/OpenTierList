@@ -94,9 +94,9 @@ public class TierElement {
 	 */
 	public TierElement changeTo(boolean ranked) { 
 		if (ranked)
-			return new RankedElement(this);
+			return new TierElementRanked(this);
 		else
-			return new UnrankedElement(this);
+			return new TierElementUnranked(this);
 	}
 	
 	/**
