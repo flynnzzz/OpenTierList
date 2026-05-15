@@ -12,10 +12,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import model.TierElementRanked;
+import model.TierElementUnranked;
 import model.Tier;
 import model.TierElement;
 import model.TierElementList;
 import model.TierHeader;
+import model.exceptions.ElementNotFoundException;
 
 class TierTest {
 	private static Tier emptyCtor, fullCtor, onlyHeaderCtor;
@@ -25,8 +27,8 @@ class TierTest {
 	static void setUpBeforeClass() throws Exception {
 		TierHeader header = new TierHeader("S", Color.RED);
 		TierElementList elements = new TierElementList(List.of(new TierElementRanked(),
-				new TierElementRanked(),
-				new TierElementRanked()));
+								   new TierElementRanked(),
+								   new TierElementRanked()));
 		emptyCtor = new Tier();
 		onlyHeaderCtor = new Tier(header);
 		fullCtor = new Tier(header, elements);
@@ -57,8 +59,8 @@ class TierTest {
 	@Test
 	void testCtors() {
 		TierElementList elements = new TierElementList(List.of(new TierElementRanked(),
-				new TierElementRanked(),
-				new TierElementRanked()));
+								   new TierElementRanked(),
+								   new TierElementRanked()));
 		assertEquals(emptyCtor.getHeader(), new TierHeader(Tier.DEFAULT_TIER_NAME, Tier.DEFAULT_TIER_COLOR));
 		assertEquals(emptyCtor.getElements(), new TierElementList() );
 		assertEquals(onlyHeaderCtor.getHeader(), new TierHeader("S", Color.RED));
@@ -79,8 +81,8 @@ class TierTest {
 	@Test
 	void testMoveThrows() {
 		TierElement e1 = new TierElementRanked("Jumbe"),
-				e2 = new TierElementRanked("Nomi"), 
-				e3 = new TierElementRanked("Breek");
+					e2 = new TierElementRanked("Nomi"), 
+					e3 = new TierElementRanked("Breek");
 		
 		tier.moveTo(2, e1);
 		assertEquals(tier.getElements().size(), 3);
@@ -121,11 +123,11 @@ class TierTest {
 	@Test
 	void testMoveBackwards() {
 		TierElement e1 = new TierElementRanked("Jumbe"),
-				e2 = new TierElementRanked("Nomi"), 
-				e3 = new TierElementRanked("Breek"),
-				e4 = new TierElementRanked("Lyffu"), 
-				e5 = new TierElementRanked("Ruben"), 
-				e6 = new TierElementRanked("Chipper");
+					e2 = new TierElementRanked("Nomi"), 
+					e3 = new TierElementRanked("Breek"),
+					e4 = new TierElementRanked("Lyffu"), 
+					e5 = new TierElementRanked("Ruben"), 
+					e6 = new TierElementRanked("Chipper");
 		
 		tier.add(e4); tier.add(e5); tier.add(e6);
 		
@@ -142,6 +144,20 @@ class TierTest {
 		assertEquals(tier.getElements().get(5), e4);
 		assertEquals(tier.getElements().get(4), e3);
 		assertEquals(tier.getElements().get(3), e5);
+	}
+	
+	@Test
+	
+	void testRemove() {
+		TierElement e1 = new TierElementRanked("Jumbe"),
+					e2 = new TierElementRanked("Nomi"), 
+					e3 = new TierElementRanked("Breek");
+		
+		assertEquals(tier.remove(0), e1);
+		assertTrue(tier.remove(e2));
+		assertThrows(ElementNotFoundException.class, () -> tier.remove(e1));
+		assertThrows(ElementNotFoundException.class, () -> tier.remove(new TierElementRanked()));
+		assertThrows(IndexOutOfBoundsException.class, () -> tier.remove(10));
 	}
 
 }
