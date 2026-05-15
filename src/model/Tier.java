@@ -22,20 +22,19 @@ public class Tier {
 	public static final Color DEFAULT_TIER_COLOR = Color.gray;
 	
 	private TierHeader header;
-	private TierElementList elements;
+	private ListTierElement elements;
 	
 	//---------------------------------- Ctors ----------------------------------//
 	
 	/**
-	 * Constructs a new {@link Tier} object with the given {@link TierElementList}.
+	 * Constructs a new {@link Tier} object with the given {@link ListTierElement}.
 	 * 
 	 * @param header {@link TierHeader} 
 	 * @param elements collection to add
 	 * @throws IllegalArgumentException if @param ranked is empty
 	 */
-	public Tier(TierHeader header, TierElementList elements) {
+	public Tier(TierHeader header, ListTierElement elements) {
 		Objects.requireNonNull(header); Objects.requireNonNull(elements);
-		if (elements.isEmpty()) throw new IllegalArgumentException();
 		
 		this.header = header;
 		this.elements = elements;
@@ -47,18 +46,14 @@ public class Tier {
 	 * @param th {@link TierHeader}
 	 */
 	public Tier(TierHeader header) { 
-		Objects.requireNonNull(header);
-
-		this.header = header;
-		this.elements = new TierElementList();
+		this(header, new ListTierElement());
 	}
 	
 	/**
 	 * Constructs a new empty {@link Tier} object
 	 */
 	public Tier() { 
-		this.header = new TierHeader(DEFAULT_TIER_NAME, DEFAULT_TIER_COLOR);
-		this.elements = new TierElementList();  
+		this(new TierHeader(DEFAULT_TIER_NAME, DEFAULT_TIER_COLOR));
 	}
 	
 	//---------------------------------- methods  ----------------------------------//
@@ -122,7 +117,7 @@ public class Tier {
 	}
 	
 	public TierHeader getHeader() { return new TierHeader(this.header.name(), this.header.color()); }
-	public TierElementList getElements() { return new TierElementList(elements); }
+	public ListTierElement getElements() { return new ListTierElement(elements); }
 
 
 	//---------------------------------- hashCode, equals and toString ----------------------------------//

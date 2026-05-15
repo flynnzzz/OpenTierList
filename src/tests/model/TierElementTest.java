@@ -41,20 +41,17 @@ class TierElementTest {
 	@Test
 	void testConstructors() {
 
-		// -- status --
 		assertTrue(immortal.status().value());
 		assertFalse(whole.status().value());
 		assertFalse(noImage.status().value());
 		assertFalse(noNameNoImage.status().value());
 
-		// -- names --
 		assertEquals(immortal.getName(), "immortal");
 		assertEquals(whole.getName(), "monkey king");
 		assertEquals(noImage.getName(), "makoto yuki");
 		assertEquals(noNameNoImage.getName(), "element");
 		assertNotEquals(noNameNoImage.getName(), "some name");
 
-		// -- imagePaths --
 		assertEquals(immortal.getImagePath(), "wheresomniman.jpg");
 		assertEquals(whole.getImagePath(), "sunwukong.png");
 		assertEquals(noImage.getImagePath(), "NONE");
@@ -62,13 +59,11 @@ class TierElementTest {
 		assertNotEquals(noNameNoImage.getImagePath(), "some path");
 	}
 
-	// --- setRanked ---
 
 	@Test
 	void testSetRanked_trueToFalse() {
 		immortal = immortal.changeTo(UNRANKED);
 		assertFalse(immortal.status().value());
-		// restore for other tests
 		immortal = immortal.changeTo(RANKED);
 	}
 
@@ -84,7 +79,6 @@ class TierElementTest {
 		assertFalse(whole.status().value());
 	}
 
-	// --- setName ---
 
 	@Test
 	void testSetName_normal() {
@@ -122,8 +116,6 @@ class TierElementTest {
 		assertEquals(whole.getName(), "second");
 	}
 
-	// --- setImagePath ---
-
 	@Test
 	void testSetImagePath_normal() {
 		noImage.setImagePath("newimage.png");
@@ -151,8 +143,6 @@ class TierElementTest {
 		whole.setImagePath("second.png");
 		assertEquals(whole.getImagePath(), "second.png");
 	}
-
-	// --- equals ---
 
 	@Test
 	void testEquals_sameObject() {
@@ -200,8 +190,6 @@ class TierElementTest {
 		assertTrue(a.equals(b));
 	}
 
-	// --- hashCode ---
-
 	@Test
 	void testHashCode_equalObjectsSameHash() {
 		TierElement a = new TierElement(UNRANKED, "monkey king", "sunwukong.png");
@@ -218,8 +206,6 @@ class TierElementTest {
 		// Not guaranteed by contract, but expected for distinct elements
 		assertNotEquals(whole.hashCode(), noImage.hashCode());
 	}
-
-	// --- toString ---
 
 	@Test
 	void testToString_ranked() {
@@ -247,8 +233,6 @@ class TierElementTest {
 		whole.setName("pigsy");
 		assertEquals(whole.toString(), "pigsy: not ranked");
 	}
-
-	// --- constants ---
 
 	@Test
 	void testDefaultNameConstant() {

@@ -21,7 +21,7 @@ import model.exceptions.TierNotFoundException;
 public class TierList {
 
 	private String name;
-	private TierElementList unranked;
+	private ListTierElement unranked;
 	private List<Tier> tiers;
 
 	public static final String DEFAULT_TIERLIST_NAME = "New Tierlist";
@@ -29,40 +29,63 @@ public class TierList {
 	//---------------------------------- Ctors ----------------------------------//
 	
 	/**
+	 * Constructs a {@link TierList} instance.
+	 * 
+	 * The tier list instance will be constructed with the given Lists of headers
+	 * and {@link ListTierElement}s.
+	 * 
+	 * @param name the tier list's name
+	 * @param unranked elements to rank
+	 * @param contents contents to put
+	 * @throws IllegalArgumentException if name is blank
+	 */
+	public TierList(String name, ListTierElement unranked, List<Tier> contents) {
+		Objects.requireNonNull(name); Objects.requireNonNull(unranked); 
+		Objects.requireNonNull(contents);	
+		if (name.isBlank()) throw new IllegalArgumentException();
+		
+		this.name = name;
+		this.unranked = unranked;
+		this.tiers = contents;
+	}
+	
+	/**
 	 * Constructs {@link TierList} instance.
 	 * 
-	 * The instance will be constructed with a name and the given {@link TierElementList} to rank;
+	 * The instance will be constructed with a name and the given {@link ListTierElement} to rank;
 	 * It's initial 'ranked' contents will be set to empty.
 	 * 
 	 * @param name the tier list's name
 	 * @param unranked elements to rank
 	 * @throws IllegalArgumentException if name is blank
 	 */
-	public TierList(String name, TierElementList unranked) {
-		Objects.requireNonNull(name); Objects.requireNonNull(unranked);
-		if (name.isBlank()) throw new IllegalArgumentException("Tierlist name must not be blank");
-		
-		this.name = name;
-		this.unranked = unranked;
-		this.tiers = new ArrayList<>();
+	public TierList(String name, ListTierElement unranked) {
+		this(name, unranked, new ArrayList<>());
 	}
 	
 	/**
 	 * Constructs a {@link TierList} instance.
 	 * 
-	 * The instance will be constructed with the given {@link TierElementList} to rank;
+	 * The instance will be constructed with the given {@link ListTierElement} to rank;
 	 * The name will be set to {@link TierList#DEFAULT_TIERLIST_NAME};
 	 * It's initial 'ranked' contents will be set to empty
 	 * 
 	 * @param unranked elements to rank
 	 */
-	public TierList(TierElementList unranked) {
-		Objects.requireNonNull(unranked);
-		if (name.isBlank()) throw new IllegalArgumentException();
-		
-		this.name = DEFAULT_TIERLIST_NAME;
-		this.unranked = unranked;
-		this.tiers = new ArrayList<>();
+	public TierList(ListTierElement unranked) {
+		this(DEFAULT_TIERLIST_NAME, unranked);
+	}
+	
+	/**
+	 * Constructs a {@link TierList} instance.
+	 * 
+	 * It's initial 'ranked' contents will be set to empty
+	 * {@link ListTierElement} to rank will be set to empty
+	 * 
+	 * @param name name of the tier list
+	 */
+	public TierList(String name) {
+		this(name, new ListTierElement());
 	}
 	
 	/**
@@ -70,35 +93,11 @@ public class TierList {
 	 * 
 	 * The name will be set to {@link TierList#DEFAULT_TIERLIST_NAME};
 	 * It's initial 'ranked' contents will be set to empty;
-	 * {@link TierElementList} to rank will be set to empty
+	 * {@link ListTierElement} to rank will be set to empty
 	 * 
 	 */
 	public TierList() {
-		this.name = DEFAULT_TIERLIST_NAME;
-		this.unranked = new TierElementList();
-		this.tiers = new ArrayList<>();
-	}
-	
-	/**
-	 * Constructs a {@link TierList} instance.
-	 * 
-	 * The tier list instance will be constructed with the given Lists of headers
-	 * and {@link TierElementList}s.
-	 * 
-	 * @param name the tier list's name
-	 * @param unranked elements to rank
-	 * @param contents contents to put
-	 * @throws IllegalArgumentException if name is blank
-	 */
-	public TierList(String name, TierElementList unranked, List<Tier> contents) {
-		Objects.requireNonNull(name); Objects.requireNonNull(unranked); 
-		Objects.requireNonNull(contents);	
-
-		if (name.isBlank()) throw new IllegalArgumentException();
-		
-		this.name = name;
-		this.unranked = unranked;
-		this.tiers = contents;
+		this(new ListTierElement());
 	}
 	
 
@@ -167,7 +166,7 @@ public class TierList {
 		return idx;
 	}
 	
-	private int checkElementExistence(TierElement e, TierElementList ec) throws ElementNotFoundException {
+	private int checkElementExistence(TierElement e, ListTierElement ec) throws ElementNotFoundException {
 		Objects.requireNonNull(e); Objects.requireNonNull(ec);
 		int idx = ec.indexOf(e);
 		if (idx == -1) throw new ElementNotFoundException();
@@ -180,6 +179,8 @@ public class TierList {
 	}
 	
 	public int indexOf(Tier t) { return checkTierExistence(t); }
+	
+	// TODO: int lenght()
 	
 	
 	//---------------------------------- setters and getters ----------------------------------//
@@ -206,7 +207,7 @@ public class TierList {
 	public String getTierName(int tierIndex) { return getTierHeader(tierIndex).name(); }
 	public String getTierColor(int tierIndex) { return getTierHeader(tierIndex).name(); }
 	private TierHeader getTierHeader(int tierIndex) { return tiers.get(tierIndex).getHeader(); }
-	public TierElementList getUnranked() { return new TierElementList(unranked); };
+	public ListTierElement getUnranked() { return new ListTierElement(unranked); };
 	
 	
 	//---------------------------------- hashCode, equals and toString ----------------------------------//

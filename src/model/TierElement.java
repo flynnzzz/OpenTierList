@@ -53,11 +53,7 @@ public class TierElement {
 	 * @throws IllegalArgumentException if name is blank
 	 */
 	public TierElement(TierElementStatus status,  String name) throws IllegalArgumentException {
-		Objects.requireNonNull(name);
-		if (name.isBlank()) throw new IllegalArgumentException();
-		this.status = status;
-		this.name = name;
-		this.imagePath = DEFAULT_ELEMENT_IMAGE_PATH;
+		this(status, name, DEFAULT_ELEMENT_IMAGE_PATH);
 	}
 	
 	/**
@@ -70,9 +66,7 @@ public class TierElement {
 	 * and the image path will be set to {@link TierElement#DEFAULT_ELEMENT_IMAGE_PATH}
 	 */
 	public TierElement(TierElementStatus status) {
-		this.status = status;
-		this.name = DEFAULT_ELEMENT_NAME;
-		this.imagePath = DEFAULT_ELEMENT_IMAGE_PATH;
+		this(status, DEFAULT_ELEMENT_NAME);
 	}
 	
 	
