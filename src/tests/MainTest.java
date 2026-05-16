@@ -32,9 +32,11 @@ public class MainTest {
 			
 			tlc.swapTiers(0, 1);
 			tlc.addTier(new Tier(new TierHeader("S", Color.ORANGE)));
-			tlc.addUnranked(new TierElementUnranked("Ayanokoji"));
-			tlc.addUnranked(new TierElementUnranked("Ringo Star"));
+			tlc.addToUnranked(new TierElementUnranked("Ayanokoji"));
+			tlc.addToUnranked(new TierElementUnranked("Ringo Star"));
 			
 			IO.println(tl);
+			
+			tlc.addTier(null);
 		}
 }

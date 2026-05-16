@@ -15,7 +15,7 @@ import model.exceptions.TierNotFoundException;
  * A class representing the concept of tier list.
  * 
  * @author flynnz
- * @version 1.30
+ * @version 1.42
  * @since v0.0.0
  */
 public class TierList {
@@ -103,12 +103,12 @@ public class TierList {
 
 	//---------------------------------- methods ----------------------------------//
 	
-	public boolean rank(TierElement e, int tierIndex) throws IllegalArgumentException {
+	public boolean rank(TierElementUnranked e, int tierIndex) throws IllegalArgumentException {
 		if (addToTier(tierIndex, e) && removeFromUnranked(e)) return true;
 		else throw new IllegalArgumentException();
 	}
 	
-	public boolean unrank(TierElement e, int tierIndex) throws IllegalArgumentException {
+	public boolean unrank(TierElementRanked e, int tierIndex) throws IllegalArgumentException {
 		checkElementExistenceInTier(e, tierIndex);
 		if (removeFromTier(tierIndex, e) && addToUnranked(e)) return true;
 		else throw new IllegalArgumentException();
@@ -139,7 +139,9 @@ public class TierList {
 		return unranked.remove(e);
 	}
 	
-	public boolean removeFromTier(int tierIndex, TierElement e) throws TierNotFoundException, ElementNotFoundException{
+	public boolean removeFromTier(int tierIndex, TierElement e) throws TierNotFoundException,
+																	   ElementNotFoundException
+	{
 		checkTierExistence(tiers.get(tierIndex));
 		if (!tiers.get(tierIndex).remove(e)) throw new ElementNotFoundException();
 		return true;
@@ -147,7 +149,9 @@ public class TierList {
 	
 	public void swapTiers(int a, int b) throws IndexOutOfBoundsException { Collections.swap(tiers, a, b); }
 
-	public void swapTierElements(int tierIndex, TierElement a, TierElement b) throws TierNotFoundException, ElementNotFoundException {
+	public void swapTierElements(int tierIndex, TierElement a, TierElement b) 
+												throws TierNotFoundException, ElementNotFoundException 
+	{
 		Tier t = tiers.get(tierIndex);
 		checkElementExistenceInTier(a, tierIndex); checkElementExistenceInTier(b, tierIndex);
 		
@@ -157,6 +161,19 @@ public class TierList {
 	public void swapUnrankedElements(TierElement a, TierElement b) throws ElementNotFoundException {
 		int ai = checkElementExistence(a, unranked), bi = checkElementExistence(b, unranked);
 		Collections.swap(unranked, ai, bi);
+	}
+	
+	public int indexOf(Tier t) { return checkTierExistence(t); }
+	
+	public int size() { return this.tiers.size(); }
+
+	public boolean moveToTier(int tierIndex, TierElement e) throws ElementNotFoundException, 
+																   TierNotFoundException
+	{
+		checkTierExistence(tiers.get(tierIndex));
+		int originalTierIndex = findElement(e);
+		if (tiers.get(originalTierIndex ).remove(e)) return tiers.get(tierIndex).add(e);
+		else return false;
 	}
 	
 	private int checkTierExistence(Tier t) throws TierNotFoundException {
@@ -173,21 +190,28 @@ public class TierList {
 		return idx;
 	}
 	
-	private void checkElementExistenceInTier(TierElement e, int tierIndex) throws ElementNotFoundException, TierNotFoundException {
+	private void checkElementExistenceInTier(TierElement e, int tierIndex) throws ElementNotFoundException,
+																				  TierNotFoundException 
+	{
 		checkTierExistence(tiers.get(tierIndex));
 		checkElementExistence(e, tiers.get(tierIndex).getElements());
 	}
-	
-	public int indexOf(Tier t) { return checkTierExistence(t); }
-	
-	// TODO: int lenght()
-	
+
+	private int findElement(TierElement e) throws ElementNotFoundException {
+		for (Tier tier : tiers) {
+			for (TierElement element : tier.getElements()) {
+				if (e.equals(element)) return tiers.indexOf(tier);
+			}
+		}
+		throw new ElementNotFoundException();
+	}
+
 	
 	//---------------------------------- setters and getters ----------------------------------//
 
 	public void setTierListName(String name) throws IllegalArgumentException {
 		Objects.requireNonNull(name);
-		if (name.isBlank()) throw new IllegalArgumentException("Tier list name must not be blank");
+		if (name.isBlank()) throw new IllegalArgumentException("Tier list's name must not be blank");
 		this.name = name;
 	}
 	

@@ -13,7 +13,7 @@ import model.exceptions.ElementNotFoundException;
  * Each Tier contains a {@link TierHeader} and a collection of {@link TierElement}
  * 
  * @author flynnz
- * @version 1.30
+ * @version 1.34
  * @since v0.0.0
  */
 public class Tier {
@@ -31,10 +31,12 @@ public class Tier {
 	 * 
 	 * @param header {@link TierHeader} 
 	 * @param elements collection to add
-	 * @throws IllegalArgumentException if @param ranked is empty
+	 * @throws IllegalArgumentException if header's name is blank
 	 */
 	public Tier(TierHeader header, ListTierElement elements) {
 		Objects.requireNonNull(header); Objects.requireNonNull(elements);
+		if (header.name().isBlank()) throw new IllegalArgumentException(
+				"TierHeader's name parameter must not be blank");
 		
 		this.header = header;
 		this.elements = elements;
@@ -63,22 +65,9 @@ public class Tier {
 		else return elements.add(e);
 	}
 	
-	public TierElement moveTo(int to, TierElement e) throws IndexOutOfBoundsException, ElementNotFoundException {
-		if (!elements.contains(e)) throw new ElementNotFoundException();
-		
-		if (to < elements.indexOf(e)) {
-			for (int i = elements.indexOf(e); i > to; i--) {
-				elements.set(i, elements.get(i - 1));
-			}
-		}
-		else if (to > elements.indexOf(e)) {
-			for (int i = elements.indexOf(e); i < to; i++) {
-				elements.set(i, elements.get(i + 1));
-			}
-		}
-		
-		return elements.set(to, e);
-	}
+	public TierElement moveTo(int to, TierElement e) throws IndexOutOfBoundsException, 
+															ElementNotFoundException 
+	{ return elements.moveTo(to, e); }
 	
 	public boolean remove(TierElement e) throws ElementNotFoundException {
 		if (!elements.remove(e)) throw new ElementNotFoundException();

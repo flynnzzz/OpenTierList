@@ -10,7 +10,7 @@ import model.TierList;
  * Controller interface for creating and modifying tier lists.
  * 
  * @author flynnz
- * @version 0.00
+ * @version 1.17
  * @since v0.0.0
  */
 public interface TierListController {
@@ -25,20 +25,26 @@ public interface TierListController {
 	}
 	
 	public void setTierListName(String name); 
+
+	public void rank(TierElement e, int to);
+	
+	public void unrank(TierElement e, int from);
 	
 	public void addTier(Tier t);
 	
-	public void removeTier(Tier t);
-	
-	public void addUnranked(TierElement e);
-	
-	public void rank(TierElement e, int to);
+	public void addToUnranked(TierElement e);
 
-	public void unrank(TierElement e, int from);
+	public void addToTier(TierElement e);
+	
+	public void removeTier(Tier t);
+
+	public void removeFromUnranked(TierElement e);
+	
+	public void removeFromTier(int tierIndex, TierElement e);
 	
 	public void swapTiers(int a, int b);
 
-	public void swapElements(int t, TierElement a, TierElement b);
+	public void swapTierElements(int tierIndex, TierElement a, TierElement b);
 
 	public void swapUnrankedElements(TierElement a, TierElement b);
 	

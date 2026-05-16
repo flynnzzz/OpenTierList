@@ -10,55 +10,79 @@ import model.TierList;
  * Main implementation of {@link TierListController}.
  * 
  * @author flynnz
- * @version 0.00
+ * @version 1.67
  * @since v0.0.0
  */
 public class StandardTierListController implements TierListController {
 	
 	private TierList tl;
+	private final static String NPE_ERROR = System.lineSeparator()
+											+ "Aborting operation:"
+											+ System.lineSeparator()
+											+ "\tNullPointerException encountered.";
+	
+	//---------------------------------- Ctors ----------------------------------//
 	
 	/**
-	 * Factory that creates a controller for {@link TierList}.
-	 * 
-	 * Instanciates an empty {@link TierList}
-	 */
-	public StandardTierListController() {
-		this.tl = new TierList();
-	}
-	
-	/**
-	 * Factory that creates a controller for {@link TierList}.
+	 * Constructor that creates a controller for {@link TierList}.
 	 * 
 	 * Instanciates an {@link TierList} with the given parameter
 	 * 
 	 * @param tl parameter to pass 
 	 */
-	public StandardTierListController(TierList tl) {
-		Objects.requireNonNull(tl);
-		this.tl = tl;
-	}
+	public StandardTierListController(TierList tl) { Objects.requireNonNull(tl); this.tl = tl; }
+	
+	/**
+	 * Constructor that creates a controller for {@link TierList}.
+	 * 
+	 * Instanciates an empty {@link TierList}
+	 */
+	public StandardTierListController() { this(new TierList()); }
+	
 
-	// TODO major rework
+	
+	//---------------------------------- methods ----------------------------------//
+	
 	@Override
 	public void setTierListName(String name) {
+		try { tl.setTierListName(name); }
+		catch(IllegalArgumentException e) { }
+	}
+	
+	@Override
+	public void rank(TierElement e, int to) {
+
+	}
+	
+	// TODO rank and unrank variants with String as second parameter -> rank(Element e, String to)
+
+	@Override
+	public void unrank(TierElement e, int from) {
+
+	}
+	
+	@Override
+	public void addTier(Tier t) {
+		try { tl.addTier(t); }
+		catch(NullPointerException npe) { System.err.println(NPE_ERROR); }
+	}
+	
+	@Override
+	public void addToUnranked(TierElement e) {
 		try {
-			tl.setTierListName(name);
+			tl.addToUnranked(e);
 		}
-		catch(IllegalArgumentException e) {
-			
+		catch(NullPointerException npe) {
+			System.err.println("Addition to unranked failed.");
 		}
 	}
 
 	@Override
-	public void addTier(Tier t) {
-		try {
-			tl.addTier(t);
-		}
-		catch(NullPointerException npe) {
-			tl.addTier(new Tier());
-		}
+	public void addToTier(TierElement e) {
+		// TODO Auto-generated method stub
+		
 	}
-
+	
 	@Override
 	public void removeTier(Tier t) {
 		try {
@@ -70,32 +94,16 @@ public class StandardTierListController implements TierListController {
 	}
 
 	@Override
-	public void addUnranked(TierElement e) {
-		try {
-			tl.addToUnranked(e);
-		}
-		catch(NullPointerException npe) {
-			System.err.println("Addition to unranked failed.");
-		}
+	public void removeFromUnranked(TierElement e) {
+		// TODO Auto-generated method stub
+		
 	}
 
 	@Override
-	public void rank(TierElement e, int to) {
-		try {
-			tl.addToTier(to, e);
-		}
-		catch(NullPointerException npe) {
-			System.err.println("Addition to tier failed.");
-		}		
+	public void removeFromTier(int tierIndex, TierElement e) {
+		// TODO Auto-generated method stub
+		
 	}
-	
-	// TODO rank and unrank variants with String as second parameter -> rank(Element e, String to)
-
-	@Override
-	public void unrank(TierElement e, int from) {
-		tl.removeFromTier(from, e);
-	}
-	
 
 	@Override
 	public void swapTiers(int a, int b) {
@@ -103,7 +111,7 @@ public class StandardTierListController implements TierListController {
 	}
 
 	@Override
-	public void swapElements(int t, TierElement a, TierElement b) {
+	public void swapTierElements(int tierIndex, TierElement a, TierElement b) {
 		// TODO Auto-generated method stub
 		
 	}
@@ -113,5 +121,4 @@ public class StandardTierListController implements TierListController {
 		// TODO Auto-generated method stub
 		
 	}
-
 }

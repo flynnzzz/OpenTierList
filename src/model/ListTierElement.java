@@ -3,11 +3,13 @@ package model;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import model.exceptions.ElementNotFoundException;
+
 /**
  * Extension of {@link ArrayList}.
  * 
  * @author flynnz
- * @version 1.00
+ * @version 1.23
  * @since v0.0.0
  */
 
@@ -28,6 +30,25 @@ public class ListTierElement extends ArrayList<TierElement> {
 	 */
 	public ListTierElement() {
 		super();
+	}
+	
+	public TierElement moveTo(int to, TierElement e) throws IndexOutOfBoundsException,
+															ElementNotFoundException 
+	{
+		if (!this.contains(e)) throw new ElementNotFoundException();
+		
+		if (to < this.indexOf(e)) {
+			for (int i = this.indexOf(e); i > to; i--) {
+				this.set(i, this.get(i - 1));
+			}
+		}
+		else if (to > this.indexOf(e)) {
+			for (int i = this.indexOf(e); i < to; i++) {
+				this.set(i, this.get(i + 1));
+			}
+		}
+		
+		return this.set(to, e);
 	}
 	
 	/**

@@ -8,7 +8,7 @@ import model.enums.TierElementStatus;
  * Class representing a single {@link TierList} "entry"
  * 
  * @author flynnz
- * @version 1.20
+ * @version 1.35
  * @since v0.0.0
  */
 public class TierElement {
@@ -60,7 +60,33 @@ public class TierElement {
 	 * Constructs a {@link TierList} entry given the following parameters.
 	 * 
 	 * All parameters must not be null:
-	 * @param status boolean representing state
+	 * @param name the entry's name
+	 * @param path the entry's image path
+	 * 
+	 * @throws IllegalArgumentException either name or path is blank
+	 */
+	public TierElement(String name, String path) throws IllegalArgumentException {
+		this(TierElementStatus.UNRANKED, name, path);
+	}
+	
+	/**
+	 * Constructs a {@link TierList} entry given the following parameters.
+	 * 
+	 * All parameters must not be null:
+	 * @param path the entry's image path
+	 * 
+	 * The element's name will be set to {@link TierElement#DEFAULT_ELEMENT_NAME}
+	 * @throws IllegalArgumentException if path is blank
+	 */
+	public TierElement(String path) throws IllegalArgumentException {
+		this(TierElementStatus.UNRANKED, DEFAULT_ELEMENT_NAME, path);
+	}
+	
+	/**
+	 * Constructs a {@link TierList} entry given the following parameters.
+	 * 
+	 * All parameters must not be null:
+	 * @param status enum representing state
 	 * 
 	 * The element's name will be set to {@link TierElement#DEFAULT_ELEMENT_NAME}
 	 * and the image path will be set to {@link TierElement#DEFAULT_ELEMENT_IMAGE_PATH}
