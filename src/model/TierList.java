@@ -103,15 +103,15 @@ public class TierList {
 
 	//---------------------------------- methods ----------------------------------//
 	
-	public boolean rank(TierElementUnranked e, int tierIndex) throws IllegalArgumentException {
+	public boolean rank(TierElementUnranked e, int tierIndex) throws TierNotFoundException, ElementNotFoundException {
 		if (addToTier(tierIndex, e) && removeFromUnranked(e)) return true;
-		else throw new IllegalArgumentException();
+		else return false;
 	}
 	
-	public boolean unrank(TierElementRanked e, int tierIndex) throws IllegalArgumentException {
+	public boolean unrank(TierElementRanked e, int tierIndex) throws TierNotFoundException, ElementNotFoundException {
 		checkElementExistenceInTier(e, tierIndex);
 		if (removeFromTier(tierIndex, e) && addToUnranked(e)) return true;
-		else throw new IllegalArgumentException();
+		else return false;
 	}
 	
 	public boolean addTier(Tier t) { Objects.requireNonNull(t); return tiers.add(t); }
@@ -179,14 +179,15 @@ public class TierList {
 	private int checkTierExistence(Tier t) throws TierNotFoundException {
 		Objects.requireNonNull(t);
 		int idx = tiers.indexOf(t);
-		if (idx == -1) throw new TierNotFoundException();
+		if (idx == -1) throw new TierNotFoundException("Tier \"" + t + "\" not found");
 		return idx;
 	}
 	
 	private int checkElementExistence(TierElement e, ListTierElement ec) throws ElementNotFoundException {
 		Objects.requireNonNull(e); Objects.requireNonNull(ec);
 		int idx = ec.indexOf(e);
-		if (idx == -1) throw new ElementNotFoundException();
+		if (idx == -1) throw new ElementNotFoundException("Element \"" + e + "\" not found in list \""
+				+ ec + "\"");
 		return idx;
 	}
 	
