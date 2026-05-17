@@ -52,6 +52,15 @@ public class Tier {
 	}
 	
 	/**
+	 * Constructs a new empty {@link Tier} object with given {@link String}.
+	 * 
+	 * @param name tier name
+	 */
+	public Tier(String name) { 
+		this(new TierHeader(name, DEFAULT_TIER_COLOR), new ListTierElement());
+	}
+	
+	/**
 	 * Constructs a new empty {@link Tier} object
 	 */
 	public Tier() { 

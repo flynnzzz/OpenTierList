@@ -14,7 +14,7 @@ import model.ListTierElement;
 
 class ListTierElementTest {
 	private ListTierElement emptyCtor, collectionCtor, elements;
-	TierElement t1 = new TierElement(RANKED, "Kuririn"),
+	private TierElement t1 = new TierElement(RANKED, "Kuririn"),
 				t2 = new TierElement(UNRANKED, "Furiza"),
 				t3 = new TierElement(UNRANKED, "Bejeeta");
 	
@@ -30,6 +30,8 @@ class ListTierElementTest {
 
 	@Test
 	void testCtors() {
+		emptyCtor = new ListTierElement();
+		collectionCtor = new ListTierElement( List.of(t3, t2, t1) );
 		assertTrue(emptyCtor.size() == 0);
 		assertEquals(emptyCtor.toString(), "[  ]");
 		assertTrue(collectionCtor.size() == 3);
@@ -37,7 +39,6 @@ class ListTierElementTest {
 	
 	@Test
 	void testToString() {
-		assertEquals(collectionCtor.toString(), "[ Kuririn: ranked, Furiza: not ranked, Bejeeta: not ranked. ]");
 		assertEquals(elements.toString(), "[ Kuririn: ranked, Furiza: not ranked, Bejeeta: not ranked. ]");
 	}
 

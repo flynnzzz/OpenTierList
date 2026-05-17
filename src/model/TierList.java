@@ -124,17 +124,17 @@ public class TierList {
 	public TierElement addToUnranked(TierElement e) { unranked.add(e); return e.changeTo(UNRANKED); }
 	
 	public boolean addToTier(int tierIndex, TierElement e) throws TierNotFoundException {
-		checkTierExistence(tiers.get(tierIndex));
+		checkTierExistence(tierIndex);
 		return tiers.get(tierIndex).add(e);
 	}
 	
 	public boolean removeTier(Tier t) throws TierNotFoundException {
-		checkTierExistence(t);
+		checkTierExistence(tiers.indexOf(t));
 		return tiers.remove(t);
 	}
 	
 	public Tier removeTier(int tierIndex) throws TierNotFoundException  {
-		checkTierExistence(tiers.get(tierIndex));
+		checkTierExistence(tierIndex);
 		return tiers.remove(tierIndex);
 	}
 	
@@ -147,8 +147,9 @@ public class TierList {
 	public boolean removeFromTier(int tierIndex, TierElement e) throws TierNotFoundException,
 																	   ElementNotFoundException
 	{
-		checkTierExistence(tiers.get(tierIndex));
-		if (!tiers.get(tierIndex).remove(e)) throw new ElementNotFoundException();
+		checkElementExistenceInTier(e, tierIndex);
+		if (!tiers.get(tierIndex).remove(e)) 
+			throw new ElementNotFoundException();
 		return true;
 	}
 	
@@ -157,9 +158,9 @@ public class TierList {
 	public void swapTierElements(int tierIndex, TierElement a, TierElement b) 
 												throws TierNotFoundException, ElementNotFoundException 
 	{
-		Tier t = tiers.get(tierIndex);
 		checkElementExistenceInTier(a, tierIndex); checkElementExistenceInTier(b, tierIndex);
 		
+		Tier t = tiers.get(tierIndex);
 		t.swap(a, b);
 	}
 
@@ -168,39 +169,39 @@ public class TierList {
 		Collections.swap(unranked, ai, bi);
 	}
 	
-	public int indexOf(Tier t) { return checkTierExistence(t); }
+	public int indexOf(Tier t) { return checkTierExistence(tiers.indexOf(t)); }
 	
 	public int size() { return this.tiers.size(); }
 
 	public boolean moveToTier(int tierIndex, TierElement e) throws ElementNotFoundException, 
 																   TierNotFoundException
 	{
-		checkTierExistence(tiers.get(tierIndex));
+		checkTierExistence(tierIndex);
 		int originalTierIndex = findElement(e);
-		if (tiers.get(originalTierIndex ).remove(e)) return tiers.get(tierIndex).add(e);
+		if (tiers.get(originalTierIndex ).remove(e)) 
+			return tiers.get(tierIndex).add(e);
 		else return false;
 	}
 	
-	private int checkTierExistence(Tier t) throws TierNotFoundException {
-		Objects.requireNonNull(t);
-		int idx = tiers.indexOf(t);
-		if (idx == -1) throw new TierNotFoundException("Tier \"" + t + "\" not found");
-		return idx;
+	private int checkTierExistence(int tierIndex) throws TierNotFoundException {
+		if (tierIndex == -1) 
+			throw new TierNotFoundException("Tier at index \"" + tierIndex + "\" not found");
+		else return tierIndex;
 	}
 	
 	private int checkElementExistence(TierElement e, ListTierElement ec) throws ElementNotFoundException {
 		Objects.requireNonNull(e); Objects.requireNonNull(ec);
-		int idx = ec.indexOf(e);
-		if (idx == -1) throw new ElementNotFoundException("Element \"" + e + "\" not found in list \""
-				+ ec + "\"");
-		return idx;
+		int elementIndex = ec.indexOf(e);
+		if (elementIndex == -1) 
+			throw new ElementNotFoundException("Element \"" + e + "\" not found in list \"" + ec + "\"");
+		return elementIndex;
 	}
 	
 	private void checkElementExistenceInTier(TierElement e, int tierIndex) throws ElementNotFoundException,
 																				  TierNotFoundException 
 	{
-		checkTierExistence(tiers.get(tierIndex));
-		checkElementExistence(e, tiers.get(tierIndex).getElements());
+		this.checkTierExistence(tierIndex);
+		this.checkElementExistence(e, tiers.get(tierIndex).getElements());
 	}
 
 	private int findElement(TierElement e) throws ElementNotFoundException {
@@ -217,21 +218,24 @@ public class TierList {
 
 	public void setTierListName(String name) throws IllegalArgumentException {
 		Objects.requireNonNull(name);
-		if (name.isBlank()) throw new IllegalArgumentException("Tier list's name must not be blank");
+		if (name.isBlank()) 
+			throw new IllegalArgumentException("Tier list's name must not be blank");
 		this.name = name;
 	}
 	
-	public void setTierName(int tierIndex, String name) { 
-		setTierHeader(tierIndex, new TierHeader(name, tiers.get(tierIndex).getHeader().color()));
+	public void setTierName(int tierIndex, String name) {
+		var oldColor = tiers.get(tierIndex).getHeader().color();
+		setTierHeader(tierIndex, new TierHeader(name, oldColor));
 	}
 	
 	public void setTierColor(int tierIndex, Color color) { 
-		setTierHeader(tierIndex, new TierHeader(tiers.get(tierIndex).getHeader().name(), color));
+		var oldName = tiers.get(tierIndex).getHeader().name();
+		setTierHeader(tierIndex, new TierHeader(oldName, color));
 	}
 	
-	private void setTierHeader(int tierIndex, TierHeader th) throws IndexOutOfBoundsException {
-		tiers.get(tierIndex).setName(th.name());
-		tiers.get(tierIndex).setColor(th.color());
+	private void setTierHeader(int tierIndex, TierHeader th) throws TierNotFoundException {
+		Tier t = tiers.get(tierIndex);
+		t.setName(th.name()); t.setColor(th.color());
 	}
 	public String getTierListName() { return name; }
 	public String getTierName(int tierIndex) { return getTierHeader(tierIndex).name(); }

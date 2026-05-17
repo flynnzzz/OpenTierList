@@ -19,6 +19,7 @@ import model.TierElementUnranked;
 import model.TierHeader;
 import model.TierList;
 import model.enums.TierElementStatus;
+import model.exceptions.ElementNotFoundException;
 import model.exceptions.TierNotFoundException;
 
 class TierListTest {
@@ -104,7 +105,7 @@ class TierListTest {
 		assertEquals(tierlist.indexOf(extraTiers.get(0)), 5);
 
 		tierlist.removeTier(5);
-		assertThrows(IndexOutOfBoundsException.class ,() -> tierlist.indexOf(extraTiers.get(0)));
+		assertThrows(IndexOutOfBoundsException.class , () -> tierlist.indexOf(extraTiers.get(0)));
 
 		assertThrows(TierNotFoundException.class ,
 				() -> tierlist.removeTier(new Tier(new TierHeader("000", Color.RED))));
@@ -118,11 +119,43 @@ class TierListTest {
 		int initialLenght = tierlist.getUnranked().size();
 		tierlist.addToUnranked(new TierElementUnranked("Sexo"));
 		assertTrue(tierlist.getUnranked().size() == initialLenght + 1);
+		
 		var real = new TierElement("Real");
 		real = tierlist.addToUnranked(real);
 		assertEquals(real.status(), TierElementStatus.UNRANKED);
-		real = tierlist.removeFromUnranked(real);
-		assertEquals(real.status(), TierElementStatus.RANKED);
-	}
+		assertTrue(tierlist.getUnranked().size() == initialLenght + 2);
 
+		real = tierlist.removeFromUnranked(real);
+		assertTrue(tierlist.getUnranked().size() == initialLenght + 1);
+		assertEquals(real.status(), TierElementStatus.RANKED);
+		
+		assertThrows(ElementNotFoundException.class ,
+				() -> tierlist.removeFromUnranked(new TierElement("N/A")));
+		assertThrows(NullPointerException.class ,
+				() -> tierlist.removeFromUnranked(null));
+		assertTrue(tierlist.getUnranked().size() == initialLenght + 1);
+	}
+	
+	@Test
+	void testAddToRemoveFromTier() {
+		var newTier = new Tier("Z");
+		tierlist.addTier(newTier);
+		int initialLenght = newTier.getElements().size(), zTierIndex = tierlist.indexOf(newTier);
+		tierlist.addToTier(zTierIndex, new TierElement("Sexo"));
+		assertTrue(newTier.getElements().size() == initialLenght + 1);
+		
+		var real = new TierElement("Real");
+		tierlist.addToTier(zTierIndex, real);
+		assertTrue(newTier.getElements().size() == initialLenght + 2);
+		
+		tierlist.removeFromTier(zTierIndex, real);
+		assertTrue(newTier.getElements().size() == initialLenght + 1);
+		assertThrows(ElementNotFoundException.class ,
+				() -> tierlist.removeFromTier(zTierIndex, new TierElement("N/A")));
+		assertThrows(NullPointerException.class ,
+				() -> tierlist.removeFromTier(zTierIndex, null));
+		assertTrue(newTier.getElements().size() == initialLenght + 1);
+		assertThrows(TierNotFoundException.class ,
+				() -> tierlist.addToTier(-1, real));
+	}
 }
