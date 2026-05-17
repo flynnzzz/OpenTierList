@@ -14,9 +14,12 @@ import org.junit.jupiter.api.Test;
 
 import model.ListTierElement;
 import model.Tier;
+import model.TierElement;
 import model.TierElementUnranked;
 import model.TierHeader;
 import model.TierList;
+import model.enums.TierElementStatus;
+import model.exceptions.TierNotFoundException;
 
 class TierListTest {
 	private TierList emptyCtor, fullCtor, essentialsCtor, unrankedOnlyCtor, tierlist;
@@ -102,6 +105,24 @@ class TierListTest {
 
 		tierlist.removeTier(5);
 		assertThrows(IndexOutOfBoundsException.class ,() -> tierlist.indexOf(extraTiers.get(0)));
+
+		assertThrows(TierNotFoundException.class ,
+				() -> tierlist.removeTier(new Tier(new TierHeader("000", Color.RED))));
+		
+		assertThrows(TierNotFoundException.class ,
+				() -> tierlist.removeTier(extraTiers.get(1)));
+	}
+	
+	@Test 
+	void testAddToRemoveFromUnranked() {
+		int initialLenght = tierlist.getUnranked().size();
+		tierlist.addToUnranked(new TierElementUnranked("Sexo"));
+		assertTrue(tierlist.getUnranked().size() == initialLenght + 1);
+		var real = new TierElement("Real");
+		real = tierlist.addToUnranked(real);
+		assertEquals(real.status(), TierElementStatus.UNRANKED);
+		real = tierlist.removeFromUnranked(real);
+		assertEquals(real.status(), TierElementStatus.RANKED);
 	}
 
 }

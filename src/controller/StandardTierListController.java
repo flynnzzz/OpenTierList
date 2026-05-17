@@ -1,6 +1,7 @@
 package controller;
 
 import java.util.Objects;
+import java.util.Optional;
 
 import model.TierElement;
 import model.TierElementRanked;
@@ -92,12 +93,13 @@ public class StandardTierListController implements TierListController {
 	}
 	
 	@Override
-	public void addToUnranked(TierElement e) {
-		try { tierList.addToUnranked(e); }
+	public Optional<TierElement> addToUnranked(TierElement e) {
+		try { return Optional.of(tierList.addToUnranked(e)); }
 		catch(NullPointerException | IllegalArgumentException ex) {
 			if (ex instanceof NullPointerException) System.err.println(NPE_ERROR); 
 			else System.err.println(IAE_ERROR + ex.toString());
 		}
+		return Optional.empty();
 	}
 	
 	@Override
@@ -110,12 +112,13 @@ public class StandardTierListController implements TierListController {
 	}
 
 	@Override
-	public void removeFromUnranked(TierElement e) {
-		try { tierList.removeFromUnranked(e); }
+	public Optional<TierElement> removeFromUnranked(TierElement e) {
+		try { return Optional.of(tierList.removeFromUnranked(e)); }
 		catch(NullPointerException | IllegalArgumentException | ElementNotFoundException ex) {
 			if (ex instanceof NullPointerException) System.err.println(NPE_ERROR); 
 			else System.err.println(IAE_ERROR + ex.toString());
 		}
+		return Optional.empty();
 	}
 
 	@Override

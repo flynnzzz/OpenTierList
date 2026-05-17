@@ -104,19 +104,24 @@ public class TierList {
 	//---------------------------------- methods ----------------------------------//
 	
 	public boolean rank(TierElementUnranked e, int tierIndex) throws TierNotFoundException, ElementNotFoundException {
-		if (addToTier(tierIndex, e) && removeFromUnranked(e)) return true;
+		if (addToTier(tierIndex, e) && removeFromUnranked(e).status().value()) return true;
 		else return false;
 	}
 	
 	public boolean unrank(TierElementRanked e, int tierIndex) throws TierNotFoundException, ElementNotFoundException {
 		checkElementExistenceInTier(e, tierIndex);
-		if (removeFromTier(tierIndex, e) && addToUnranked(e)) return true;
+		if (removeFromTier(tierIndex, e) && addToUnranked(e).status().value()) return true;
 		else return false;
 	}
 	
 	public boolean addTier(Tier t) { Objects.requireNonNull(t); return tiers.add(t); }
 	
-	public boolean addToUnranked(TierElement e) { e = e.changeTo(UNRANKED); return unranked.add(e); }
+	/**
+	 * Adds element to the list of unranked elements
+	 * @param e element to add
+	 * @return e with updated status
+	 */
+	public TierElement addToUnranked(TierElement e) { unranked.add(e); return e.changeTo(UNRANKED); }
 	
 	public boolean addToTier(int tierIndex, TierElement e) throws TierNotFoundException {
 		checkTierExistence(tiers.get(tierIndex));
@@ -133,10 +138,10 @@ public class TierList {
 		return tiers.remove(tierIndex);
 	}
 	
-	public boolean removeFromUnranked(TierElement e) throws ElementNotFoundException {
+	public TierElement removeFromUnranked(TierElement e) throws ElementNotFoundException {
 		checkElementExistence(e, unranked);
-		e = e.changeTo(RANKED);
-		return unranked.remove(e);
+		unranked.remove(e);
+		return e.changeTo(RANKED);
 	}
 	
 	public boolean removeFromTier(int tierIndex, TierElement e) throws TierNotFoundException,
