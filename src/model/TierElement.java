@@ -95,6 +95,17 @@ public class TierElement {
 		this(status, DEFAULT_ELEMENT_NAME);
 	}
 	
+	/**
+	 * Constructs a {@link TierList} entry.
+	 * 
+	 * The element's name will be set to {@link TierElement#DEFAULT_ELEMENT_NAME}
+	 * its default status will be set to {@link TierElementStatus#UNRANKED}
+	 * and the image path will be set to {@link TierElement#DEFAULT_ELEMENT_IMAGE_PATH}
+	 */
+	public TierElement() {
+		this(TierElementStatus.UNRANKED, DEFAULT_ELEMENT_NAME);
+	}
+	
 	
 	//---------------------------------- setters and getters ----------------------------------//	
 	
@@ -102,9 +113,8 @@ public class TierElement {
 	
 	public boolean isRanked() { return status.value(); }
 	
-	public TierElement changeTo(TierElementStatus status) { 
-		if (status.equals(TierElementStatus.RANKED)) return new TierElementRanked(this);
-		else return new TierElementUnranked(this);
+	public void changeTo(TierElementStatus status) { 
+		this.status = status;
 	}
 	
 	public void setName(String name) throws IllegalArgumentException { 
@@ -148,12 +158,6 @@ public class TierElement {
 	 */
 	@Override
 	public String toString() {
-		StringBuilder sb = new StringBuilder(); 
-		sb.append(name + ": ");
-		if (status.equals(TierElementStatus.UNRANKED))
-			sb.append("not ");
-		sb.append("ranked");
-
-		return sb.toString();
+		return this.getName();
 	}
 }

@@ -1,11 +1,8 @@
 package controller;
 
 import java.util.Objects;
-import java.util.Optional;
 
 import model.TierElement;
-import model.TierElementRanked;
-import model.TierElementUnranked;
 import model.Tier;
 import model.TierList;
 
@@ -29,17 +26,17 @@ public interface TierListController {
 	
 	public void setTierListName(String name); 
 
-	public void rank(TierElementUnranked e, int to);
+	public void rank(TierElement e, int to);
 	
-	public void unrank(TierElementRanked e, int from);
+	public void unrank(TierElement e, int from);
 	
 	public void addTier(Tier t);
 	
-	public Optional<TierElement> addToUnranked(TierElement e);
+	public void addToUnranked(TierElement e);
 
 	public void removeTier(Tier t);
 
-	public Optional<TierElement> removeFromUnranked(TierElement e);
+	public void removeFromUnranked(TierElement e);
 	
 	public void swapTiers(int a, int b);
 

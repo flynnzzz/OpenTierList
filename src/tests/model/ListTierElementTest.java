@@ -39,7 +39,7 @@ class ListTierElementTest {
 	
 	@Test
 	void testToString() {
-		assertEquals(elements.toString(), "[ Kuririn: ranked, Furiza: not ranked, Bejeeta: not ranked. ]");
+		assertEquals(elements.toString(), "[ Kuririn, Furiza, Bejeeta. ]");
 	}
 
 }

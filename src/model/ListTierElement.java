@@ -32,9 +32,7 @@ public class ListTierElement extends ArrayList<TierElement> {
 		super();
 	}
 	
-	public TierElement moveTo(int to, TierElement e) throws IndexOutOfBoundsException,
-															ElementNotFoundException 
-	{
+	public TierElement moveTo(int to, TierElement e) throws IndexOutOfBoundsException, ElementNotFoundException {
 		if (!this.contains(e)) throw new ElementNotFoundException();
 		
 		if (to < this.indexOf(e)) {

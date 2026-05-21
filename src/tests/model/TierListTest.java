@@ -15,7 +15,6 @@ import org.junit.jupiter.api.Test;
 import model.ListTierElement;
 import model.Tier;
 import model.TierElement;
-import model.TierElementUnranked;
 import model.TierHeader;
 import model.TierList;
 import model.enums.TierElementStatus;
@@ -43,12 +42,12 @@ class TierListTest {
 	void setUp() throws Exception {
 		unranked = new ListTierElement(
 				List.of(
-					new TierElementUnranked("Jack Frost"),
-					new TierElementUnranked("Pyro Jack"),
-					new TierElementUnranked("Decarabia"),
-					new TierElementUnranked("Mokoi"),
-					new TierElementUnranked("Sagi Mitama"),
-					new TierElementUnranked("Shiisa")
+					new TierElement("Jack Frost"),
+					new TierElement("Pyro Jack"),
+					new TierElement("Decarabia"),
+					new TierElement("Mokoi"),
+					new TierElement("Sagi Mitama"),
+					new TierElement("Shiisa")
 				)
 			);
 		tiers = new ArrayList<>(
@@ -133,15 +132,15 @@ class TierListTest {
 	@Test 
 	void testAddToRemoveFromUnranked() {
 		int initialLenght = tierlist.getUnranked().size();
-		tierlist.addToUnranked(new TierElementUnranked("Sexo"));
+		tierlist.addToUnranked(new TierElement("Sexo"));
 		assertTrue(tierlist.getUnranked().size() == initialLenght + 1);
 		
 		var real = new TierElement("Real");
-		real = tierlist.addToUnranked(real);
+		tierlist.addToUnranked(real);
 		assertEquals(real.status(), TierElementStatus.UNRANKED);
 		assertTrue(tierlist.getUnranked().size() == initialLenght + 2);
 
-		real = tierlist.removeFromUnranked(real);
+		tierlist.removeFromUnranked(real);
 		assertTrue(tierlist.getUnranked().size() == initialLenght + 1);
 		assertEquals(real.status(), TierElementStatus.RANKED);
 		
@@ -244,14 +243,14 @@ class TierListTest {
 		tierlist.addToTier(1, unranked.get(3));
 		tierlist.addToTier(2, unranked.get(4));
 		
-		tierlist.moveFromTierToTier(2, 0, unranked.get(4));
+		tierlist.moveFromTierToTier(0, unranked.get(4));
 		
 		assertTrue(tierlist.getTiers().get(2).getElements().isEmpty());
 		assertEquals(tierlist.getTiers().get(0).getElements().size(), 3);
 		
-		tierlist.moveFromTierToTier(0, 2, unranked.get(4));
+		tierlist.moveFromTierToTier(2, unranked.get(4));
 
-		tierlist.moveFromTierToTier(0, 1, unranked.get(0));
+		tierlist.moveFromTierToTier(1, unranked.get(0));
 		
 		assertEquals(tierlist.getTiers().get(0).getElements().size(), 1);
 		assertEquals(tierlist.getTiers().get(0).getElements(), List.of(unranked.get(1)));

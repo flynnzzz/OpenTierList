@@ -74,8 +74,7 @@ public class Tier {
 		else return elements.add(e);
 	}
 	
-	public TierElement moveTo(int to, TierElement e) throws IndexOutOfBoundsException, 
-															ElementNotFoundException 
+	public TierElement moveTo(int to, TierElement e) throws IndexOutOfBoundsException, ElementNotFoundException 
 	{ return elements.moveTo(to, e); }
 	
 	public boolean remove(TierElement e) throws ElementNotFoundException {

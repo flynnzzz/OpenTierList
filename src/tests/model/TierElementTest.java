@@ -62,14 +62,14 @@ class TierElementTest {
 
 	@Test
 	void testSetRanked_trueToFalse() {
-		immortal = immortal.changeTo(UNRANKED);
+		immortal.changeTo(UNRANKED);
 		assertFalse(immortal.status().value());
-		immortal = immortal.changeTo(RANKED);
+		immortal.changeTo(RANKED);
 	}
 
 	@Test
 	void testSetRanked_falseToTrue() {
-		whole = whole.changeTo(RANKED);
+		whole.changeTo(RANKED);
 		assertTrue(whole.status().value());
 	}
 
@@ -214,24 +214,24 @@ class TierElementTest {
 
 	@Test
 	void testToString_notRanked() {
-		assertEquals(whole.toString(), "monkey king: not ranked");
+		assertEquals(whole.toString(), "monkey king");
 	}
 
 	@Test
 	void testToString_defaultElement() {
-		assertEquals(noNameNoImage.toString(), "element: not ranked");
+		assertEquals(noNameNoImage.toString(), "element");
 	}
 
 	@Test
 	void testToString_afterSetRanked() {
-		whole = whole.changeTo(RANKED);
+		whole.changeTo(RANKED);
 		assertEquals(whole.toString(), "monkey king");
 	}
 
 	@Test
 	void testToString_afterSetName() {
 		whole.setName("pigsy");
-		assertEquals(whole.toString(), "pigsy: not ranked");
+		assertEquals(whole.toString(), "pigsy");
 	}
 
 	@Test

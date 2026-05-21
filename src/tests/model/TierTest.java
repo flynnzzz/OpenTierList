@@ -1,6 +1,7 @@
 package tests.model;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static model.enums.TierElementStatus.*;
 
 import java.awt.Color;
 import java.util.List;
@@ -11,7 +12,6 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import model.TierElementRanked;
 import model.Tier;
 import model.TierElement;
 import model.ListTierElement;
@@ -27,15 +27,15 @@ class TierTest {
 	@BeforeAll
 	static void setUpBeforeClass() throws Exception {
 		header = new TierHeader("S", Color.RED);
-		e1 = new TierElementRanked("Jumbe");
-		e2 = new TierElementRanked("Nomi");
-		e3 = new TierElementRanked("Breek");
-		e4 = new TierElementRanked("Lyffu");
-		e5 = new TierElementRanked("Ruben"); 
-		e6 = new TierElementRanked("Chipper");
-		elements = new ListTierElement(List.of(new TierElementRanked(),
-				   new TierElementRanked(),
-				   new TierElementRanked()));
+		e1 = new TierElement(RANKED, "Jumbe");
+		e2 = new TierElement(RANKED, "Nomi");
+		e3 = new TierElement(RANKED, "Breek");
+		e4 = new TierElement(RANKED, "Lyffu");
+		e5 = new TierElement(RANKED, "Ruben"); 
+		e6 = new TierElement(RANKED, "Chipper");
+		elements = new ListTierElement(List.of(new TierElement(RANKED),
+				   new TierElement(RANKED),
+				   new TierElement(RANKED)));
 	}
 
 	@AfterAll
@@ -73,7 +73,7 @@ class TierTest {
 	@Test
 	void testAdd() {
 		assertThrows(IllegalArgumentException.class, () -> tier.add(e1));
-		tier.add(new TierElementRanked());
+		tier.add(new TierElement(RANKED));
 		assertEquals(tier.getElements().size(), 4);
 	}
 	
@@ -94,7 +94,7 @@ class TierTest {
 		assertEquals(tier.getElements().getFirst(), e1);
 		
 		assertThrows(ElementNotFoundException.class, 
-				() -> tier.moveTo(0, new TierElementRanked()));
+				() -> tier.moveTo(0, new TierElement(RANKED)));
 	}
 	
 	@Test
@@ -136,7 +136,7 @@ class TierTest {
 		assertEquals(tier.remove(0), e1);
 		assertTrue(tier.remove(e2));
 		assertThrows(ElementNotFoundException.class, () -> tier.remove(e1));
-		assertThrows(ElementNotFoundException.class, () -> tier.remove(new TierElementRanked()));
+		assertThrows(ElementNotFoundException.class, () -> tier.remove(new TierElement(RANKED)));
 		assertThrows(IndexOutOfBoundsException.class, () -> tier.remove(10));
 	}
 	
@@ -148,7 +148,7 @@ class TierTest {
 		assertEquals(tier.getElements().get(0), e2);
 		assertEquals(tier.getElements().get(1), e1);
 		assertThrows(IndexOutOfBoundsException.class,
-				() -> tier.swap(new TierElementRanked(), e1));
+				() -> tier.swap(new TierElement(RANKED), e1));
 	}
 
 }

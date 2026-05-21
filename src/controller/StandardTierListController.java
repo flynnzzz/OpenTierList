@@ -1,11 +1,8 @@
 package controller;
 
 import java.util.Objects;
-import java.util.Optional;
 
 import model.TierElement;
-import model.TierElementRanked;
-import model.TierElementUnranked;
 import model.Tier;
 import model.TierList;
 import model.exceptions.ElementNotFoundException;
@@ -64,7 +61,7 @@ public class StandardTierListController implements TierListController {
 	
 	// TODO? rank and unrank variants with String as second parameter -> rank(Element e, String to)
 	@Override
-	public void rank(TierElementUnranked e, int to) {
+	public void rank(TierElement e, int to) {
 		try { tierList.rank(e, to); }
 		catch(NullPointerException | IllegalArgumentException |
 				  TierNotFoundException | ElementNotFoundException ex) {
@@ -74,7 +71,7 @@ public class StandardTierListController implements TierListController {
 	}
 
 	@Override
-	public void unrank(TierElementRanked e, int from) {
+	public void unrank(TierElement e, int from) {
 		try { tierList.unrank(e, from); }
 		catch(NullPointerException | IllegalArgumentException |
 				TierNotFoundException | ElementNotFoundException ex) {
@@ -93,18 +90,17 @@ public class StandardTierListController implements TierListController {
 	}
 	
 	@Override
-	public Optional<TierElement> addToUnranked(TierElement e) {
-		try { return Optional.of(tierList.addToUnranked(e)); }
+	public void addToUnranked(TierElement e) {
+		try { tierList.addToUnranked(e); }
 		catch(NullPointerException | IllegalArgumentException ex) {
 			if (ex instanceof NullPointerException) System.err.println(NPE_ERROR); 
 			else System.err.println(IAE_ERROR + ex.toString());
 		}
-		return Optional.empty();
 	}
 	
 	@Override
 	public void removeTier(Tier t) {
-		try { tierList.removeTier(t); }
+		try { tierList.removeTier(t); }  
 		catch(NullPointerException | IllegalArgumentException | TierNotFoundException ex) {
 			if (ex instanceof NullPointerException) System.err.println(NPE_ERROR); 
 			else System.err.println(IAE_ERROR + ex.toString());
@@ -112,13 +108,12 @@ public class StandardTierListController implements TierListController {
 	}
 
 	@Override
-	public Optional<TierElement> removeFromUnranked(TierElement e) {
-		try { return Optional.of(tierList.removeFromUnranked(e)); }
+	public void removeFromUnranked(TierElement e) {
+		try { tierList.removeFromUnranked(e); }
 		catch(NullPointerException | IllegalArgumentException | ElementNotFoundException ex) {
 			if (ex instanceof NullPointerException) System.err.println(NPE_ERROR); 
 			else System.err.println(IAE_ERROR + ex.toString());
 		}
-		return Optional.empty();
 	}
 
 	@Override
