@@ -25,13 +25,22 @@ import model.exceptions.TierNotFoundException;
 class TierListTest {
 	private TierList emptyCtor, fullCtor, essentialsCtor, unrankedOnlyCtor, tierlist;
 	private static String name;
-	private static ListTierElement unranked;
-	private static List<Tier> tiers;
-	private static List<Tier> extraTiers;
+	private ListTierElement unranked;
+	private List<Tier> tiers;
+	private List<Tier> extraTiers;
 	
 	@BeforeAll
 	static void setUpBeforeClass() throws Exception {
 		name = "My Epic Tier List";
+	}
+
+	@AfterAll
+	static void tearDownAfterClass() throws Exception {
+		name = null;
+	}
+
+	@BeforeEach
+	void setUp() throws Exception {
 		unranked = new ListTierElement(
 				List.of(
 					new TierElementUnranked("Jack Frost"),
@@ -59,30 +68,22 @@ class TierListTest {
 						new Tier(new TierHeader("F", Color.MAGENTA))
 					)
 			);
-	}
-
-	@AfterAll
-	static void tearDownAfterClass() throws Exception {
-		name = null;
-		unranked = null;
-		tiers = null;
-	}
-
-	@BeforeEach
-	void setUp() throws Exception {
-		tierlist = new TierList(name, unranked, tiers);
+		tierlist = new TierList(name, unranked, new ArrayList<Tier>(tiers));
 	}
 
 	@AfterEach
 	void tearDown() throws Exception {
 		tierlist = null;
+		unranked = null;
+		tiers = null;
+		extraTiers = null;
 	}
 
 	@Test
 	void testCtors() {
 		emptyCtor = new TierList();
 		assertEquals(emptyCtor.getTierListName(), TierList.DEFAULT_TIERLIST_NAME);
-		assertEquals(emptyCtor.getUnranked(), new ListTierElement());
+		assertEquals(emptyCtor.getUnranked(), List.of());
 		
 		fullCtor = new TierList(name, unranked, tiers);
 		assertEquals(fullCtor.getTierListName(), name);
@@ -94,6 +95,11 @@ class TierListTest {
 
 		unrankedOnlyCtor = new TierList(unranked);
 		assertEquals(unrankedOnlyCtor.getUnranked(), unranked);
+		
+		var nameOnlyCtor = new TierList(name);
+		assertEquals(nameOnlyCtor.getTierListName(), name);
+		assertEquals(nameOnlyCtor.getUnranked(), List.of());
+		
 		
 		assertThrows(IllegalArgumentException.class, () -> new TierList(""));
 		assertThrows(NullPointerException.class, () -> new TierList(null, null));
@@ -112,6 +118,16 @@ class TierListTest {
 		
 		assertThrows(TierNotFoundException.class ,
 				() -> tierlist.removeTier(extraTiers.get(1)));
+
+		tierlist.addTier(extraTiers.get(0));
+		tierlist.removeTier(extraTiers.get(0));
+		assertEquals(tierlist.size(), 5);
+		
+		tierlist.addTier(extraTiers.get(0));
+		tierlist.addTier(extraTiers.get(1));
+		tierlist.addTier(extraTiers.get(0));
+		tierlist.removeTier(extraTiers.get(0));
+		assertEquals(tierlist.indexOf(extraTiers.get(0)), 6);
 	}
 	
 	@Test 
@@ -158,4 +174,94 @@ class TierListTest {
 		assertThrows(TierNotFoundException.class ,
 				() -> tierlist.addToTier(-1, real));
 	}
+	
+	@Test
+	void swapTiersTests() {
+		tierlist.addToTier(0, tierlist.getUnranked().get(0));
+		tierlist.addToTier(1, tierlist.getUnranked().get(1));
+		tierlist.addToTier(2, tierlist.getUnranked().get(2));
+		tierlist.addToTier(3, tierlist.getUnranked().get(3));
+		assertEquals(tierlist.indexOf(tiers.get(0)), 0);
+		tierlist.swapTiers(0, 1);
+		assertEquals(tierlist.indexOf(tiers.get(0)), 1);
+		tierlist.swapTiers(0, 0);
+		assertEquals(tierlist.indexOf(tiers.get(1)), 0);
+		tierlist.swapTiers(0, 1);
+		assertThrows(TierNotFoundException.class, () -> tierlist.swapTiers(0, 100));
+		assertThrows(TierNotFoundException.class, () -> tierlist.swapTiers(-1, 100));
+		assertThrows(TierNotFoundException.class, () -> tierlist.swapTiers(-1, 0));
+	}
+	
+	@Test
+	void swapTierElementsTests() {
+		tierlist.addToTier(0, tierlist.getUnranked().get(0));
+		tierlist.addToTier(0, tierlist.getUnranked().get(1));
+		tierlist.addToTier(1, tierlist.getUnranked().get(1));
+
+		assertEquals(tierlist.getTiers().get(0).getElements().get(0), unranked.get(0));
+		assertEquals(tierlist.getTiers().get(0).getElements().get(1), unranked.get(1));
+
+		tierlist.swapElements(0, unranked.get(0), unranked.get(1));
+		
+		assertEquals(tierlist.getTiers().get(0).getElements().get(0), unranked.get(1));
+		assertEquals(tierlist.getTiers().get(0).getElements().get(1), unranked.get(0));
+
+		tierlist.swapElements(1, unranked.get(1), unranked.get(1));
+		assertEquals(tierlist.getTiers().get(1).getElements().get(0), unranked.get(1));
+
+		assertThrows(ElementNotFoundException.class,
+				() -> tierlist.swapElements(0, new TierElement("foo"), new TierElement("fee")));
+		assertThrows(TierNotFoundException.class, 
+				() -> tierlist.swapElements(-1, new TierElement("foo"), new TierElement("foo")));
+	}
+	
+	@Test
+	void swapUnrankedTierElementsTests() {
+		var unrankedCopy = List.copyOf(unranked);
+		assertEquals(tierlist.getUnranked().get(0), unrankedCopy.get(0));
+		assertEquals(tierlist.getUnranked().get(1), unrankedCopy.get(1));
+
+		tierlist.swapUnranked(unranked.get(0), unranked.get(1));
+		
+		assertEquals(tierlist.getUnranked().get(0), unrankedCopy.get(1));
+		assertEquals(tierlist.getUnranked().get(1), unrankedCopy.get(0));
+
+		tierlist.swapUnranked(unranked.get(1), unranked.get(0));
+		
+		assertEquals(tierlist.getUnranked().get(0), unrankedCopy.get(0));
+		assertEquals(tierlist.getUnranked().get(1), unrankedCopy.get(1));
+		assertThrows(ElementNotFoundException.class,
+				() -> tierlist.swapUnranked(new TierElement("foo"), new TierElement("fee")));
+		assertThrows(ElementNotFoundException.class, 
+				() -> tierlist.swapUnranked(new TierElement("y"), new TierElement("foo")));
+	}
+	
+	@Test
+	void moveToTest() {
+		tierlist.addToTier(0, unranked.get(0));
+		tierlist.addToTier(0, unranked.get(1));
+		tierlist.addToTier(1, unranked.get(2));
+		tierlist.addToTier(1, unranked.get(3));
+		tierlist.addToTier(2, unranked.get(4));
+		
+		tierlist.moveFromTierToTier(2, 0, unranked.get(4));
+		
+		assertTrue(tierlist.getTiers().get(2).getElements().isEmpty());
+		assertEquals(tierlist.getTiers().get(0).getElements().size(), 3);
+		
+		tierlist.moveFromTierToTier(0, 2, unranked.get(4));
+
+		tierlist.moveFromTierToTier(0, 1, unranked.get(0));
+		
+		assertEquals(tierlist.getTiers().get(0).getElements().size(), 1);
+		assertEquals(tierlist.getTiers().get(0).getElements(), List.of(unranked.get(1)));
+		assertEquals(tierlist.getTiers().get(1).getElements().size(), 3);
+		assertEquals(tierlist.getTiers().get(1).getElements(), List.of(unranked.get(2), unranked.get(3), unranked.get(0)));
+	}
+	
+	@Test 
+	void rankTest() {
+		
+	}
+	
 }

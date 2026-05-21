@@ -83,17 +83,13 @@ public class Tier {
 		else return true;
 	}
 	
-	public TierElement remove(int i) throws IndexOutOfBoundsException {
-		return elements.remove(i);
-	}
+	public TierElement remove(int i) throws IndexOutOfBoundsException { return elements.remove(i); }
 	
 	public void swap(TierElement a, TierElement b) throws IndexOutOfBoundsException {
 		swap(elements.indexOf(a), elements.indexOf(b));
 	}
 	
-	private void swap(int a, int b) throws IndexOutOfBoundsException {
-		Collections.swap(elements, a, b);
-	}
+	private void swap(int a, int b) throws IndexOutOfBoundsException { Collections.swap(elements, a, b); }
 	
 	
 	//---------------------------------- setters and getters ----------------------------------//	
@@ -105,14 +101,10 @@ public class Tier {
 	}
 	
 	public void setColor(Color color) throws IllegalArgumentException {
-		Objects.requireNonNull(color);
-		setHeader(new TierHeader(this.header.name(), color));
+		Objects.requireNonNull(color); setHeader(new TierHeader(this.header.name(), color)); 
 	}
 	
-	private void setHeader(TierHeader header) { 
-		Objects.requireNonNull(header);
-		this.header = header;
-	}
+	private void setHeader(TierHeader header) { Objects.requireNonNull(header); this.header = header; }
 	
 	public TierHeader getHeader() { return new TierHeader(this.header.name(), this.header.color()); }
 	public ListTierElement getElements() { return new ListTierElement(elements); }

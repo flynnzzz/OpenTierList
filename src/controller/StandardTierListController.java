@@ -132,7 +132,7 @@ public class StandardTierListController implements TierListController {
 
 	@Override
 	public void swapTierElements(int tierIndex, TierElement a, TierElement b) {
-		try { tierList.swapTierElements(tierIndex, a, b); }
+		try { tierList.swapElements(tierIndex, a, b); }
 		catch(NullPointerException | IllegalArgumentException |
 				TierNotFoundException | ElementNotFoundException ex) {
 			if (ex instanceof NullPointerException) System.err.println(NPE_ERROR); 
@@ -142,7 +142,7 @@ public class StandardTierListController implements TierListController {
 
 	@Override
 	public void swapUnrankedElements(TierElement a, TierElement b) {
-		try { tierList.swapUnrankedElements(a, b); }
+		try { tierList.swapUnranked(a, b); }
 		catch(NullPointerException | IllegalArgumentException | ElementNotFoundException ex) {
 			if (ex instanceof NullPointerException) System.err.println(NPE_ERROR); 
 			else System.err.println(IAE_ERROR + ex.toString());
