@@ -78,8 +78,8 @@ public class TierElement {
 	 * The element's name will be set to {@link TierElement#DEFAULT_ELEMENT_NAME}
 	 * @throws IllegalArgumentException if path is blank
 	 */
-	public TierElement(String path) throws IllegalArgumentException {
-		this(TierElementStatus.UNRANKED, DEFAULT_ELEMENT_NAME, path);
+	public TierElement(String name) throws IllegalArgumentException {
+		this(TierElementStatus.UNRANKED, name, DEFAULT_ELEMENT_IMAGE_PATH);
 	}
 	
 	/**

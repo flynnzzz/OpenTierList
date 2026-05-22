@@ -5,6 +5,7 @@ import java.util.Objects;
 import model.TierElement;
 import model.Tier;
 import model.TierList;
+import model.enums.TierStringFormat;
 import model.exceptions.ElementNotFoundException;
 import model.exceptions.TierNotFoundException;
 
@@ -50,33 +51,57 @@ public class StandardTierListController implements TierListController {
 	
 	//---------------------------------- methods ----------------------------------//
 	
+	//------------------------------ ranking ------------------------------//
+
 	@Override
-	public void setTierListName(String name) {
-		try { tierList.setTierListName(name); }
-		catch(NullPointerException | IllegalArgumentException ex) {
-				if (ex instanceof NullPointerException) System.err.println(NPE_ERROR); 
-				else System.err.println(IAE_ERROR + ex.toString());
-		}
-	}
-	
-	// TODO? rank and unrank variants with String as second parameter -> rank(Element e, String to)
-	@Override
-	public void rank(TierElement e, int to) {
-		try { tierList.rank(e, to); }
+	public void rank(TierElement e, int toTier) {
+		try { tierList.rank(e, toTier); }
 		catch(NullPointerException | IllegalArgumentException |
 				  TierNotFoundException | ElementNotFoundException ex) {
 				if (ex instanceof NullPointerException) System.err.println(NPE_ERROR); 
 				else System.err.println(IAE_ERROR + ex.toString());
 		}
 	}
-
+	
 	@Override
-	public void unrank(TierElement e, int from) {
-		try { tierList.unrank(e, from); }
+	public void rank(int toIndex, TierElement e, int toTier) {
+		try { tierList.rankInsert(toTier, e, toIndex); }
 		catch(NullPointerException | IllegalArgumentException |
 				TierNotFoundException | ElementNotFoundException ex) {
 			if (ex instanceof NullPointerException) System.err.println(NPE_ERROR); 
 			else System.err.println(IAE_ERROR + ex.toString());
+		}
+	}
+	
+	@Override
+	public void unrank(TierElement e, int fromTier) {
+		try { tierList.unrank(e, fromTier); }
+		catch(NullPointerException | IllegalArgumentException |
+				TierNotFoundException | ElementNotFoundException ex) {
+			if (ex instanceof NullPointerException) System.err.println(NPE_ERROR); 
+			else System.err.println(IAE_ERROR + ex.toString());
+		}
+	}
+	
+	@Override
+	public void unrank(int toIndex, TierElement e, int fromTier) {
+		try { tierList.unrankInsert(fromTier, e, toIndex); }
+		catch(NullPointerException | IllegalArgumentException |
+				TierNotFoundException | ElementNotFoundException ex) {
+			if (ex instanceof NullPointerException) System.err.println(NPE_ERROR); 
+			else System.err.println(IAE_ERROR + ex.toString());
+		}
+	}
+
+	
+	//------------------------------ editing ------------------------------//
+	
+	@Override
+	public void setTierListName(String name) {
+		try { tierList.setTierListName(name); }
+		catch(NullPointerException | IllegalArgumentException ex) {
+				if (ex instanceof NullPointerException) System.err.println(NPE_ERROR); 
+				else System.err.println(IAE_ERROR + ex.toString());
 		}
 	}
 	
@@ -116,6 +141,9 @@ public class StandardTierListController implements TierListController {
 		}
 	}
 
+	
+	//------------------------------ swapping ------------------------------//
+
 	@Override
 	public void swapTiers(int a, int b) {
 		try { tierList.swapTiers(a, b); }
@@ -142,5 +170,41 @@ public class StandardTierListController implements TierListController {
 			if (ex instanceof NullPointerException) System.err.println(NPE_ERROR); 
 			else System.err.println(IAE_ERROR + ex.toString());
 		}
+	}
+	
+
+	//------------------------------ moving ------------------------------//
+	
+	@Override
+	public void moveTo(TierElement e, int toTier) {
+		try {
+			tierList.moveFromTierToTier(toTier, e);
+		}
+		catch(NullPointerException | IllegalArgumentException |
+				TierNotFoundException | ElementNotFoundException ex) {
+			if (ex instanceof NullPointerException) System.err.println(NPE_ERROR); 
+			else System.err.println(IAE_ERROR + ex.toString());
+		}
+	}
+	
+	@Override
+	public void moveTo(TierElement e, int toTier, int toIndex) {
+		try {
+			tierList.moveFromTierToTier(toTier, e, toIndex);
+		}
+		catch(NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) {
+			if (ex instanceof NullPointerException) System.err.println(NPE_ERROR); 
+			else System.err.println(IAE_ERROR + ex.toString());
+		}
+	}
+
+	@Override
+	public String toString() {
+		return tierList.toString();
+	}
+
+	@Override
+	public String toString(TierStringFormat format) {
+		return tierList.toString(format);
 	}
 }

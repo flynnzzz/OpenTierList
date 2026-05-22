@@ -5,6 +5,7 @@ import java.util.Objects;
 import model.TierElement;
 import model.Tier;
 import model.TierList;
+import model.enums.TierStringFormat;
 
 /**
  * Controller interface for creating and modifying tier lists.
@@ -26,9 +27,13 @@ public interface TierListController {
 	
 	public void setTierListName(String name); 
 
-	public void rank(TierElement e, int to);
+	public void rank(TierElement e, int toTier);
 	
-	public void unrank(TierElement e, int from);
+	public void rank(int toIndex, TierElement e, int toTier);
+	
+	public void unrank(TierElement e, int fromTier);
+
+	public void unrank(int toIndex, TierElement e, int fromTier);
 	
 	public void addTier(Tier t);
 	
@@ -44,4 +49,11 @@ public interface TierListController {
 
 	public void swapUnrankedElements(TierElement a, TierElement b);
 	
+	public void moveTo(TierElement e, int toTier);
+
+	public void moveTo(TierElement e, int toTier, int toIndex);
+	
+	public String toString();
+
+	public String toString(TierStringFormat format);
 }

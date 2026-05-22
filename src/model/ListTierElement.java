@@ -9,7 +9,7 @@ import model.exceptions.ElementNotFoundException;
  * Extension of {@link ArrayList}.
  * 
  * @author flynnz
- * @version 1.23
+ * @version 1.33
  * @since v0.0.0
  */
 

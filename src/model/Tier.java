@@ -13,7 +13,7 @@ import model.exceptions.ElementNotFoundException;
  * Each Tier contains a {@link TierHeader} and a collection of {@link TierElement}
  * 
  * @author flynnz
- * @version 1.34
+ * @version 1.54
  * @since v0.0.0
  */
 public class Tier {

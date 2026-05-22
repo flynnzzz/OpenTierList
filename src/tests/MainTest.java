@@ -1,40 +1,51 @@
 package tests;
 
-import java.awt.Color;
-import static model.enums.TierElementStatus.*;
+import java.util.ArrayList;
+import java.util.List;
 
-import controller.StandardTierListController;
+
 import controller.TierListController;
+import model.ListTierElement;
 import model.Tier;
 import model.TierElement;
-import model.TierHeader;
 import model.TierList;
+import model.enums.DefaultTier;
 import model.enums.TierStringFormat;
 
 public class MainTest {
 		public static void main() {
-			TierList tl = new TierList();
-			TierListController tlc = new StandardTierListController(tl);
+			var unranked = new ListTierElement();
+			TierElement m, p, s, g, o, a;
+			unranked.add(m = new TierElement("Mookka")); unranked.add(p = new TierElement("Pehkura")); unranked.add(s = new TierElement("Suynoh"));
+			unranked.add(g = new TierElement("Galeena")); unranked.add(o = new TierElement("Okha")); unranked.add(a = new TierElement("Aseeno"));
+			List<Tier> tiers = new ArrayList<>();
+			tiers.add(DefaultTier.S.value()); tiers.add(DefaultTier.A.value()); tiers.add(DefaultTier.B.value()); 
+			tiers.add(DefaultTier.C.value()); tiers.add(DefaultTier.D.value()); tiers.add(DefaultTier.E.value());
 			
-			Tier s = new Tier(new TierHeader("S", Color.ORANGE)),
-				a = new Tier(new TierHeader("A", Color.ORANGE)),
-				b = new Tier(new TierHeader("B", Color.ORANGE));
+			var controller = TierListController.of(new TierList("My Epic Tier List", unranked, tiers));
+
+			controller.rank(unranked.get(0), tiers.indexOf(DefaultTier.S.value()));
+			controller.rank(unranked.get(0), tiers.indexOf(DefaultTier.A.value()));
+			controller.rank(unranked.get(0), tiers.indexOf(DefaultTier.A.value()));
+			controller.rank(unranked.get(0), tiers.indexOf(DefaultTier.A.value()));
 			
-			tlc.addTier(s);
-			tlc.addTier(a);
-			tlc.addTier(b);
-			tlc.addTier(new Tier());
-			tlc.rank(new TierElement(UNRANKED, "Goku"), tl.indexOf(s));
-			tlc.rank(new TierElement(UNRANKED, "Wukong"), tl.indexOf(a));
-			tlc.rank(new TierElement(UNRANKED, "Jinwoo"), tl.indexOf(a));
-			IO.println(tl.toString(TierStringFormat.EXTENDED));
+			IO.println(controller.toString(TierStringFormat.COMPACT));
 			
-			tlc.swapTiers(0, 1);
-			tlc.addTier(new Tier(new TierHeader("S", Color.ORANGE)));
-			tlc.addToUnranked(new TierElement("Ayanokoji"));
-			tlc.addToUnranked(new TierElement("Ringo Star"));
+			controller.moveTo(m, tiers.indexOf(DefaultTier.A.value()), 0);
+			controller.unrank(0, p, tiers.indexOf(DefaultTier.A.value()));
+
+			IO.println(controller.toString(TierStringFormat.COMPACT));
 			
-			IO.println(tl);
+			controller.swapTiers(tiers.indexOf(DefaultTier.A.value()), tiers.indexOf(DefaultTier.S.value()));
+			controller.swapTiers(tiers.indexOf(DefaultTier.A.value()), tiers.indexOf(DefaultTier.S.value()));
 			
+			controller.swapTierElements(tiers.indexOf(DefaultTier.A.value()), s, g);
+			IO.println(controller.toString(TierStringFormat.COMPACT));
+			controller.swapTierElements(tiers.indexOf(DefaultTier.A.value()), m, s);
+			
+			controller.removeFromUnranked(a);
+			controller.removeFromUnranked(o);
+			
+			IO.println(controller.toString(TierStringFormat.COMPACT));
 		}
 }

@@ -15,7 +15,7 @@ import model.exceptions.TierNotFoundException;
  * A class representing the concept of tier list.
  * 
  * @author flynnz
- * @version 1.42
+ * @version 1.80
  * @since v0.0.0
  */
 public class TierList {
@@ -103,6 +103,9 @@ public class TierList {
 
 	//---------------------------------- methods ----------------------------------//
 	
+	//------------------------------ ranking ------------------------------//
+	
+	
 	public boolean rank(TierElement e, int tierIndex) throws TierNotFoundException, ElementNotFoundException {
 		this.removeFromUnranked(e);
 		return addToTier(tierIndex, e);
@@ -121,13 +124,16 @@ public class TierList {
 		return added;
 	}
 	
-	public boolean unrankInsert(TierElement e, int tierIndex, int insertIndex) throws ElementNotFoundException, TierNotFoundException {
+	public boolean unrankInsert(int tierIndex, TierElement e, int insertIndex) throws ElementNotFoundException, TierNotFoundException {
 		this.checkElementExistenceInTier(e, tierIndex);
 		this.addToUnranked(e);
 		boolean removed = removeFromTier(tierIndex, e);
 		unranked.moveTo(insertIndex, e);
 		return removed;
 	}
+
+	
+	//------------------------------ editing ------------------------------//
 
 	public boolean addTier(Tier t) { Objects.requireNonNull(t); return tiers.add(t); }
 	
@@ -166,6 +172,9 @@ public class TierList {
 		return true;
 	}
 	
+	
+	//------------------------------ swapping ------------------------------//
+	
 	public void swapTiers(int a, int b) throws TierNotFoundException { 
 		try { Collections.swap(tiers, a, b); }
 		catch (IndexOutOfBoundsException e) { throw new TierNotFoundException(); }
@@ -183,10 +192,14 @@ public class TierList {
 		Collections.swap(unranked, ai, bi);
 	}
 	
+	//------------------------------ utils ------------------------------//
+	
 	public int indexOf(Tier t) throws TierNotFoundException { return checkTierExistence(tiers.indexOf(t)); }
 	
 	public int size() { return this.tiers.size(); }
 
+	//------------------------------ moving ------------------------------//
+	
 	public boolean moveFromTierToTier(int toTierIndex, TierElement e) throws ElementNotFoundException, TierNotFoundException {
 		this.checkTierExistence(toTierIndex);
 		int fromTierIndex = findElementTier(e);
@@ -195,28 +208,41 @@ public class TierList {
 		else return false;
 	}
 
-	public boolean insertFromTierInTier(int toTierIndex, TierElement e, int toElementIndex) throws TierNotFoundException {
+	public boolean moveFromTierToTier(int toTierIndex, TierElement e, int toElementIndex) throws TierNotFoundException, IndexOutOfBoundsException {
 		this.checkTierExistence(toTierIndex);
 		int fromTierIndex = findElementTier(e);
 		if (tiers.get(fromTierIndex).remove(e)) {
+			tiers.get(toTierIndex).add(e);
 			tiers.get(toTierIndex).moveTo(toElementIndex, e);
 			return true;
 		}
 		else return false;
 	}
 	
+	
+	//------------------------------ exceptions ------------------------------//
+	
 	private int checkTierExistence(int tierIndex) throws TierNotFoundException {
-		if (tierIndex == -1) 
-			throw new TierNotFoundException("Tier at index \"" + tierIndex + "\" not found");
-		else return tierIndex;
+		var exception = new TierNotFoundException("Tier at index \"" + tierIndex + "\" not found");
+		try {
+			if (tierIndex == -1) 
+				throw exception;
+			else return tierIndex;
+		} catch (IndexOutOfBoundsException indexException) { throw exception; }
 	}
 	
 	private int checkElementExistence(TierElement e, ListTierElement ec) throws ElementNotFoundException {
-		Objects.requireNonNull(e); Objects.requireNonNull(ec);
-		int elementIndex = ec.indexOf(e);
-		if (elementIndex == -1) 
-			throw new ElementNotFoundException("Element \"" + e + "\" not found in list \"" + ec + "\"");
-		return elementIndex;
+		var exception = new ElementNotFoundException("Element \"" + e + "\" not found in list \"" + ec + "\"");
+		try {
+			Objects.requireNonNull(e); 
+			Objects.requireNonNull(ec);
+			int elementIndex = ec.indexOf(e);
+			if (elementIndex == -1) 
+				throw exception; 
+			return elementIndex;
+		} catch (NullPointerException | IndexOutOfBoundsException physException ) { 
+			throw exception; 
+		}
 	}
 	
 	private void checkElementExistenceInTier(TierElement e, int tierIndex) throws ElementNotFoundException, TierNotFoundException {
