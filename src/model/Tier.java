@@ -8,9 +8,7 @@ import model.enums.TierStringFormat;
 import model.exceptions.ElementNotFoundException;
 
 /**
- * Class representing the concept of a 'Tier'.
- * 
- * Each Tier contains a {@link TierHeader} and a collection of {@link TierElement}
+ * Class representing the concept of a 'Tier'
  * 
  * @author flynnz
  * @version 1.54
@@ -27,11 +25,11 @@ public class Tier {
 	//---------------------------------- Ctors ----------------------------------//
 	
 	/**
-	 * Constructs a new {@link Tier} object with the given {@link ListTierElement}.
+	 * Constructs a new {@link Tier} object with the given parameters.
 	 * 
 	 * @param header {@link TierHeader} 
-	 * @param elements collection to add
-	 * @throws IllegalArgumentException if header's name is blank
+	 * @param elements list to associate
+	 * @throws IllegalArgumentException if the header's name is blank
 	 */
 	public Tier(TierHeader header, ListTierElement elements) {
 		Objects.requireNonNull(header); Objects.requireNonNull(elements);
@@ -45,7 +43,8 @@ public class Tier {
 	/**
 	 * Constructs a new empty {@link Tier} object with given {@link TierHeader}.
 	 * 
-	 * @param th {@link TierHeader}
+	 * @param header {@link TierHeader}
+	 * @throws IllegalArgumentException if the header's name is blank
 	 */
 	public Tier(TierHeader header) { 
 		this(header, new ListTierElement());
@@ -55,6 +54,7 @@ public class Tier {
 	 * Constructs a new empty {@link Tier} object with given {@link String}.
 	 * 
 	 * @param name tier name
+	 * @throws IllegalArgumentException if name is blank
 	 */
 	public Tier(String name) { 
 		this(new TierHeader(name, DEFAULT_TIER_COLOR), new ListTierElement());
@@ -62,6 +62,9 @@ public class Tier {
 	
 	/**
 	 * Constructs a new empty {@link Tier} object
+	 * 
+	 * the Tier's name will be set to {@link Tier#DEFAULT_TIER_NAME}
+	 * the Tier's color will be set to {@link Tier#DEFAULT_TIER_COLOR}
 	 */
 	public Tier() { 
 		this(new TierHeader(DEFAULT_TIER_NAME, DEFAULT_TIER_COLOR));
@@ -69,11 +72,27 @@ public class Tier {
 	
 	//---------------------------------- methods  ----------------------------------//
 	
+	/**
+	 * Adds an element to the tier
+	 * 
+	 * @param e element to add
+	 * @return true if successfull
+	 * @throws IllegalArgumentException if element is a duplicate
+	 */
 	public boolean add(TierElement e) throws IllegalArgumentException {
 		if (elements.contains(e)) throw new IllegalArgumentException("Tier already contains this element: " + e);
 		else return elements.add(e);
 	}
 	
+	/**
+	 * Moves an element to a certain index, automatically shifts all the others
+	 * 
+	 * @param to destination index 
+	 * @param e element to move
+	 * @return {@link TierElement} previously at the specified location
+	 * @throws IndexOutOfBoundsException
+	 * @throws ElementNotFoundException
+	 */
 	public TierElement moveTo(int to, TierElement e) throws IndexOutOfBoundsException, ElementNotFoundException 
 	{ return elements.moveTo(to, e); }
 	

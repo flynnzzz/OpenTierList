@@ -5,7 +5,7 @@ import java.util.Objects;
 import model.enums.TierElementStatus;
 
 /**
- * Class representing a single {@link TierList} "entry"
+ * Class representing a single {@link Tier} entry
  * 
  * @author flynnz
  * @version 1.35
@@ -24,7 +24,6 @@ public class TierElement {
 	/**
 	 * Constructs a {@link TierList} entry given the following parameters.
 	 * 
-	 * All parameters must not be null:
 	 * @param status enum representing state
 	 * @param name the entry's name
 	 * @param imagePath path to the entry image
@@ -45,7 +44,6 @@ public class TierElement {
 	/**
 	 * Constructs a {@link TierList} entry given the following parameters.
 	 * 
-	 * All parameters must not be null:
 	 * @param status enum representing state
 	 * @param name the entry's name
 	 * 
@@ -59,7 +57,6 @@ public class TierElement {
 	/**
 	 * Constructs a {@link TierList} entry given the following parameters.
 	 * 
-	 * All parameters must not be null:
 	 * @param name the entry's name
 	 * @param path the entry's image path
 	 * 
@@ -72,10 +69,9 @@ public class TierElement {
 	/**
 	 * Constructs a {@link TierList} entry given the following parameters.
 	 * 
-	 * All parameters must not be null:
-	 * @param path the entry's image path
+	 * @param name the entry's name
 	 * 
-	 * The element's name will be set to {@link TierElement#DEFAULT_ELEMENT_NAME}
+	 * The element's image path will be set to {@link TierElement#DEFAULT_ELEMENT_IMAGE_PATH}
 	 * @throws IllegalArgumentException if path is blank
 	 */
 	public TierElement(String name) throws IllegalArgumentException {
@@ -85,7 +81,6 @@ public class TierElement {
 	/**
 	 * Constructs a {@link TierList} entry given the following parameters.
 	 * 
-	 * All parameters must not be null:
 	 * @param status enum representing state
 	 * 
 	 * The element's name will be set to {@link TierElement#DEFAULT_ELEMENT_NAME}
@@ -113,7 +108,14 @@ public class TierElement {
 	
 	public boolean isRanked() { return status.value(); }
 	
+	
+	/**
+	 * Method to mutate the instance's status
+	 * 
+	 * @param status to change to
+	 */
 	public void changeTo(TierElementStatus status) { 
+		Objects.requireNonNull(status);
 		this.status = status;
 	}
 	

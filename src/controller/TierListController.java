@@ -16,6 +16,7 @@ import model.enums.TierStringFormat;
  */
 public interface TierListController {
 	
+	//TODO: update controller docs
 	public static TierListController of(TierList tl) {
 		Objects.requireNonNull(tl);
 		return new StandardTierListController(tl);

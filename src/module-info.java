@@ -1,13 +1,4 @@
-/**
- * OpenTierLists module
- */
-/**
- * Featuring classes for the OpenTierList project
- * 
- * @author flynnz
- * @version v0.0.0
- */
 module openTierLists {
+	//requires static org.junit.jupiter.api;
 	requires java.desktop;
-	requires org.junit.jupiter.api;
 }

@@ -6,7 +6,7 @@ import java.util.Collection;
 import model.exceptions.ElementNotFoundException;
 
 /**
- * Extension of {@link ArrayList}.
+ * Extension of {@link ArrayList}
  * 
  * @author flynnz
  * @version 1.33
@@ -32,6 +32,15 @@ public class ListTierElement extends ArrayList<TierElement> {
 		super();
 	}
 	
+	/**
+	 * Moves an element to a certain index, automatically shifts all the others
+	 * 
+	 * @param to destination index 
+	 * @param e element to move
+	 * @return {@link TierElement} previously at the specified location
+	 * @throws IndexOutOfBoundsException 
+	 * @throws ElementNotFoundException
+	 */
 	public TierElement moveTo(int to, TierElement e) throws IndexOutOfBoundsException, ElementNotFoundException {
 		if (!this.contains(e)) throw new ElementNotFoundException();
 		

@@ -3,10 +3,10 @@ package model;
 import java.awt.Color;
 
 /**
- * Record class used by the {@link Tier} class
+ * Record class used by {@link Tier}
  * 
- * @param name String representing a {@link Tier} header name
- * @param color {@link Color}
+ * @param name string representing a {@link Tier}'s name
+ * @param color a {@link Tier}'s {@link Color}
  */
 public record TierHeader(String name, Color color) implements Comparable<TierHeader> {
 
