@@ -1,11 +1,11 @@
-package controller;
+package controller.controllers;
 
 import java.util.Objects;
 
-import model.TierElement;
-import model.Tier;
-import model.TierList;
 import model.enums.TierStringFormat;
+import model.models.Tier;
+import model.models.TierElement;
+import model.models.TierList;
 
 /**
  * Controller interface for creating and modifying tier lists.

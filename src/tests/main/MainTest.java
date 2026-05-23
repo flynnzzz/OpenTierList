@@ -1,16 +1,15 @@
-package tests;
+package tests.main;
 
 import java.util.ArrayList;
 import java.util.List;
 
-
-import controller.TierListController;
-import model.ListTierElement;
-import model.Tier;
-import model.TierElement;
-import model.TierList;
+import controller.controllers.TierListController;
 import model.enums.DefaultTier;
 import model.enums.TierStringFormat;
+import model.models.ListTierElement;
+import model.models.Tier;
+import model.models.TierElement;
+import model.models.TierList;
 
 public class MainTest {
 		public static void main() {

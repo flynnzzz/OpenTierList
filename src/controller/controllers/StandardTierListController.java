@@ -1,13 +1,13 @@
-package controller;
+package controller.controllers;
 
 import java.util.Objects;
 
-import model.TierElement;
-import model.Tier;
-import model.TierList;
 import model.enums.TierStringFormat;
 import model.exceptions.ElementNotFoundException;
 import model.exceptions.TierNotFoundException;
+import model.models.Tier;
+import model.models.TierElement;
+import model.models.TierList;
 
 /**
  * Main implementation of {@link TierListController}.

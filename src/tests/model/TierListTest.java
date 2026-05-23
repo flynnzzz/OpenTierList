@@ -12,14 +12,14 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import model.ListTierElement;
-import model.Tier;
-import model.TierElement;
-import model.TierHeader;
-import model.TierList;
 import model.enums.TierElementStatus;
 import model.exceptions.ElementNotFoundException;
 import model.exceptions.TierNotFoundException;
+import model.models.ListTierElement;
+import model.models.Tier;
+import model.models.TierElement;
+import model.models.TierHeader;
+import model.models.TierList;
 
 class TierListTest {
 	private TierList emptyCtor, fullCtor, essentialsCtor, unrankedOnlyCtor, tierlist;

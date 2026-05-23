@@ -12,11 +12,11 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import model.Tier;
-import model.TierElement;
-import model.ListTierElement;
-import model.TierHeader;
 import model.exceptions.ElementNotFoundException;
+import model.models.ListTierElement;
+import model.models.Tier;
+import model.models.TierElement;
+import model.models.TierHeader;
 
 class TierTest {
 	private Tier emptyCtor, fullCtor, onlyHeaderCtor, tier;

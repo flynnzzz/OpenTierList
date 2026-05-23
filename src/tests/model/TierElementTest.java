@@ -9,7 +9,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import model.TierElement;
+import model.models.TierElement;
 
 class TierElementTest {
 	private static TierElement immortal;

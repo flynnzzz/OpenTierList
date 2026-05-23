@@ -2,8 +2,8 @@ package model.enums;
 
 import java.awt.Color;
 
-import model.Tier;
-import model.TierHeader;
+import model.models.Tier;
+import model.models.TierHeader;
 
 public enum DefaultTier {
     S(Color.RED),
