@@ -365,7 +365,7 @@ public class TierList {
 	public String getTierName(int tierIndex) { return getTierHeader(tierIndex).name(); }
 	public String getTierColor(int tierIndex) { return getTierHeader(tierIndex).name(); }
 	private TierHeader getTierHeader(int tierIndex) { return tiers.get(tierIndex).getHeader(); }
-	public ListTierElement getUnranked() { return new ListTierElement(unranked); };
+	public List<TierElement> getUnranked() { return List.copyOf(unranked); };
 	public List<Tier> getTiers() { return List.copyOf(tiers); }
 	
 	

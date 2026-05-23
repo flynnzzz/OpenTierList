@@ -1,5 +1,6 @@
 package controller.controllers;
 
+import java.util.List;
 import java.util.Objects;
 
 import model.enums.TierStringFormat;
@@ -206,5 +207,18 @@ public class StandardTierListController implements TierListController {
 	@Override
 	public String toString(TierStringFormat format) {
 		return tierList.toString(format);
+	}
+
+	
+	//------------------------------ getters ------------------------------//
+	
+	@Override
+	public List<TierElement> getUnranked() {
+		return tierList.getUnranked();
+	}
+	
+	@Override
+	public List<Tier> getTiers() {
+		return tierList.getTiers();
 	}
 }

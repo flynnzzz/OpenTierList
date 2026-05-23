@@ -1,5 +1,6 @@
 package controller.controllers;
 
+import java.util.List;
 import java.util.Objects;
 
 import model.enums.TierStringFormat;
@@ -53,6 +54,10 @@ public interface TierListController {
 	public void moveTo(TierElement e, int toTier);
 
 	public void moveTo(TierElement e, int toTier, int toIndex);
+	
+	public List<TierElement> getUnranked();
+
+	public List<Tier> getTiers();
 	
 	public String toString();
 

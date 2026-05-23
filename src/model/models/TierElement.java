@@ -16,7 +16,7 @@ public class TierElement {
 	private String name, imagePath;
 
 	public static final String DEFAULT_ELEMENT_NAME = "element";
-	public static final String DEFAULT_ELEMENT_IMAGE_PATH = "NONE";
+	public static final String DEFAULT_ELEMENT_IMAGE_PATH = "default.png";
 	
 	
 	//---------------------------------- Ctors ----------------------------------//	
