@@ -10,14 +10,18 @@ import model.enums.TierElementStatus;
  * Class representing a single {@link Tier} entry
  * 
  * @author flynnz
- * @version 1.35
+ * @version 2.00
  * @since v0.0.0
  */
 public class TierElement {
 	private TierElementStatus status;
-	private String name, imagePathString;
+	private String name;
 	private Path imagePath;
 	
+	private static long NEXT_ID = 1;
+	private final long id;
+	
+	private static final Path BASE_PATH = Paths.get(System.getProperty("user.dir"));
 	public static final String DEFAULT_ELEMENT_NAME = "element";
 	public static final String DEFAULT_ELEMENT_IMAGE_PATH = "resources/images/default.png";
 	
@@ -41,9 +45,8 @@ public class TierElement {
 		
 		this.status = status;
 		this.name = name;
-		this.imagePathString = imagePath;
-		
-		this.normalizePath();
+		this.id = NEXT_ID++;
+		this.imagePath = BASE_PATH.resolve(imagePath).normalize();
 	}
 	
 	/**
@@ -135,31 +138,29 @@ public class TierElement {
 	public void setImagePath(String imagePath) throws IllegalArgumentException {
 		Objects.requireNonNull(name);
 		if (imagePath.isBlank()) throw new IllegalArgumentException();
-		this.imagePathString = imagePath; 
+		this.imagePath = BASE_PATH.resolve(imagePath).normalize();; 
 	}
 	
 	public String getImagePath() { return imagePath.toString(); }
 
 	public String getImageUrl() { return imagePath.toUri().toASCIIString(); }
-	
-	private void normalizePath() {
-		Path basePath = Paths.get(System.getProperty("user.dir"));
-		this.imagePath = basePath.resolve(this.imagePathString).normalize();
-	}
 
 	
 	//---------------------------------- hashCode, equals and toString ----------------------------------//	
 	
 	@Override
 	public int hashCode() {
-		return Objects.hash(imagePathString, name, status);
+		return Objects.hash(imagePath, name, status, id);
 	}
 	
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj) { return true; }
 		if (!(obj instanceof TierElement other)) { return false; }
-		return Objects.equals(imagePathString, other.imagePathString) && Objects.equals(name, other.name) && status == other.status;
+		return Objects.equals(imagePath, other.imagePath) 
+				&& Objects.equals(name, other.name) 
+				&& Objects.equals(id, other.id)
+				&& status == other.status;
 	}
 	
 	/**

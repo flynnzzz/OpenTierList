@@ -29,13 +29,13 @@ public interface TierListController {
 	
 	public void setTierListName(String name); 
 
-	public void rank(TierElement e, int toTier);
+	public void rank(TierElement e, Tier toTier);
 	
-	public void rank(int toIndex, TierElement e, int toTier);
+	public void rank(int toIndex, TierElement e, Tier toTier);
 	
-	public void unrank(TierElement e, int fromTier);
+	public void unrank(TierElement e, Tier fromTier);
 
-	public void unrank(int toIndex, TierElement e, int fromTier);
+	public void unrank(int toIndex, TierElement e, Tier fromTier);
 	
 	public void addTier(Tier t);
 	
@@ -45,15 +45,15 @@ public interface TierListController {
 
 	public void removeFromUnranked(TierElement e);
 	
-	public void swapTiers(int a, int b);
+	public void swapTiers(Tier a, Tier b);
 
-	public void swapTierElements(int tierIndex, TierElement a, TierElement b);
+	public void swapTierElements(Tier tier, TierElement a, TierElement b);
 
 	public void swapUnrankedElements(TierElement a, TierElement b);
 	
-	public void moveTo(TierElement e, int toTier);
+	public void moveTo(TierElement e, Tier toTier);
 
-	public void moveTo(TierElement e, int toTier, int toIndex);
+	public void moveTo(TierElement e, Tier toTier, int toIndex);
 	
 	public List<TierElement> getUnranked();
 

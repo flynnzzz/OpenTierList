@@ -11,7 +11,7 @@ import model.exceptions.ElementNotFoundException;
  * Class representing the concept of a 'Tier'
  * 
  * @author flynnz
- * @version 1.54
+ * @version 2.00
  * @since v0.0.0
  */
 public class Tier {
@@ -21,6 +21,9 @@ public class Tier {
 	
 	private TierHeader header;
 	private ListTierElement elements;
+	
+	private static long NEXT_ID = 1;
+	private final long id;
 	
 	//---------------------------------- Ctors ----------------------------------//
 	
@@ -38,6 +41,7 @@ public class Tier {
 		
 		this.header = header;
 		this.elements = elements;
+		this.id = NEXT_ID++;
 	}	
 	
 	/**
@@ -102,7 +106,7 @@ public class Tier {
 	}
 	
 	public TierElement remove(int i) throws IndexOutOfBoundsException { return elements.remove(i); }
-	
+
 	public void swap(TierElement a, TierElement b) throws IndexOutOfBoundsException {
 		swap(elements.indexOf(a), elements.indexOf(b));
 	}
@@ -132,7 +136,7 @@ public class Tier {
 	
 	@Override
 	public int hashCode() {
-		return Objects.hash(elements, header);
+		return Objects.hash(elements, header, id);
 	}
 
 	@Override
@@ -144,7 +148,9 @@ public class Tier {
 			return false;
 		}
 		Tier other = (Tier) obj;
-		return Objects.equals(elements, other.elements) && Objects.equals(header, other.header);
+		return Objects.equals(elements, other.elements) 
+				&& Objects.equals(header, other.header)
+				&& Objects.equals(id, other.id);
 	}
 	
 	@Override

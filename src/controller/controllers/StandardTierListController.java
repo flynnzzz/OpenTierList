@@ -55,7 +55,7 @@ public class StandardTierListController implements TierListController {
 	//------------------------------ ranking ------------------------------//
 
 	@Override
-	public void rank(TierElement e, int toTier) {
+	public void rank(TierElement e, Tier toTier) {
 		try { tierList.rank(e, toTier); }
 		catch(NullPointerException | IllegalArgumentException |
 				  TierNotFoundException | ElementNotFoundException ex) {
@@ -65,7 +65,7 @@ public class StandardTierListController implements TierListController {
 	}
 	
 	@Override
-	public void rank(int toIndex, TierElement e, int toTier) {
+	public void rank(int toIndex, TierElement e, Tier toTier) {
 		try { tierList.rankInsert(toTier, e, toIndex); }
 		catch(NullPointerException | IllegalArgumentException |
 				TierNotFoundException | ElementNotFoundException ex) {
@@ -75,7 +75,7 @@ public class StandardTierListController implements TierListController {
 	}
 	
 	@Override
-	public void unrank(TierElement e, int fromTier) {
+	public void unrank(TierElement e, Tier fromTier) {
 		try { tierList.unrank(e, fromTier); }
 		catch(NullPointerException | IllegalArgumentException |
 				TierNotFoundException | ElementNotFoundException ex) {
@@ -85,7 +85,7 @@ public class StandardTierListController implements TierListController {
 	}
 	
 	@Override
-	public void unrank(int toIndex, TierElement e, int fromTier) {
+	public void unrank(int toIndex, TierElement e, Tier fromTier) {
 		try { tierList.unrankInsert(fromTier, e, toIndex); }
 		catch(NullPointerException | IllegalArgumentException |
 				TierNotFoundException | ElementNotFoundException ex) {
@@ -146,7 +146,7 @@ public class StandardTierListController implements TierListController {
 	//------------------------------ swapping ------------------------------//
 
 	@Override
-	public void swapTiers(int a, int b) {
+	public void swapTiers(Tier a, Tier b) {
 		try { tierList.swapTiers(a, b); }
 		catch(NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) {
 			if (ex instanceof NullPointerException) System.err.println(NPE_ERROR); 
@@ -155,8 +155,8 @@ public class StandardTierListController implements TierListController {
 	}
 
 	@Override
-	public void swapTierElements(int tierIndex, TierElement a, TierElement b) {
-		try { tierList.swapElements(tierIndex, a, b); }
+	public void swapTierElements(Tier tier, TierElement a, TierElement b) {
+		try { tierList.swapElements(tier, a, b); }
 		catch(NullPointerException | IllegalArgumentException |
 				TierNotFoundException | ElementNotFoundException ex) {
 			if (ex instanceof NullPointerException) System.err.println(NPE_ERROR); 
@@ -177,7 +177,7 @@ public class StandardTierListController implements TierListController {
 	//------------------------------ moving ------------------------------//
 	
 	@Override
-	public void moveTo(TierElement e, int toTier) {
+	public void moveTo(TierElement e, Tier toTier) {
 		try {
 			tierList.moveFromTierToTier(toTier, e);
 		}
@@ -189,7 +189,7 @@ public class StandardTierListController implements TierListController {
 	}
 	
 	@Override
-	public void moveTo(TierElement e, int toTier, int toIndex) {
+	public void moveTo(TierElement e, Tier toTier, int toIndex) {
 		try {
 			tierList.moveFromTierToTier(toTier, e, toIndex);
 		}

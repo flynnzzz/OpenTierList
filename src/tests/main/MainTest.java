@@ -18,29 +18,37 @@ public class MainTest {
 			unranked.add(m = new TierElement("Mookka")); unranked.add(p = new TierElement("Pehkura")); unranked.add(s = new TierElement("Suynoh"));
 			unranked.add(g = new TierElement("Galeena")); unranked.add(o = new TierElement("Okha")); unranked.add(a = new TierElement("Aseeno"));
 			List<Tier> tiers = new ArrayList<>();
-			tiers.add(DefaultTier.S.value()); tiers.add(DefaultTier.A.value()); tiers.add(DefaultTier.B.value()); 
-			tiers.add(DefaultTier.C.value()); tiers.add(DefaultTier.D.value()); tiers.add(DefaultTier.E.value());
+			
+			Tier S, A, B, C, D, E, S_Double, S_Triple;
+			tiers.add(S = DefaultTier.S.value()); 
+			
+			tiers.add(A = DefaultTier.A.value()); tiers.add(B = DefaultTier.B.value()); 
+			tiers.add(C = DefaultTier.C.value()); tiers.add(D = DefaultTier.D.value()); tiers.add(E = DefaultTier.E.value());
+			
+			tiers.add(S_Double = new Tier("S"));
+			tiers.add(S_Triple = new Tier("S"));
 			
 			var controller = TierListController.of(new TierList("My Epic Tier List", unranked, tiers));
 
-			controller.rank(unranked.get(0), tiers.indexOf(DefaultTier.S.value()));
-			controller.rank(unranked.get(0), tiers.indexOf(DefaultTier.A.value()));
-			controller.rank(unranked.get(0), tiers.indexOf(DefaultTier.A.value()));
-			controller.rank(unranked.get(0), tiers.indexOf(DefaultTier.A.value()));
+			controller.rank(unranked.get(0), S);
+			controller.rank(unranked.get(0), S_Double);
+			controller.rank(unranked.get(0), A);
+			controller.rank(unranked.get(0), A);
+			controller.rank(unranked.get(0), A);
 			
 			IO.println(controller.toString(TierStringFormat.COMPACT));
 			
-			controller.moveTo(m, tiers.indexOf(DefaultTier.A.value()), 0);
-			controller.unrank(0, p, tiers.indexOf(DefaultTier.A.value()));
+			controller.moveTo(m, A, 0);
+			controller.unrank(0, p, A);
 
 			IO.println(controller.toString(TierStringFormat.COMPACT));
 			
-			controller.swapTiers(tiers.indexOf(DefaultTier.A.value()), tiers.indexOf(DefaultTier.S.value()));
-			controller.swapTiers(tiers.indexOf(DefaultTier.A.value()), tiers.indexOf(DefaultTier.S.value()));
+			controller.swapTiers(A, S);
+			controller.swapTiers(A, S);
 			
-			controller.swapTierElements(tiers.indexOf(DefaultTier.A.value()), s, g);
+			controller.swapTierElements(A, s, g);
 			IO.println(controller.toString(TierStringFormat.COMPACT));
-			controller.swapTierElements(tiers.indexOf(DefaultTier.A.value()), m, s);
+			controller.swapTierElements(A, m, s);
 			
 			controller.removeFromUnranked(a);
 			controller.removeFromUnranked(o);
