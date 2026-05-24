@@ -146,7 +146,7 @@ class TierListTest {
 		
 		assertThrows(ElementNotFoundException.class ,
 				() -> tierlist.removeFromUnranked(new TierElement("N/A")));
-		assertThrows(NullPointerException.class ,
+		assertThrows(ElementNotFoundException.class ,
 				() -> tierlist.removeFromUnranked(null));
 		assertTrue(tierlist.getUnranked().size() == initialLenght + 1);
 	}
@@ -167,7 +167,7 @@ class TierListTest {
 		assertTrue(newTier.getElements().size() == initialLenght + 1);
 		assertThrows(ElementNotFoundException.class ,
 				() -> tierlist.removeFromTier(zTierIndex, new TierElement("N/A")));
-		assertThrows(NullPointerException.class ,
+		assertThrows(ElementNotFoundException.class ,
 				() -> tierlist.removeFromTier(zTierIndex, null));
 		assertTrue(newTier.getElements().size() == initialLenght + 1);
 		assertThrows(TierNotFoundException.class ,
