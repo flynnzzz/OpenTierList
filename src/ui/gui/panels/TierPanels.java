@@ -7,6 +7,11 @@ import controller.controllers.TierListController;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.VBox;
 
+/**
+ * 
+ * @version 1.10
+ * @since v1.2.5
+ */
 public class TierPanels extends ScrollPane {
 	private VBox tierPanels;
 

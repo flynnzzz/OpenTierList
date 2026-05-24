@@ -23,7 +23,7 @@ public class TierElement {
 	
 	private static final Path BASE_PATH = Paths.get(System.getProperty("user.dir")).resolve("resources/images/");
 	public static final String DEFAULT_ELEMENT_NAME = "element";
-	public static final String DEFAULT_ELEMENT_IMAGE_PATH = "default.png";
+	public static final String DEFAULT_ELEMENT_IMAGE_PATH = "default.jpeg";
 	
 	
 	//---------------------------------- Ctors ----------------------------------//	

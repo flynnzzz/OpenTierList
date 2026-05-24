@@ -5,11 +5,16 @@ import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 
+/**
+ * 
+ * @version 1.11
+ * @since v1.2.5
+ */
 public class MainPane extends BorderPane {
 	private Label titleLabel;
 	private UnrankedPane unrankedPane;
 	private TierPanels tiersPane;
-	private TierListController controller;
+	private TierListController controller;  
 	
 	public MainPane(TierListController controller) {
 		this.controller = controller;

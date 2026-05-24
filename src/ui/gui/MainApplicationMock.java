@@ -16,7 +16,12 @@ import model.models.TierElement;
 import model.models.TierList;
 import ui.gui.panels.MainPane;
 
-public class MainApplication extends Application {
+/**
+ * 
+ * @version 1.01
+ * @since v1.2.5
+ */
+public class MainApplicationMock extends Application {
 
 	@Override
 	public void start(Stage stage) throws Exception {
@@ -24,9 +29,9 @@ public class MainApplication extends Application {
 		var unranked = new ListTierElement();
 
 		TierElement m, p, s, g, o, a;
-		unranked.add(m = new TierElement("Mookka")); unranked.add(p = new TierElement("Pehkura")); unranked.add(s = new TierElement("Suynoh"));
-		unranked.add(g = new TierElement("Galeena")); unranked.add(o = new TierElement("Okha")); unranked.add(a = new TierElement("Aseeno"));
-
+		unranked.add(m = new TierElement("Mookka", "cow.jpg")); unranked.add(p = new TierElement("Pehkura", "sheep.jpg")); unranked.add(s = new TierElement("Suynoh"));
+		unranked.add(g = new TierElement("Galeena")); unranked.add(o = new TierElement("Okha", "duck.jpg")); unranked.add(a = new TierElement("Aseeno"));
+		
 		var defaultTierList = new TierList("Test", unranked);
 		for (var defaultTier : DefaultTier.values()) {
 			defaultTierList.addTier(defaultTier.value());
@@ -36,10 +41,12 @@ public class MainApplication extends Application {
 		
 		controller.rank(m, DefaultTier.S.value());
 		controller.rank(p, DefaultTier.S.value());
+		controller.rank(s, DefaultTier.A.value());
 		
 		stage.setTitle("Open Tier Lists");
 		BorderPane root = new MainPane(controller);
 		Scene scene = new Scene(root);
+		
 		stage.setHeight(900);
 		stage.setWidth(1100);
 		stage.setScene(scene);

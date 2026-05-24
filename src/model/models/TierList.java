@@ -86,7 +86,7 @@ public class TierList {
 	 */
 	public TierList(String name) {
 		this(name, new ListTierElement());
-	}
+	}  
 	
 	/**
 	 * Constructs an empty {@link TierList} instance.
@@ -383,8 +383,7 @@ public class TierList {
 	 */
 	public boolean moveFromTierToTier(Tier toTier, TierElement e) throws ElementNotFoundException, TierNotFoundException {
 		this.checkTierExistence(toTier);
-		int fromTierIndex = findElementTier(e);
-		if (tiers.get(fromTierIndex).remove(e)) 
+		if (toTier.remove(e)) 
 			return toTier.add(e);
 		else return false;
 	}
@@ -422,13 +421,17 @@ public class TierList {
 	 */
 	public boolean moveFromTierToTier(Tier toTier, TierElement e, int toElementIndex) throws TierNotFoundException, IndexOutOfBoundsException {
 		this.checkTierExistence(toTier);
-		int fromTierIndex = findElementTier(e);
-		if (tiers.get(fromTierIndex).remove(e)) {
+		if (toTier.remove(e)) {
 			toTier.add(e);
 			toTier.moveTo(toElementIndex, e);
 			return true;
 		}
 		else return false;
+	}
+	
+	public TierElement moveUnranked(TierElement e, int toElementIndex) throws TierNotFoundException, IndexOutOfBoundsException {
+		this.checkElementExistence(e, unranked);
+		return unranked.moveTo(toElementIndex, e);
 	}
 	
 	

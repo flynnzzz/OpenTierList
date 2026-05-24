@@ -5,6 +5,11 @@ import javafx.scene.paint.Color;
 import model.models.Tier;
 import model.models.TierHeader;
 
+/**
+ * 
+ * @version 1.11
+ * @since v1.2.5
+ */
 public enum DefaultTier {
     S(Color.ORANGERED),
     A(Color.ORANGE),

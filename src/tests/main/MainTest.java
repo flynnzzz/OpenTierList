@@ -30,11 +30,14 @@ public class MainTest {
 			
 			var controller = TierListController.of(new TierList("My Epic Tier List", unranked, tiers));
 
+			controller.moveUnranked(m, a);
+
 			controller.rank(unranked.get(0), S);
 			controller.rank(unranked.get(0), S_Double);
 			controller.rank(unranked.get(0), A);
 			controller.rank(unranked.get(0), A);
 			controller.rank(unranked.get(0), A);
+			
 			
 			IO.println(controller.toString(TierStringFormat.COMPACT));
 			
