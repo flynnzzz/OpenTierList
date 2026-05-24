@@ -9,20 +9,24 @@ import javafx.scene.layout.VBox;
 import model.models.Tier;
 
 public class TierPanels extends ScrollPane {
-	private List<TierPane> tierPaneList;
 	private VBox tierPanels;
+
+	private TierListController controller;
+	private List<TierPane> tierPaneList;
 	
-	public TierPanels(List<Tier> tiers) {
+	public TierPanels(TierListController controller) {
+		this.controller = controller;
 		this.tierPaneList = new ArrayList<>();
 		this.tierPanels = new VBox();
-		this.initAllTiers(tiers);
+		this.initAllTiers();
 		
 		this.initPane();
 	}
 	
-	private void initAllTiers(List<Tier> tiers) {
+	private void initAllTiers() {
+		var tiers = controller.getTiers();
 		for (int i = 0; i < tiers.size(); i++) {
-			var tierPane = new TierPane(tiers.get(i));
+			var tierPane = new TierPane(controller, tiers.get(i));
 			tierPaneList.add(tierPane);
 		}
 	}

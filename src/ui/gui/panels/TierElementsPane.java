@@ -10,16 +10,18 @@ import javafx.scene.input.DragEvent;
 import javafx.scene.layout.FlowPane;
 import model.models.Tier;
 import model.models.TierElement;
+import ui.gui.settings.UISettings;
 
 public class TierElementsPane extends FlowPane {
 	
 	private Tier tier;
+	private TierListController controller;
 	private List<ImageView> images;
 	
-	//TODO: change to pass in controller
-	public TierElementsPane(Tier tier) {
-		this.images = loadImages();
+	public TierElementsPane(TierListController controller, Tier tier) {
+		this.controller = controller;
 		this.tier = tier;
+		this.images = loadImages();
 		
 		this.initPane();
 	}
@@ -28,13 +30,14 @@ public class TierElementsPane extends FlowPane {
 		List<TierElement> elements = tier.getElements();
 		this.images = new ArrayList<>();
 		for (var element : elements) {
-			String path = element.getImagePath();
-			var imageViewer = new ImageView(new Image(path));
+			String imageUrl = element.getImageUrl();
+			var imageViewer = new ImageView(new Image(imageUrl));
 			//----- settings -----//
 			imageViewer.setUserData(element);
 			imageViewer.setSmooth(true);
-			imageViewer.setFitHeight(this.getHeight());
-			imageViewer.setFitWidth(this.getWidth());
+			
+			imageViewer.setFitHeight(UISettings.DEFAULT_CELL_SIZE);
+			imageViewer.setFitWidth(UISettings.DEFAULT_CELL_SIZE);
 			//imageViewer.setOnDragEntered(this::handleDragEntered);
 			
 			images.add(imageViewer);

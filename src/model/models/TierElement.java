@@ -1,5 +1,7 @@
 package model.models;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Objects;
 
 import model.enums.TierElementStatus;
@@ -13,10 +15,11 @@ import model.enums.TierElementStatus;
  */
 public class TierElement {
 	private TierElementStatus status;
-	private String name, imagePath;
-
+	private String name, imagePathString;
+	private Path imagePath;
+	
 	public static final String DEFAULT_ELEMENT_NAME = "element";
-	public static final String DEFAULT_ELEMENT_IMAGE_PATH = "default.png";
+	public static final String DEFAULT_ELEMENT_IMAGE_PATH = "resources/images/default.png";
 	
 	
 	//---------------------------------- Ctors ----------------------------------//	
@@ -38,7 +41,9 @@ public class TierElement {
 		
 		this.status = status;
 		this.name = name;
-		this.imagePath = imagePath;
+		this.imagePathString = imagePath;
+		
+		this.normalizePath();
 	}
 	
 	/**
@@ -130,24 +135,31 @@ public class TierElement {
 	public void setImagePath(String imagePath) throws IllegalArgumentException {
 		Objects.requireNonNull(name);
 		if (imagePath.isBlank()) throw new IllegalArgumentException();
-		this.imagePath = imagePath; 
+		this.imagePathString = imagePath; 
 	}
 	
-	public String getImagePath() { return imagePath; }
+	public String getImagePath() { return imagePath.toString(); }
+
+	public String getImageUrl() { return imagePath.toUri().toASCIIString(); }
+	
+	private void normalizePath() {
+		Path basePath = Paths.get(System.getProperty("user.dir"));
+		this.imagePath = basePath.resolve(this.imagePathString).normalize();
+	}
 
 	
 	//---------------------------------- hashCode, equals and toString ----------------------------------//	
 	
 	@Override
 	public int hashCode() {
-		return Objects.hash(imagePath, name, status);
+		return Objects.hash(imagePathString, name, status);
 	}
 	
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj) { return true; }
 		if (!(obj instanceof TierElement other)) { return false; }
-		return Objects.equals(imagePath, other.imagePath) && Objects.equals(name, other.name) && status == other.status;
+		return Objects.equals(imagePathString, other.imagePathString) && Objects.equals(name, other.name) && status == other.status;
 	}
 	
 	/**

@@ -13,32 +13,52 @@ import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.FlowPane;
 import model.models.TierElement;
+import ui.gui.settings.UISettings;
 
 public class UnrankedPane extends ScrollPane {
 
 	private FlowPane flowPane;
+	
 	private TierListController controller;
 	private List<ImageView> images;
 	
 	public UnrankedPane(TierListController controller) {
 		this.controller = controller;
-		this.images = loadImages();
 		this.flowPane = new FlowPane();
+		this.images = loadImages();
 
 		this.initPane();
 	}	
 
 	private List<ImageView> loadImages() {
+		
 		List<TierElement> elements = controller.getUnranked();
 		this.images = new ArrayList<>();
+		Image image;
+		
 		for (var element : elements) {
-			String path = element.getImagePath();
-			var imageViewer = new ImageView(new Image(path));
-			//----- settings -----//
+			String imageUrl = element.getImageUrl();
+			var imageViewer = new ImageView(image = new Image(imageUrl));
 			imageViewer.setUserData(element);
+			
+			/* Debug: Check if image loaded
+			image.progressProperty().addListener((obs, oldVal, newVal) -> {
+				System.out.println("Image loading: " + imageUrl + " - Progress: " + newVal);
+			});
+			
+			// Check for errors
+			if (image.isError()) {
+				System.err.println("Failed to load image: " + imageUrl);
+			}
+			*/
+			
+			//----- settings -----//
+			imageViewer.setPreserveRatio(true);
 			imageViewer.setSmooth(true);
-			imageViewer.setFitHeight(flowPane.getHeight());
-			imageViewer.setFitWidth(flowPane.getWidth());
+			imageViewer.setCache(true);
+			
+			imageViewer.setFitHeight(UISettings.DEFAULT_CELL_SIZE);
+			imageViewer.setFitWidth(UISettings.DEFAULT_CELL_SIZE);
 			//imageViewer.setOnDragEntered(this::handleDragEntered);
 			
 			images.add(imageViewer);
@@ -71,7 +91,7 @@ public class UnrankedPane extends ScrollPane {
 
 		this.flowPane.getChildren().addAll(images);
 		{
-			flowPane.setPrefSize(USE_COMPUTED_SIZE, BASELINE_OFFSET_SAME_AS_HEIGHT);
+			flowPane.setPrefHeight(UISettings.DEFAULT_CELL_SIZE);
 		}		
 		
 		this.setContent(flowPane);
