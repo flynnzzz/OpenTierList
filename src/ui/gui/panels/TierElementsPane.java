@@ -4,10 +4,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 import controller.controllers.TierListController;
+import javafx.geometry.Insets;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.DragEvent;
+import javafx.scene.layout.Border;
+import javafx.scene.layout.BorderStroke;
+import javafx.scene.layout.BorderStrokeStyle;
+import javafx.scene.layout.BorderWidths;
+import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.FlowPane;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import model.models.Tier;
 import model.models.TierElement;
 import ui.gui.settings.UISettings;
@@ -50,6 +58,20 @@ public class TierElementsPane extends FlowPane {
 
 	private void initPane() {
 		this.getChildren().addAll(images);
+		var borderColor = Paint.valueOf(Color.DIMGRAY.toString());
+		var flowPaneBorder = new Border(
+				new BorderStroke(
+						borderColor, 
+						BorderStrokeStyle.SOLID,
+						CornerRadii.EMPTY, 
+						BorderWidths.DEFAULT
+					)
+			);
+
+		this.setBorder(flowPaneBorder);
+		this.setPrefWidth(8*UISettings.DEFAULT_CELL_SIZE);
+		this.setMaxHeight(5*UISettings.DEFAULT_CELL_SIZE);
+		this.setMinHeight(1*UISettings.DEFAULT_CELL_SIZE);
 	}
 
 }

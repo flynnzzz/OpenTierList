@@ -1,6 +1,6 @@
 package model.models;
 
-import java.awt.Color;
+import javafx.scene.paint.Color;
 import java.util.Collections;
 import java.util.Objects;
 
@@ -17,7 +17,7 @@ import model.exceptions.ElementNotFoundException;
 public class Tier {
 	
 	public static final String DEFAULT_TIER_NAME = "New Tier";
-	public static final Color DEFAULT_TIER_COLOR = Color.gray;
+	public static final Color DEFAULT_TIER_COLOR = Color.GRAY;
 	
 	private TierHeader header;
 	private ListTierElement elements;

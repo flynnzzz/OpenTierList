@@ -1,6 +1,6 @@
 package model.models;
 
-import java.awt.Color;
+import javafx.scene.paint.Color;
 
 /**
  * Record class used by {@link Tier}

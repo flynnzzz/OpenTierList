@@ -1,17 +1,17 @@
 package model.enums;
 
-import java.awt.Color;
+import javafx.scene.paint.Color;
 
 import model.models.Tier;
 import model.models.TierHeader;
 
 public enum DefaultTier {
-    S(Color.RED),
+    S(Color.ORANGERED),
     A(Color.ORANGE),
     B(Color.YELLOW),
-    C(Color.GREEN),
-    D(Color.BLUE),
-    E(Color.CYAN),
+    C(Color.GREENYELLOW),
+    D(Color.LIGHTBLUE),
+    E(Color.ALICEBLUE),
     F(Color.GRAY);
 
     private Tier value;

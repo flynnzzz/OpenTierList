@@ -1,6 +1,7 @@
 package ui.gui.panels;
 
 import controller.controllers.TierListController;
+import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 
@@ -21,6 +22,10 @@ public class MainPane extends BorderPane {
 		this.tiersPane = new TierPanels(controller);
 		
 		setTop(titleLabel);
+		{
+			titleLabel.setPadding(new Insets(30,0,10,40));
+		}
+		
 		setBottom(unrankedPane);
 		setCenter(tiersPane);
 	}

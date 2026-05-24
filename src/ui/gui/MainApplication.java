@@ -33,9 +33,15 @@ public class MainApplication extends Application {
 		}
 		
 		TierListController controller = new StandardTierListController(defaultTierList);
+		
+		controller.rank(m, DefaultTier.S.value());
+		controller.rank(p, DefaultTier.S.value());
+		
 		stage.setTitle("Open Tier Lists");
 		BorderPane root = new MainPane(controller);
 		Scene scene = new Scene(root);
+		stage.setHeight(900);
+		stage.setWidth(1100);
 		stage.setScene(scene);
 		stage.show();
 	}
