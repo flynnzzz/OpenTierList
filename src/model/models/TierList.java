@@ -421,7 +421,8 @@ public class TierList {
 	 */
 	public boolean moveFromTierToTier(Tier toTier, TierElement e, int toElementIndex) throws TierNotFoundException, IndexOutOfBoundsException {
 		this.checkTierExistence(toTier);
-		if (toTier.remove(e)) {
+		int fromTierIndex = findElementTier(e);
+		if (tiers.get(fromTierIndex).remove(e)) {
 			toTier.add(e);
 			toTier.moveTo(toElementIndex, e);
 			return true;

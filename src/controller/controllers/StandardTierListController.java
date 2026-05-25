@@ -263,7 +263,7 @@ public class StandardTierListController implements TierListController {
 	}
 
 	@Override
-	public Tier getElementTier(TierElement e) {
+	public Tier getTierByElement(TierElement e) {
 		try {
 			var tiers = tierList.getTiers();
 			for (var tier : tiers) {
@@ -274,6 +274,23 @@ public class StandardTierListController implements TierListController {
 		catch(NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) {
 			if (ex instanceof NullPointerException) System.err.println(NPE_ERROR); 
 			else System.err.println(IAE_ERROR + ex.toString());
+		}
+		return null;
+	}
+
+	@Override
+	public TierElement getElementByHash(String hashCode) {
+		try {
+			for (var tier : tierList.getTiers())
+				for (var element : tier.getElements()) 
+					if (Integer.valueOf(element.hashCode()).toString().equals(hashCode))
+						return element;
+			throw new ElementNotFoundException();
+		} catch (ElementNotFoundException e) {
+			for (var unranked : tierList.getUnranked()) {
+				if (Integer.valueOf(unranked.hashCode()).toString().equals(hashCode))
+					return unranked;
+			}
 		}
 		return null;
 	}

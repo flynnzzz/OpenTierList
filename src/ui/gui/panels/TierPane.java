@@ -3,6 +3,9 @@ package ui.gui.panels;
 import controller.controllers.TierListController;
 import javafx.geometry.Insets;
 import javafx.scene.control.TextField;
+import javafx.scene.input.DragEvent;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.input.TransferMode;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderStroke;
@@ -43,10 +46,29 @@ public class TierPane extends HBox {
 			
 			this.setTierNameLabelBackground();
 			this.setTierNameLabelBorder();
+			
+			//----- drag and drop -----//
+			this.setOnDragDetected(this::handleDragDetected);
+			this.setOnDragDropped(this::handleDragDropped);
+			this.setOnDragDone(this::handleDragDone);
 		}
 		
+		//TODO: organize later
 		this.setSpacing(10);
 		this.setPadding(new Insets(10,10,10,30));
+	}
+	
+	private void handleDragDetected(MouseEvent event) {
+		this.startDragAndDrop(TransferMode.NONE);
+		event.consume();
+	}
+	
+	private void handleDragDropped(DragEvent event) {
+		event.setDropCompleted(true);
+		event.consume();
+	}
+	private void handleDragDone(DragEvent event) {
+		event.consume();
 	}
 	
 	private void setTierNameLabelBorder() {
@@ -57,7 +79,7 @@ public class TierPane extends HBox {
 						BorderStrokeStyle.SOLID,
 						CornerRadii.EMPTY, 
 						BorderWidths.DEFAULT
-						)
+					)
 				);
 		tierNameLabel.setBorder(tierNameLabelBorder);
 	}

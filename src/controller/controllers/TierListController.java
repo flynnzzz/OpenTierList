@@ -61,7 +61,9 @@ public interface TierListController {
 	
 	public void moveUnranked(TierElement e, int toIndex);
 	
-	public Tier getElementTier(TierElement e);
+	public Tier getTierByElement(TierElement e);
+
+	public TierElement getElementByHash(String hashCode);
 	
 	public List<TierElement> getUnranked();
 

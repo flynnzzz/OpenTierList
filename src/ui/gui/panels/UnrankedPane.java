@@ -23,6 +23,7 @@ import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
+import model.enums.TierElementStatus;
 import model.models.TierElement;
 import ui.gui.settings.UISettings;
 
@@ -137,33 +138,27 @@ public class UnrankedPane extends ScrollPane {
 	}
 	
 	private void handleDragDetected(MouseEvent event) {
-		
 		//----- define transfer mode -----//
 		Dragboard dragBoard = ( (ImageView)event.getSource() ).startDragAndDrop(TransferMode.MOVE);
 		 
 	
-		//----- put image on dragboard -----//
+		//----- put image and TierElement hashcode on dragboard -----//
 		var content = new ClipboardContent();
 		var viewer = (ImageView)event.getSource();
-		var image = viewer.getImage();
-		content.putImage(image);
-		dragBoard.setContent(content);
+		var sourceElement = (TierElement)viewer.getUserData();
 		
-		var source = (TierElement)((ImageView)event.getSource()).getUserData();
-		IO.println("Drag detected, source: " + source);
+		content.putImage(viewer.getImage());
+		content.putString(Integer.valueOf(sourceElement.hashCode()).toString());
+		
+		dragBoard.setContent(content);
 		
 		event.consume();
 	}
 	
-	//TODO: debug throughly with different images
 	private void handleDragOver(DragEvent event) {
 		
 		if (event.getGestureSource() != event.getSource() && event.getDragboard().hasImage())
 			event.acceptTransferModes(TransferMode.MOVE);
-		
-		//----- store -----//
-		if (event.getTarget() != null)
-			this.dragAndDropTarget = (TierElement)((ImageView)event.getTarget()).getUserData();
 		
 		event.consume();
 	}
@@ -193,9 +188,40 @@ public class UnrankedPane extends ScrollPane {
 		
 		boolean success = false;
 		
-		if (dragBoard.hasImage()) {
-			success = true;
+		if (dragBoard.hasImage () && dragBoard.hasString()) {
+			//----- store -----//
+			String sourceId = dragBoard.getString();
+			TierElement sourceData = controller.getElementByHash(sourceId);
+			this.dragAndDropTarget = (TierElement)((ImageView)event.getTarget()).getUserData();
+			
+			//----- update model -----//
+			if (sourceData != null && dragAndDropTarget != null && !sourceData.equals(dragAndDropTarget)) {
+				IO.println("Source: " + sourceData.toString() + ", target: " + this.dragAndDropTarget.toString());
+				
+				if (sourceData != null && dragAndDropTarget != null && !sourceData.equals(dragAndDropTarget)) {
+					
+					switch (sourceData.status()) {
+					case TierElementStatus.UNRANKED: {
+						this.controller.moveUnranked(sourceData, dragAndDropTarget);
+						break;
+					}
+					case TierElementStatus.RANKED: {
+						var sourceTier = controller.getTierByElement(sourceData);
+						this.controller.unrank(controller.getUnranked().indexOf(dragAndDropTarget), sourceData, sourceTier);
+						
+						//IO.println("Ranked element " + sourceData +  " from tier " + tier.getHeader().name()
+						//		+ " unranked successfully to " + dragAndDropTarget);
+						//IO.println(tier);
+						break;
+					}
+					default: break;
+					}
+					success = true;
+					this.updateImages();
+				}
+			}
 		}
+		
 		event.setDropCompleted(success);
 		
 		event.consume();
@@ -203,15 +229,9 @@ public class UnrankedPane extends ScrollPane {
 	
 	private void handleDragDone(DragEvent event) {
 		
-		var source = (TierElement)((ImageView) event.getGestureSource()).getUserData();
-
-		IO.println("Source and target: " + source.toString() + ", " + this.dragAndDropTarget.toString());
 		if (event.getTransferMode() == TransferMode.MOVE) {
-			this.controller.moveUnranked(source, this.dragAndDropTarget);
-			IO.println("Element " + source +  " moved successfully to " + this.dragAndDropTarget);
-			IO.println(controller.getUnranked());
+			this.updateImages();
 		}
-		this.updateImages();
 		
 		event.consume();
 	}

@@ -3,6 +3,7 @@ module openTierLists {
 	requires java.desktop;
 	requires javafx.graphics;
 	requires javafx.controls;
+	requires javafx.base;
 	
     exports ui.gui;
     opens ui.gui to javafx.graphics;
