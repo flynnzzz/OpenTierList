@@ -1,4 +1,7 @@
-package ui.gui.panels;
+package ui.gui.manual.panels;
+
+import java.util.Optional;
+import java.util.function.BiConsumer;
 
 import controller.controllers.TierListController;
 import javafx.geometry.Insets;
@@ -16,7 +19,8 @@ import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import model.models.Tier;
-import ui.gui.settings.UISettings;
+import model.models.TierElement;
+import ui.gui.manual.settings.UISettings;
 
 /**
  * 
@@ -24,19 +28,28 @@ import ui.gui.settings.UISettings;
  * @since v1.2.5
  */
 public class TierPane extends HBox {
+	
+	//----- panels -----//
 	private TextField tierNameLabel;
-	private Color tierNameColor;
 	private TierElementsPane elementsPane;
+
+	private Color tierNameColor;
+	private BiConsumer<TierElement, TierElement> onDragDropped;
 	
 	public TierPane(TierListController controller, Tier tier) {
 		this.tierNameLabel = new TextField(tier.getHeader().name());
-		this.elementsPane = new TierElementsPane(controller, tier);
 		this.tierNameColor = tier.getHeader().color();
+
+		this.onDragDropped = (s, t) -> {
+			controller.moveTo(s, controller.getTierByElement(t), t);
+		};
 		
-		this.initPane();
+		this.elementsPane = new TierElementsPane(controller, tier.getElements(), Optional.of(tier), onDragDropped);
+		
+		this.setupPane();
 	}
 	
-	private void initPane() {
+	private void setupPane() {
 		this.getChildren().addAll(tierNameLabel, elementsPane);
 		
 		//----- settings -----//
@@ -53,9 +66,13 @@ public class TierPane extends HBox {
 			this.setOnDragDone(this::handleDragDone);
 		}
 		
-		//TODO: organize later
-		this.setSpacing(10);
-		this.setPadding(new Insets(10,10,10,30));
+		this.setSpacing(UISettings.DEFAULT_TIER_SPACING);
+		this.setPadding(new Insets(
+				UISettings.DEFAULT_TIER_PADDING_TOP,
+				UISettings.DEFAULT_TIER_PADDING_RIGHT,
+				UISettings.DEFAULT_TIER_PADDING_BOTTOM,
+				UISettings.DEFAULT_TIER_PADDING_LEFT)
+			);
 	}
 	
 	private void handleDragDetected(MouseEvent event) {
@@ -72,10 +89,9 @@ public class TierPane extends HBox {
 	}
 	
 	private void setTierNameLabelBorder() {
-		var borderColor = Paint.valueOf(Color.DIMGRAY.toString());
 		var tierNameLabelBorder = new Border(
 				new BorderStroke(
-						borderColor, 
+						Paint.valueOf(UISettings.DEFAULT_BAR_BORDER_COLOR), 
 						BorderStrokeStyle.SOLID,
 						CornerRadii.EMPTY, 
 						BorderWidths.DEFAULT
@@ -88,6 +104,5 @@ public class TierPane extends HBox {
 		var backgroundColor = Paint.valueOf(this.tierNameColor.toString());
 		var nameLabelBackground = Background.fill(backgroundColor);
 		tierNameLabel.setBackground(nameLabelBackground);
-	
 	}
 }

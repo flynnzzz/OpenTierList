@@ -5,6 +5,6 @@ module openTierLists {
 	requires javafx.controls;
 	requires javafx.base;
 	
-    exports ui.gui;
-    opens ui.gui to javafx.graphics;
+    exports ui.gui.manual;
+    opens ui.gui.manual to javafx.graphics;
 }

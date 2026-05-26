@@ -436,6 +436,22 @@ public class TierList {
 	}
 	
 	
+	//------------------------------ updating ------------------------------//
+
+	public void updateTier(Tier toChange, Tier updated) throws TierNotFoundException {
+		int index = this.tiers.indexOf(toChange);
+		if (index != -1) {
+			@SuppressWarnings("unused")
+			Tier t = tiers.get(index);
+			t = updated;
+		}
+		else throw new TierNotFoundException("Failed in function: updateTier()");
+	}
+
+	public void updateUnranked(ListTierElement updated) {
+		this.unranked = updated;
+	}
+	
 	//------------------------------ exceptions ------------------------------//
 	
 	private int checkTierExistence(int tierIndex) throws TierNotFoundException {
@@ -457,7 +473,7 @@ public class TierList {
 		} catch (IndexOutOfBoundsException indexException) { throw exception; }
 	}
 	
-	private int checkElementExistence(TierElement e, ListTierElement ec) throws ElementNotFoundException {
+	private int checkElementExistence(TierElement e, List<TierElement> ec) throws ElementNotFoundException {
 		var exception = new ElementNotFoundException("Element \"" + e + "\" not found in list \"" + ec + "\"");
 		try {
 			Objects.requireNonNull(e); 
@@ -551,11 +567,14 @@ public class TierList {
 		var sb = new StringBuilder();
 		sb.append(this.name + System.lineSeparator());
 		sb.append(System.lineSeparator());
-		for (Tier t : tiers) {
-			sb.append(t.toString(format));
+		
+		tiers.stream()
+		.map( tier -> tier.toString(format) )
+		.forEach( tierString ->  {
+			sb.append(tierString);
 			sb.append(System.lineSeparator());
 			sb.append(System.lineSeparator());
-		}
+		});
 		
 		sb.append("Unranked:" + System.lineSeparator() + unranked.toString());
 		return sb.toString();

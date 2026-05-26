@@ -1,4 +1,4 @@
-package ui.gui.panels;
+package ui.gui.manual.panels;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,6 +6,7 @@ import java.util.List;
 import controller.controllers.TierListController;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.VBox;
+import model.models.Tier;
 
 /**
  * 
@@ -13,10 +14,11 @@ import javafx.scene.layout.VBox;
  * @since v1.2.5
  */
 public class TierPanels extends ScrollPane {
+	//----- panels -----//
 	private VBox tierPanels;
+	private List<TierPane> tierPaneList;
 
 	private TierListController controller;
-	private List<TierPane> tierPaneList;
 	
 	public TierPanels(TierListController controller) {
 		this.controller = controller;
@@ -24,18 +26,19 @@ public class TierPanels extends ScrollPane {
 		this.tierPanels = new VBox();
 		this.initAllTiers();
 		
-		this.initPane();
+		this.setupPane();
 	}
 	
 	private void initAllTiers() {
-		var tiers = controller.getTiers();
-		for (int i = 0; i < tiers.size(); i++) {
-			var tierPane = new TierPane(controller, tiers.get(i));
+		List<Tier> tiers = controller.getTiers();
+		
+		tiers.forEach( tier -> {
+			var tierPane = new TierPane(controller, tier);
 			tierPaneList.add(tierPane);
-		}
+		});
 	}
 	
-	private void initPane() {
+	private void setupPane() {
 		//----- init vbox -----//
 		tierPanels.getChildren().addAll(tierPaneList);
 		

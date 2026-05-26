@@ -2,6 +2,7 @@ package model.models;
 
 import javafx.scene.paint.Color;
 import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 
 import model.enums.TierStringFormat;
@@ -129,7 +130,12 @@ public class Tier {
 	private void setHeader(TierHeader header) { Objects.requireNonNull(header); this.header = header; }
 	
 	public TierHeader getHeader() { return new TierHeader(this.header.name(), this.header.color()); }
-	public ListTierElement getElements() { return new ListTierElement(elements); }
+	
+	/**
+	 * *Read only*
+	 * @return tier's elements
+	 */
+	public List<TierElement> getElements() { return List.copyOf(elements); }
 
 
 	//---------------------------------- hashCode, equals and toString ----------------------------------//
@@ -192,7 +198,7 @@ public class Tier {
 	private String toStringCompact() {
 		var sb = new StringBuilder();
 		sb.append(getHeader().name() + ":" + System.lineSeparator());
-		sb.append(getElements().toString());
+		sb.append(new ListTierElement(getElements()).toString());
 		return sb.toString();
 	}
 	

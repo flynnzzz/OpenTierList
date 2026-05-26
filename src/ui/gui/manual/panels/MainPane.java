@@ -1,4 +1,4 @@
-package ui.gui.panels;
+package ui.gui.manual.panels;
 
 import controller.controllers.TierListController;
 import javafx.geometry.Insets;

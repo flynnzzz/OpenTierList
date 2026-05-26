@@ -2,6 +2,7 @@ package controller.controllers;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import model.enums.TierStringFormat;
 import model.exceptions.ElementNotFoundException;
@@ -265,11 +266,13 @@ public class StandardTierListController implements TierListController {
 	@Override
 	public Tier getTierByElement(TierElement e) {
 		try {
-			var tiers = tierList.getTiers();
-			for (var tier : tiers) {
-				if (tier.getElements().indexOf(e) != -1) return tier;
-			}
-			throw new ElementNotFoundException();
+			List<Tier> filtered = 
+					 tierList.getTiers().stream()
+					.filter( tier -> (tier.getElements().indexOf(e) != -1) )
+					.collect(Collectors.toList());
+			if (filtered.size() > 1 || filtered.size() == 0)
+				throw new ElementNotFoundException();
+			else return filtered.get(0);
 		}
 		catch(NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) {
 			if (ex instanceof NullPointerException) System.err.println(NPE_ERROR); 
@@ -281,12 +284,13 @@ public class StandardTierListController implements TierListController {
 	@Override
 	public TierElement getElementByHash(String hashCode) {
 		try {
+			
 			for (var tier : tierList.getTiers())
 				for (var element : tier.getElements()) 
 					if (Integer.valueOf(element.hashCode()).toString().equals(hashCode))
 						return element;
 			throw new ElementNotFoundException();
-		} catch (ElementNotFoundException e) {
+		} catch (NullPointerException | IllegalArgumentException | ElementNotFoundException ex) {
 			for (var unranked : tierList.getUnranked()) {
 				if (Integer.valueOf(unranked.hashCode()).toString().equals(hashCode))
 					return unranked;

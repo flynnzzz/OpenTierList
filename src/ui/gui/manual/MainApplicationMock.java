@@ -1,4 +1,4 @@
-package ui.gui;
+package ui.gui.manual;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +14,7 @@ import model.models.ListTierElement;
 import model.models.Tier;
 import model.models.TierElement;
 import model.models.TierList;
-import ui.gui.panels.MainPane;
+import ui.gui.manual.panels.MainPane;
 
 /**
  * 
