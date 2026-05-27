@@ -76,8 +76,8 @@ public class StandardTierListController implements TierListController {
 	}
 	
 	@Override
-	public void unrank(TierElement e, Tier fromTier) {
-		try { tierList.unrank(e, fromTier); }
+	public void unrank(TierElement e) {
+		try { tierList.unrank(e); }
 		catch(NullPointerException | IllegalArgumentException |
 				TierNotFoundException | ElementNotFoundException ex) {
 			if (ex instanceof NullPointerException) System.err.println(NPE_ERROR); 
@@ -86,8 +86,8 @@ public class StandardTierListController implements TierListController {
 	}
 	
 	@Override
-	public void unrank(int toIndex, TierElement e, Tier fromTier) {
-		try { tierList.unrankInsert(fromTier, e, toIndex); }
+	public void unrank(int toIndex, TierElement e) {
+		try { tierList.unrankInsert(e, toIndex); }
 		catch(NullPointerException | IllegalArgumentException |
 				TierNotFoundException | ElementNotFoundException ex) {
 			if (ex instanceof NullPointerException) System.err.println(NPE_ERROR); 

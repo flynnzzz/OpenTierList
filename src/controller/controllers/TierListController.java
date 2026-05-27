@@ -33,9 +33,9 @@ public interface TierListController {
 	
 	public void rank(int toIndex, TierElement e, Tier toTier);
 	
-	public void unrank(TierElement e, Tier fromTier);
+	public void unrank(TierElement e);
 
-	public void unrank(int toIndex, TierElement e, Tier fromTier);
+	public void unrank(int toIndex, TierElement e);
 	
 	public void addTier(Tier t);
 	

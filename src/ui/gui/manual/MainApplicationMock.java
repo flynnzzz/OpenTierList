@@ -1,8 +1,5 @@
 package ui.gui.manual;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import controller.controllers.StandardTierListController;
 import controller.controllers.TierListController;
 import javafx.application.Application;
@@ -11,7 +8,6 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import model.enums.DefaultTier;
 import model.models.ListTierElement;
-import model.models.Tier;
 import model.models.TierElement;
 import model.models.TierList;
 import ui.gui.manual.panels.MainPane;
@@ -24,10 +20,12 @@ import ui.gui.manual.panels.MainPane;
 public class MainApplicationMock extends Application {
 
 	@Override
+	@SuppressWarnings("exports")
 	public void start(Stage stage) throws Exception {
 		
 		var unranked = new ListTierElement();
 
+		@SuppressWarnings("unused")
 		TierElement m, p, s, g, o, a;
 		unranked.add(m = new TierElement("Mookka", "cow.jpg")); unranked.add(p = new TierElement("Pehkura", "sheep.jpg")); unranked.add(s = new TierElement("Suynoh"));
 		unranked.add(g = new TierElement("Galeena")); unranked.add(o = new TierElement("Okha", "duck.jpg")); unranked.add(a = new TierElement("Aseeno"));

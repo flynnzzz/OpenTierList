@@ -9,7 +9,7 @@ public class UISettings {
 
 	public final static int DEFAULT_BAR_MAX_HEIGHT = 5 * DEFAULT_CELL_SIZE;
 
-	public final static int DEFAULT_BAR_MIN_HEIGHT = DEFAULT_CELL_SIZE;
+	public final static int DEFAULT_BAR_MIN_HEIGHT = DEFAULT_CELL_SIZE + 2;
 	
 	public final static String DEFAULT_BAR_BORDER_COLOR = Color.DIMGRAY.toString();
 

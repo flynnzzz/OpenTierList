@@ -42,7 +42,7 @@ public class MainTest {
 			IO.println(controller.toString(TierStringFormat.COMPACT));
 			
 			controller.moveTo(m, A, 0);
-			controller.unrank(0, p, A);
+			controller.unrank(0, p);
 
 			IO.println(controller.toString(TierStringFormat.COMPACT));
 			

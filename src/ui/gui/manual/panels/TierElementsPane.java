@@ -9,6 +9,7 @@ import controller.controllers.TierListController;
 import javafx.animation.FadeTransition;
 import javafx.animation.ParallelTransition;
 import javafx.animation.TranslateTransition;
+import javafx.event.EventTarget;
 import javafx.scene.effect.BlendMode;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -25,13 +26,14 @@ import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.paint.Paint;
 import javafx.util.Duration;
+import model.enums.TierElementStatus;
 import model.models.Tier;
 import model.models.TierElement;
 import ui.gui.manual.settings.UISettings;
 
 /**
  * 
- * @version 2.00
+ * @version 2.30
  * @since v1.2.5
  */
 public class TierElementsPane extends FlowPane {
@@ -42,8 +44,6 @@ public class TierElementsPane extends FlowPane {
 	
 	private List<ImageView> images;
 	private BiConsumer<TierElement, TierElement> onDragDropped;
-	
-	private TierElement dragAndDropTarget; 
 	
 	public TierElementsPane(TierListController controller, List<TierElement> elements, 
 			Optional<Tier> tier, BiConsumer<TierElement, TierElement> onDragDropped) {
@@ -71,6 +71,10 @@ public class TierElementsPane extends FlowPane {
 		this.elements = elements;
 	}
 	
+	public Optional<Tier> getTier() {
+		return this.tier;
+	}
+	
 	private void setupImages(ImageView imageViewer) {
 		//----- settings -----//
 		imageViewer.setSmooth(true);
@@ -78,11 +82,11 @@ public class TierElementsPane extends FlowPane {
 		imageViewer.setFitHeight(UISettings.DEFAULT_CELL_SIZE);
 		imageViewer.setFitWidth(UISettings.DEFAULT_CELL_SIZE);
 		//----- drag and drop -----//
-		imageViewer.setOnDragDetected(this::handleDragDetected);
-		imageViewer.setOnDragOver(this::handleDragOver);
-		imageViewer.setOnDragEntered(this::handleDragEntered);
-		imageViewer.setOnDragExited(this::handleDragExited);
-		imageViewer.setOnDragDropped(this::handleDragDropped);
+		imageViewer.setOnDragDetected(this::handleDragDetectedImage);
+		imageViewer.setOnDragOver(this::handleDragOverImage);
+		imageViewer.setOnDragEntered(this::handleDragEnteredImage);
+		imageViewer.setOnDragExited(this::handleDragExitedImage);
+		imageViewer.setOnDragDropped(this::handleDragDroppedImage);
 		imageViewer.setOnDragDone(this::handleDragDone);
 	}
 	
@@ -105,6 +109,13 @@ public class TierElementsPane extends FlowPane {
 		this.setPrefWidth(UISettings.DEFAULT_BAR_WIDTH);
 		this.setMaxHeight(UISettings.DEFAULT_BAR_MAX_HEIGHT);
 		this.setMinHeight(UISettings.DEFAULT_BAR_MIN_HEIGHT);
+		
+		//this.setOnDragDetected(this::handleDragDetected);
+		this.setOnDragOver(this::handleDragOver);
+		this.setOnDragEntered(this::handleDragEntered);
+		this.setOnDragExited(this::handleDragExited);
+		this.setOnDragDropped(this::handleDragDropped);
+		this.setOnDragDone(this::handleDragDone);
 	}
 	
 	private void initFlowPaneBorder() {
@@ -119,7 +130,7 @@ public class TierElementsPane extends FlowPane {
 		this.setBorder(flowPaneBorder);
 	}
 	
-	private void handleDragDetected(MouseEvent event) {
+	private void handleDragDetectedImage(MouseEvent event) {
 		
 		//----- define transfer mode -----//
 		Dragboard dragBoard = ( (ImageView)event.getSource() ).startDragAndDrop(TransferMode.MOVE);
@@ -138,7 +149,7 @@ public class TierElementsPane extends FlowPane {
 		event.consume();
 	}
 	
-	private void handleDragOver(DragEvent event) {
+	private void handleDragOverImage(DragEvent event) {
 		
 		if (event.getGestureSource() != event.getSource() && event.getDragboard().hasImage())
 			event.acceptTransferModes(TransferMode.MOVE);
@@ -146,9 +157,9 @@ public class TierElementsPane extends FlowPane {
 		event.consume();
 	}
 	
-	private void handleDragEntered(DragEvent event) {
+	private void handleDragEnteredImage(DragEvent event) {
 		
-		var target = (ImageView) event.getTarget();
+		ImageView target = (ImageView) event.getTarget();
         if (event.getGestureSource() != target &&
                 event.getDragboard().hasImage()) {
         	target.setBlendMode(BlendMode.ADD);
@@ -157,17 +168,17 @@ public class TierElementsPane extends FlowPane {
 		event.consume();
 	}
 	
-	private void handleDragExited(DragEvent event) {
+	private void handleDragExitedImage(DragEvent event) {
 		
-		var target = (ImageView) event.getTarget();
+		ImageView target = (ImageView) event.getTarget();
 			target.setBlendMode(getBlendMode());
 		
 		event.consume();
 	}
 	
-	private void handleDragDropped(DragEvent event) {
+	private void handleDragDroppedImage(DragEvent event) {
 		
-		var dragBoard = event.getDragboard();
+		Dragboard dragBoard = event.getDragboard();
 		
 		boolean success = false;
 		
@@ -176,32 +187,89 @@ public class TierElementsPane extends FlowPane {
 			//----- find source and target -----//
 			String sourceId = dragBoard.getString();
 			TierElement sourceData = controller.getElementByHash(sourceId);
-			this.dragAndDropTarget = (TierElement)((ImageView)event.getTarget()).getUserData();
+			EventTarget dragAndDropTarget = event.getTarget();
 			
 			//----- update model -----//
-			if (sourceData != null && dragAndDropTarget != null && !sourceData.equals(dragAndDropTarget)) {
+			if (sourceData != null && dragAndDropTarget != null) {
 				
-				onDragDropped.accept(sourceData, dragAndDropTarget);
+				if (dragAndDropTarget instanceof ImageView targetImage 
+						&& !sourceData.equals((TierElement) targetImage.getUserData()))
+					onDragDropped.accept(sourceData, (TierElement) targetImage.getUserData());
+				}
+				
 				success = true;
 				this.updateImages();
-	        }
 		}
 		event.setDropCompleted(success);
 		
 		event.consume();
 	}
 	
+	private void handleDragOver(DragEvent event) {
+		if (event.getGestureSource() != event.getSource() && event.getDragboard().hasImage())
+			event.acceptTransferModes(TransferMode.MOVE);
+		event.consume();
+	}
+	
+	private void handleDragEntered(DragEvent event) {
+		TierElementsPane target = (TierElementsPane) event.getTarget();
+        if (event.getGestureSource() != target &&
+                event.getDragboard().hasImage()) {
+        }
+		event.consume();
+	}
+	
+	private void handleDragExited(DragEvent event) {
+		TierElementsPane target = (TierElementsPane) event.getTarget();
+			target.setBlendMode(getBlendMode());
+		event.consume();
+	}
+	
+	private void handleDragDropped(DragEvent event) {
+		Dragboard dragBoard = event.getDragboard();
+
+		boolean success = false;
+		
+		if (dragBoard.hasImage () && dragBoard.hasString()) {
+			String sourceId = dragBoard.getString();
+			TierElement sourceData = controller.getElementByHash(sourceId);
+			EventTarget dragAndDropTarget = event.getTarget();
+			
+			if (dragAndDropTarget instanceof TierElementsPane targetElementPane) {
+
+				Optional<Tier> targetTier = targetElementPane.getTier();
+				switch (sourceData.status()) {
+				case TierElementStatus.RANKED: {
+					if (targetTier.isPresent())
+						controller.moveTo(sourceData, targetTier.get());
+					else
+						controller.unrank(sourceData);
+				} break;
+				case TierElementStatus.UNRANKED: {
+					if (targetTier.isPresent())
+						controller.rank(sourceData, targetElementPane.getTier().get()); 
+					else
+						controller.moveUnranked(sourceData, controller.getUnranked().getLast());
+				} break;
+				default: break;
+				}
+				success = true;
+				this.updateImages();
+			}
+		}
+		event.setDropCompleted(success);
+		
+		event.consume();
+	}
 	
 	private void handleDragDone(DragEvent event) {
-		
-		this.dragAndDropTarget = (TierElement)((ImageView)event.getTarget()).getUserData();
 		if (event.getTransferMode() == TransferMode.MOVE) {
 			this.updateImages();
 		}
 		event.consume();
 	}
 	
-	private void updateImages() {
+	public void updateImages() {
 		if (tier.isPresent()) 
 			this.updateElements(tier.get().getElements());
 		else
@@ -214,19 +282,19 @@ public class TierElementsPane extends FlowPane {
 	}
 	
 	private void updateAnimation() {
-		for (ImageView img : images) {
-			img.setTranslateX(UISettings.DEFAULT_CELL_SIZE);
-			img.setOpacity(0);
+		images.forEach( image -> {
+			image.setTranslateX(UISettings.DEFAULT_CELL_SIZE);
+			image.setOpacity(0);
 			
-			TranslateTransition tt = new TranslateTransition(Duration.millis(100), img);
-			tt.setFromX(UISettings.DEFAULT_CELL_SIZE);
-			tt.setToX(0);
+			var translateTransition = new TranslateTransition(Duration.millis(100), image);
+			translateTransition.setFromX(UISettings.DEFAULT_CELL_SIZE);
+			translateTransition.setToX(0);
 			
-			FadeTransition ft = new FadeTransition(Duration.millis(100), img);
-			ft.setFromValue(0.0);
-			ft.setToValue(1.0);
+			var fadeTransition = new FadeTransition(Duration.millis(100), image);
+			fadeTransition.setFromValue(0.0);
+			fadeTransition.setToValue(1.0);
 			
-			new ParallelTransition(img, tt, ft).play();
-		}
+			new ParallelTransition(image, translateTransition, fadeTransition).play();
+		});
 	}
 }
