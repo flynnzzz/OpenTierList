@@ -6,7 +6,9 @@ import java.util.Optional;
 import java.util.function.BiConsumer;
 
 import controller.controllers.TierListController;
+import javafx.animation.FadeTransition;
 import javafx.animation.ParallelTransition;
+import javafx.animation.TranslateTransition;
 import javafx.scene.effect.BlendMode;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -22,6 +24,7 @@ import javafx.scene.layout.BorderWidths;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.paint.Paint;
+import javafx.util.Duration;
 import model.models.Tier;
 import model.models.TierElement;
 import ui.gui.manual.settings.UISettings;
@@ -203,9 +206,27 @@ public class TierElementsPane extends FlowPane {
 			this.updateElements(tier.get().getElements());
 		else
 			this.updateElements(controller.getUnranked());
-			
+		
 		this.images = loadImages();
 		this.getChildren().clear();
 		this.getChildren().addAll(images);
+		this.updateAnimation();
+	}
+	
+	private void updateAnimation() {
+		for (ImageView img : images) {
+			img.setTranslateX(UISettings.DEFAULT_CELL_SIZE);
+			img.setOpacity(0);
+			
+			TranslateTransition tt = new TranslateTransition(Duration.millis(100), img);
+			tt.setFromX(UISettings.DEFAULT_CELL_SIZE);
+			tt.setToX(0);
+			
+			FadeTransition ft = new FadeTransition(Duration.millis(100), img);
+			ft.setFromValue(0.0);
+			ft.setToValue(1.0);
+			
+			new ParallelTransition(img, tt, ft).play();
+		}
 	}
 }
