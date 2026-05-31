@@ -112,8 +112,11 @@ public class Tier {
 		swap(elements.indexOf(a), elements.indexOf(b));
 	}
 	
-	private void swap(int a, int b) throws IndexOutOfBoundsException { Collections.swap(elements, a, b); }
+	public void swap(int a, int b) throws IndexOutOfBoundsException { Collections.swap(elements, a, b); }
 	
+	public boolean contains(TierElement element) {
+		return this.elements.contains(element);
+	}
 	
 	//---------------------------------- setters and getters ----------------------------------//	
 	

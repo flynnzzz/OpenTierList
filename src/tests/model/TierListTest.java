@@ -243,14 +243,14 @@ class TierListTest {
 		tierlist.addToTier(1, unranked.get(3));
 		tierlist.addToTier(2, unranked.get(4));
 		
-		tierlist.moveFromTierToTier(0, unranked.get(4));
+		tierlist.moveToTier(0, unranked.get(4));
 		
 		assertTrue(tierlist.getTiers().get(2).getElements().isEmpty());
 		assertEquals(tierlist.getTiers().get(0).getElements().size(), 3);
 		
-		tierlist.moveFromTierToTier(2, unranked.get(4));
+		tierlist.moveToTier(2, unranked.get(4));
 
-		tierlist.moveFromTierToTier(1, unranked.get(0));
+		tierlist.moveToTier(1, unranked.get(0));
 		
 		assertEquals(tierlist.getTiers().get(0).getElements().size(), 1);
 		assertEquals(tierlist.getTiers().get(0).getElements(), List.of(unranked.get(1)));

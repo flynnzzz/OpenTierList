@@ -94,7 +94,12 @@ public class TierElementsPane extends FlowPane {
 		this.images = new ArrayList<>();
 		
 		elements.forEach( element -> {
-			var imageViewer = new ImageView(new Image(element.getImageUrl()));
+			var imageViewer = new ImageView(new Image(element.getImageUrl(),
+					UISettings.DEFAULT_CELL_SIZE,
+					UISettings.DEFAULT_CELL_SIZE,
+					false,
+					false));
+
 			imageViewer.setUserData(element);
 			setupImages(imageViewer);
 			images.add(imageViewer);
@@ -162,7 +167,7 @@ public class TierElementsPane extends FlowPane {
 		ImageView target = (ImageView) event.getTarget();
         if (event.getGestureSource() != target &&
                 event.getDragboard().hasImage()) {
-        	target.setBlendMode(BlendMode.ADD);
+        	target.setBlendMode(BlendMode.RED);
         }
                
 		event.consume();

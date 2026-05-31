@@ -28,7 +28,7 @@ public class MainApplicationMock extends Application {
 		@SuppressWarnings("unused")
 		TierElement m, p, s, g, o, a;
 		unranked.add(m = new TierElement("Mookka", "cow.jpg")); unranked.add(p = new TierElement("Pehkura", "sheep.jpg")); unranked.add(s = new TierElement("Suynoh"));
-		unranked.add(g = new TierElement("Galeena")); unranked.add(o = new TierElement("Okha", "duck.jpg")); unranked.add(a = new TierElement("Aseeno"));
+		unranked.add(g = new TierElement("Galeena")); unranked.add(o = new TierElement("Okha", "duck.jpg")); unranked.add(a = new TierElement("Aseeno", "usagi.jpg"));
 		
 		var defaultTierList = new TierList("Test", unranked);
 		for (var defaultTier : DefaultTier.values()) {

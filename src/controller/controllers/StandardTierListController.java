@@ -180,7 +180,7 @@ public class StandardTierListController implements TierListController {
 	@Override
 	public void moveTo(TierElement e, Tier toTier) {
 		try {
-			tierList.moveFromTierToTier(toTier, e);
+			tierList.moveToTier(toTier, e);
 		}
 		catch(NullPointerException | IllegalArgumentException |
 				TierNotFoundException | ElementNotFoundException ex) {
@@ -193,7 +193,7 @@ public class StandardTierListController implements TierListController {
 	public void moveTo(TierElement e, Tier toTier, TierElement toElement) {
 		try {
 			int toIndex = toTier.getElements().indexOf(toElement);
-			tierList.moveFromTierToTier(toTier, e, toIndex);
+			tierList.moveToTier(toTier, e, toIndex);
 		}
 		catch(NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) {
 			if (ex instanceof NullPointerException) System.err.println(NPE_ERROR); 
@@ -204,7 +204,7 @@ public class StandardTierListController implements TierListController {
 	@Override
 	public void moveTo(TierElement e, Tier toTier, int toIndex) {
 		try {
-			tierList.moveFromTierToTier(toTier, e, toIndex);
+			tierList.moveToTier(toTier, e, toIndex);
 		}
 		catch(NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) {
 			if (ex instanceof NullPointerException) System.err.println(NPE_ERROR); 
