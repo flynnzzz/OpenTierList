@@ -284,7 +284,6 @@ public class StandardTierListController implements TierListController {
 	@Override
 	public TierElement getElementByHash(String hashCode) {
 		try {
-			
 			for (var tier : tierList.getTiers())
 				for (var element : tier.getElements()) 
 					if (Integer.valueOf(element.hashCode()).toString().equals(hashCode))
@@ -295,6 +294,19 @@ public class StandardTierListController implements TierListController {
 				if (Integer.valueOf(unranked.hashCode()).toString().equals(hashCode))
 					return unranked;
 			}
+		}
+		return null;
+	}
+
+	@Override
+	public Tier getTierByHash(String hashCode) {
+		try {
+			for (var tier : tierList.getTiers())
+					if (Integer.valueOf(tier.hashCode()).toString().equals(hashCode))
+						return tier;
+			throw new TierNotFoundException();
+		} catch (NullPointerException | IllegalArgumentException | TierNotFoundException ex) {
+			System.err.println("getTierByHash failed");	
 		}
 		return null;
 	}

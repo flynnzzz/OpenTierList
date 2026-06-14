@@ -61,8 +61,8 @@ class TierElementTest {
 
 		assertEquals(immortal.getImagePath(), basePath.resolve("wheresomniman.jpg").toString());
 		assertEquals(whole.getImagePath(), basePath.resolve("sunwukong.png").toString());
-		assertEquals(noImage.getImagePath(), basePath.resolve("default.png").toString());
-		assertEquals(noNameNoImage.getImagePath(), basePath.resolve("default.png").toString());
+		assertEquals(noImage.getImagePath(), basePath.resolve("default.jpeg").toString());
+		assertEquals(noNameNoImage.getImagePath(), basePath.resolve("default.jpeg").toString());
 		assertNotEquals(noNameNoImage.getImagePath(), basePath.resolve("some path").toString());
 	}
 
@@ -229,6 +229,6 @@ class TierElementTest {
 
 	@Test
 	void testDefaultImagePathConstant() {
-		assertEquals(TierElement.DEFAULT_ELEMENT_IMAGE_PATH, "default.png");
+		assertEquals(TierElement.DEFAULT_ELEMENT_IMAGE_PATH, "default.jpeg");
 	}
 }

@@ -1,5 +1,6 @@
 package model.models;
 
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Objects;
@@ -48,6 +49,8 @@ public class TierElement {
 		this.name = name;
 		this.id = NEXT_ID++;
 		this.imagePath = BASE_PATH.resolve(imagePath).normalize();
+		Path path = Paths.get(this.imagePath.toString());
+		if (!Files.exists(path)) this.imagePath = BASE_PATH.resolve(DEFAULT_ELEMENT_IMAGE_PATH).normalize();
 	}
 	
 	/**

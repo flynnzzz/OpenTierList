@@ -64,6 +64,8 @@ public interface TierListController {
 	public Tier getTierByElement(TierElement e);
 
 	public TierElement getElementByHash(String hashCode);
+
+	public Tier getTierByHash(String hashCode);
 	
 	public List<TierElement> getUnranked();
 

@@ -117,7 +117,8 @@ public class TierElementsPane extends FlowPane {
 		
 		//this.setOnDragDetected(this::handleDragDetected);
 		this.setOnDragOver(this::handleDragOver);
-		this.setOnDragEntered(this::handleDragEntered);
+		// can omit ?
+		//this.setOnDragEntered(this::handleDragEntered);
 		this.setOnDragExited(this::handleDragExited);
 		this.setOnDragDropped(this::handleDragDropped);
 		this.setOnDragDone(this::handleDragDone);
@@ -155,8 +156,7 @@ public class TierElementsPane extends FlowPane {
 	}
 	
 	private void handleDragOverImage(DragEvent event) {
-		
-		if (event.getGestureSource() != event.getSource() && event.getDragboard().hasImage())
+		if (event.getDragboard().hasImage())
 			event.acceptTransferModes(TransferMode.MOVE);
 		
 		event.consume();
@@ -247,8 +247,12 @@ public class TierElementsPane extends FlowPane {
 				case TierElementStatus.RANKED: {
 					if (targetTier.isPresent())
 						controller.moveTo(sourceData, targetTier.get());
-					else
-						controller.unrank(sourceData);
+					else {
+
+						IO.println(controller);
+						controller.unrank(sourceData); 
+						IO.println(controller);
+					}
 				} break;
 				case TierElementStatus.UNRANKED: {
 					if (targetTier.isPresent())
