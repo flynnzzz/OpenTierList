@@ -13,6 +13,8 @@ public class UISettings {
 	
 	public final static String DEFAULT_BAR_BORDER_COLOR = Color.DIMGRAY.toString();
 
+	public final static String DEFAULT_BAR_HIGHLIGHT_COLOR = Color.DEEPSKYBLUE.toString();
+
 	public final static int DEFAULT_UNRANKED_PANE_MAX_HEIGHT = 3 * DEFAULT_CELL_SIZE;
 	
 	public final static int DEFAULT_UNRANKED_PANE_MAX_WIDHT = 2 * DEFAULT_CELL_SIZE;

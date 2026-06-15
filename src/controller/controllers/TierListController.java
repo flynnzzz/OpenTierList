@@ -60,6 +60,8 @@ public interface TierListController {
 	public void moveUnranked(TierElement e, TierElement toElement);
 	
 	public void moveUnranked(TierElement e, int toIndex);
+
+	public void moveTierTo(Tier from, Tier to);
 	
 	public Tier getTierByElement(TierElement e);
 

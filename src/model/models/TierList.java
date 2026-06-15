@@ -401,7 +401,29 @@ public class TierList {
 		this.checkElementExistence(e, unranked);
 		return unranked.moveTo(toElementIndex, e);
 	}
-	
+
+	public Tier moveTierTo(Tier from, Tier to) throws TierNotFoundException {
+		this.checkTierExistence(from);
+		this.checkTierExistence(to);
+		int ai = this.tiers.indexOf(from);
+		int bi = this.tiers.indexOf(to);
+		if (ai < 0 || bi < 0)
+			throw new TierNotFoundException(); 
+		if (ai < bi) {
+			for (int i = ai; i < bi; i++) {
+				tiers.set(i, tiers.get(i + 1));
+			}
+			tiers.set(bi, from); 
+			return from;
+		} else if (ai > bi) {
+			for (int i = ai; i > bi; i--) {
+				tiers.set(i, tiers.get(i - 1));
+			}
+			tiers.set(bi, from); 
+			return from;
+		}
+		return from;
+	}
 	
 	//------------------------------ exceptions ------------------------------//
 	

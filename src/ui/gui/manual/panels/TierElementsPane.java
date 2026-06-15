@@ -6,9 +6,6 @@ import java.util.Optional;
 import java.util.function.BiConsumer;
 
 import controller.controllers.TierListController;
-import javafx.animation.FadeTransition;
-import javafx.animation.ParallelTransition;
-import javafx.animation.TranslateTransition;
 import javafx.event.EventTarget;
 import javafx.scene.effect.BlendMode;
 import javafx.scene.image.Image;
@@ -25,7 +22,6 @@ import javafx.scene.layout.BorderWidths;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.paint.Paint;
-import javafx.util.Duration;
 import model.enums.TierElementStatus;
 import model.models.Tier;
 import model.models.TierElement;
@@ -33,7 +29,7 @@ import ui.gui.manual.settings.UISettings;
 
 /**
  * 
- * @version 2.30
+ * @version 2.90
  * @since v1.2.5
  */
 public class TierElementsPane extends FlowPane {
@@ -67,27 +63,47 @@ public class TierElementsPane extends FlowPane {
 		this.setupPane();
 	}
 	
-	public void updateElements(List<TierElement> elements) {
-		this.elements = elements;
-	}
-	
 	public Optional<Tier> getTier() {
 		return this.tier;
 	}
 	
 	private void setupImages(ImageView imageViewer) {
 		//----- settings -----//
-		imageViewer.setSmooth(true);
+		imageViewer.setSmooth(false);
 		
 		imageViewer.setFitHeight(UISettings.DEFAULT_CELL_SIZE);
 		imageViewer.setFitWidth(UISettings.DEFAULT_CELL_SIZE);
-		//----- drag and drop -----//
+
+		//----- images drag and drop -----//
 		imageViewer.setOnDragDetected(this::handleDragDetectedImage);
-		imageViewer.setOnDragOver(this::handleDragOverImage);
-		imageViewer.setOnDragEntered(this::handleDragEnteredImage);
-		imageViewer.setOnDragExited(this::handleDragExitedImage);
+
+		imageViewer.setOnDragOver(event -> {
+			if (event.getDragboard().hasImage())
+				event.acceptTransferModes(TransferMode.MOVE);
+			event.consume();
+		});
+		
+		imageViewer.setOnDragEntered( event -> {
+			if (event.getTarget() instanceof ImageView target && event.getGestureSource() != target &&
+					event.getDragboard().hasImage()) {
+				target.setBlendMode(BlendMode.RED);
+			}
+			event.consume();
+		});
+
+		imageViewer.setOnDragExited(event -> {
+			if (event.getTarget() instanceof ImageView target)
+				target.setBlendMode(getBlendMode());
+			event.consume();
+		});
+
 		imageViewer.setOnDragDropped(this::handleDragDroppedImage);
-		imageViewer.setOnDragDone(this::handleDragDone);
+
+		imageViewer.setOnDragDone(event -> {
+			if (event.getTransferMode() == TransferMode.MOVE) 
+				this.updateImages();
+			event.consume();
+		});
 	}
 	
 	private List<ImageView> loadImages() {
@@ -111,17 +127,41 @@ public class TierElementsPane extends FlowPane {
 	private void setupPane() {
 		this.getChildren().addAll(images);
 		this.initFlowPaneBorder();
+		//----- settings -----//
 		this.setPrefWidth(UISettings.DEFAULT_BAR_WIDTH);
 		this.setMaxHeight(UISettings.DEFAULT_BAR_MAX_HEIGHT);
 		this.setMinHeight(UISettings.DEFAULT_BAR_MIN_HEIGHT);
-		
-		//this.setOnDragDetected(this::handleDragDetected);
-		this.setOnDragOver(this::handleDragOver);
-		// can omit ?
-		//this.setOnDragEntered(this::handleDragEntered);
-		this.setOnDragExited(this::handleDragExited);
+		this.setupDragAndDrop();	
+	}
+
+	private void setupDragAndDrop() {
+		this.setOnDragOver(event -> {
+			if (event.getGestureSource() != event.getSource() && event.getDragboard().hasImage())
+				event.acceptTransferModes(TransferMode.MOVE);
+			event.consume();
+		});
+
+		this.setOnDragEntered(event -> {
+			var sourceData = event.getGestureSource();
+			if (sourceData instanceof ImageView && event.getDragboard().hasImage())
+				this.setTierElementsPaneBorder(UISettings.DEFAULT_BAR_HIGHLIGHT_COLOR);
+			event.consume();
+		});
+
+		this.setOnDragExited(event -> {
+			var sourceData = event.getGestureSource();
+			if (sourceData instanceof ImageView && event.getDragboard().hasImage())
+				this.setTierElementsPaneBorder(UISettings.DEFAULT_BAR_BORDER_COLOR);
+			event.consume();
+		});
+
 		this.setOnDragDropped(this::handleDragDropped);
-		this.setOnDragDone(this::handleDragDone);
+
+		this.setOnDragDone(event -> {
+			if (event.getTransferMode() == TransferMode.MOVE)
+				this.updateImages();
+			event.consume();
+		});
 	}
 	
 	private void initFlowPaneBorder() {
@@ -141,92 +181,42 @@ public class TierElementsPane extends FlowPane {
 		//----- define transfer mode -----//
 		Dragboard dragBoard = ( (ImageView)event.getSource() ).startDragAndDrop(TransferMode.MOVE);
 		 
-	
-		//----- put image and TierElement hashcode on dragboard -----//
+		//----- save image and TierElement hashcode on dragboard -----//
 		var content = new ClipboardContent();
-		var viewer = (ImageView)event.getSource();
-		var sourceElement = (TierElement)viewer.getUserData();
-		
-		content.putImage(viewer.getImage());
-		content.putString(Integer.valueOf(sourceElement.hashCode()).toString());
-		
-		dragBoard.setContent(content);
-		
-		event.consume();
-	}
-	
-	private void handleDragOverImage(DragEvent event) {
-		if (event.getDragboard().hasImage())
-			event.acceptTransferModes(TransferMode.MOVE);
-		
-		event.consume();
-	}
-	
-	private void handleDragEnteredImage(DragEvent event) {
-		
-		ImageView target = (ImageView) event.getTarget();
-        if (event.getGestureSource() != target &&
-                event.getDragboard().hasImage()) {
-        	target.setBlendMode(BlendMode.RED);
-        }
-               
-		event.consume();
-	}
-	
-	private void handleDragExitedImage(DragEvent event) {
-		
-		ImageView target = (ImageView) event.getTarget();
-			target.setBlendMode(getBlendMode());
-		
+
+		if (event.getSource() instanceof ImageView viewer
+				&& viewer.getUserData() instanceof TierElement sourceElement) {
+
+			content.putImage(viewer.getImage());
+			content.putString(Integer.valueOf(sourceElement.hashCode()).toString());
+
+			dragBoard.setContent(content);
+		}
 		event.consume();
 	}
 	
 	private void handleDragDroppedImage(DragEvent event) {
-		
+
 		Dragboard dragBoard = event.getDragboard();
-		
+
 		boolean success = false;
-		
-		if (dragBoard.hasImage () && dragBoard.hasString()) {
-			
-			//----- find source and target -----//
-			String sourceId = dragBoard.getString();
-			TierElement sourceData = controller.getElementByHash(sourceId);
-			EventTarget dragAndDropTarget = event.getTarget();
-			
-			//----- update model -----//
-			if (sourceData != null && dragAndDropTarget != null) {
-				
-				if (dragAndDropTarget instanceof ImageView targetImage 
-						&& !sourceData.equals((TierElement) targetImage.getUserData()))
-					onDragDropped.accept(sourceData, (TierElement) targetImage.getUserData());
-				}
-				
-				success = true;
-				this.updateImages();
+
+		TierElement sourceData = controller.getElementByHash(dragBoard.getString());
+		EventTarget dragAndDropTarget = event.getTarget();
+
+		// ----- update model -----//
+		if (dragBoard.hasImage() && dragBoard.hasString() &&
+				dragAndDropTarget instanceof ImageView targetImage &&
+				!sourceData.equals(targetImage.getUserData())) {
+
+			onDragDropped.accept(sourceData, (TierElement) targetImage.getUserData());
+
+			success = true;
+
+			this.updateImages();
 		}
 		event.setDropCompleted(success);
 		
-		event.consume();
-	}
-	
-	private void handleDragOver(DragEvent event) {
-		if (event.getGestureSource() != event.getSource() && event.getDragboard().hasImage())
-			event.acceptTransferModes(TransferMode.MOVE);
-		event.consume();
-	}
-	
-	private void handleDragEntered(DragEvent event) {
-		TierElementsPane target = (TierElementsPane) event.getTarget();
-        if (event.getGestureSource() != target &&
-                event.getDragboard().hasImage()) {
-        }
-		event.consume();
-	}
-	
-	private void handleDragExited(DragEvent event) {
-		TierElementsPane target = (TierElementsPane) event.getTarget();
-			target.setBlendMode(getBlendMode());
 		event.consume();
 	}
 	
@@ -234,76 +224,60 @@ public class TierElementsPane extends FlowPane {
 		Dragboard dragBoard = event.getDragboard();
 
 		boolean success = false;
-		
-		if (dragBoard.hasImage () && dragBoard.hasString()) {
-			String sourceId = dragBoard.getString();
-			TierElement sourceData = controller.getElementByHash(sourceId);
-			EventTarget dragAndDropTarget = event.getTarget();
-			
-			if (dragAndDropTarget instanceof TierElementsPane targetElementPane) {
 
-				Optional<Tier> targetTier = targetElementPane.getTier();
-				switch (sourceData.status()) {
-				case TierElementStatus.RANKED: {
-					if (targetTier.isPresent())
-						controller.moveTo(sourceData, targetTier.get());
-					else {
+		if (dragBoard.hasImage() && dragBoard.hasString()
+				&& event.getTarget() instanceof TierElementsPane targetElementPane) {
 
-						IO.println(controller);
-						controller.unrank(sourceData); 
-						IO.println(controller);
-					}
-				} break;
-				case TierElementStatus.UNRANKED: {
-					if (targetTier.isPresent())
-						controller.rank(sourceData, targetElementPane.getTier().get()); 
-					else
-						controller.moveUnranked(sourceData, controller.getUnranked().getLast());
-				} break;
-				default: break;
-				}
-				success = true;
-				this.updateImages();
-			}
+			TierElement sourceElement = controller.getElementByHash(dragBoard.getString());
+
+			updateModel(sourceElement.status(), sourceElement, targetElementPane);
+			updateImages();
+			success = true;
 		}
 		event.setDropCompleted(success);
-		
+
 		event.consume();
 	}
 	
-	private void handleDragDone(DragEvent event) {
-		if (event.getTransferMode() == TransferMode.MOVE) {
-			this.updateImages();
+	private void updateModel(TierElementStatus status, TierElement sourceElement, TierElementsPane targetPane) {
+		Optional<Tier> targetTier = targetPane.getTier();
+		switch (status) {
+			case TierElementStatus.RANKED: {
+				if (targetTier.isPresent())
+					controller.moveTo(sourceElement, targetTier.get());
+				else
+					controller.unrank(sourceElement);
+			}
+				break;
+			case TierElementStatus.UNRANKED: {
+				if (targetTier.isPresent())
+					controller.rank(sourceElement, targetPane.getTier().get());
+				else
+					controller.moveUnranked(sourceElement, controller.getUnranked().getLast());
+			}
+				break;
+			default:
+				break;
 		}
-		event.consume();
 	}
+	private void setTierElementsPaneBorder(String color) {
+		var tierElementsPaneBorder = new Border(
+				new BorderStroke(
+						Paint.valueOf(color),
+						BorderStrokeStyle.SOLID,
+						CornerRadii.EMPTY,
+						BorderWidths.DEFAULT));
+		this.setBorder(tierElementsPaneBorder);
+}
 	
 	public void updateImages() {
-		if (tier.isPresent()) 
-			this.updateElements(tier.get().getElements());
-		else
-			this.updateElements(controller.getUnranked());
-		
+		List<TierElement> toUpdate;
+
+		toUpdate = tier.isPresent() ? tier.get().getElements() : controller.getUnranked();
+		this.elements = toUpdate;
+
 		this.images = loadImages();
 		this.getChildren().clear();
 		this.getChildren().addAll(images);
-		this.updateAnimation();
-	}
-	
-	private void updateAnimation() {
-		images.forEach( image -> {
-			image.setTranslateX(UISettings.DEFAULT_CELL_SIZE);
-			image.setOpacity(0);
-			
-			var translateTransition = new TranslateTransition(Duration.millis(100), image);
-			translateTransition.setFromX(UISettings.DEFAULT_CELL_SIZE);
-			translateTransition.setToX(0);
-			
-			var fadeTransition = new FadeTransition(Duration.millis(100), image);
-			fadeTransition.setFromValue(0.0);
-			fadeTransition.setToValue(1.0);
-			
-			new ParallelTransition(image, translateTransition, fadeTransition).play();
-		});
 	}
 }
