@@ -5,7 +5,9 @@ import java.util.function.BiConsumer;
 
 import controller.controllers.TierListController;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.DragEvent;
@@ -35,15 +37,19 @@ public class TierPane extends HBox {
 	//----- panels -----//
 	private TextField tierNameLabel;
 	private TierElementsPane elementsPane;
+	private Button editTierButton;
 
 	private TierListController controller;
 	private Tier tier;
 	private BiConsumer<TierElement, TierElement> onDragDropped;
+	private String oldTextValue;
 	
-	public TierPane(TierListController controller, Tier tier) {
+	public TierPane(TierListController controller, Tier tier) {	
 		this.tierNameLabel = new TextField(tier.getHeader().name());
 		this.controller = controller;
 		this.tier = tier;
+		this.editTierButton = new Button("Edit");
+		// TODO: add image?
 
 		//----- TierElementsPane's on 'drag dropped' behaviour -----//
 		this.onDragDropped = (s, t) -> {
@@ -64,12 +70,17 @@ public class TierPane extends HBox {
 	}
 	
 	private void setupPane() {
-		this.getChildren().addAll(tierNameLabel, elementsPane);
+		this.getChildren().addAll(tierNameLabel, elementsPane, editTierButton);
 		
 		//----- settings -----//
 		{
 			this.tierNameLabel.setEditable(true);
+
+			tierNameLabel.setFocusTraversable(false);
 			tierNameLabel.setPrefSize(UISettings.DEFAULT_CELL_SIZE, UISettings.DEFAULT_CELL_SIZE);
+			
+			this.editTierButton.setAlignment(Pos.CENTER_RIGHT);	
+			editTierButton.setFocusTraversable(false);
 			
 			this.setTierNameLabelBackground();
 			this.setTierNameLabelBorder(UISettings.DEFAULT_BAR_BORDER_COLOR);
@@ -85,9 +96,8 @@ public class TierPane extends HBox {
 		setupDragAndDrop();
 	}
 
-	private void setupDragAndDrop() {
-		this.tierNameLabel.setOnDragDetected(this::handleDragDetected);
-
+	private void setupDragAndDrop() { 
+		this.tierNameLabel.setOnDragDetected(this::handleDragDetected); 
 		this.tierNameLabel.setOnDragOver(event -> {
 			if (event.getDragboard().hasString() && !event.getDragboard().hasImage())
 				event.acceptTransferModes(TransferMode.MOVE);
@@ -109,6 +119,19 @@ public class TierPane extends HBox {
 		});
 
 		this.tierNameLabel.setOnDragDropped(this::handleDragDropped);
+
+		this.tierNameLabel.focusedProperty().addListener( (observed, was, now) -> {
+			if (now)
+				oldTextValue = tierNameLabel.getText();
+			else
+				tierNameLabel.setText(oldTextValue);
+		});
+
+		this.tierNameLabel.setOnAction( event -> {
+			controller.setTierName(tier, tierNameLabel.getText());
+			oldTextValue = tierNameLabel.getText();
+			tierNameLabel.getScene().getRoot().requestFocus();
+		});
 	}
 	
 	private void handleDragDetected(MouseEvent event) {

@@ -29,6 +29,8 @@ public interface TierListController {
 	
 	public void setTierListName(String name); 
 
+	public void setTierName(Tier tier, String name);
+
 	public void rank(TierElement e, Tier toTier);
 	
 	public void rank(int toIndex, TierElement e, Tier toTier);

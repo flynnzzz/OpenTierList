@@ -103,10 +103,24 @@ public class StandardTierListController implements TierListController {
 		try { tierList.setTierListName(name); }
 		catch(NullPointerException | IllegalArgumentException ex) {
 				if (ex instanceof NullPointerException) System.err.println(NPE_ERROR); 
-				else System.err.println(IAE_ERROR + ex.toString());
+				else {
+					System.err.println(IAE_ERROR + ex.toString()); 
+					tierList.setTierListName(TierList.DEFAULT_TIERLIST_NAME);	
+				}
 		}
 	}
 	
+	@Override
+	public void setTierName(Tier tier, String name) {
+		try { tierList.setTierName(tierList.indexOf(tier), name); }
+		catch(NullPointerException | IllegalArgumentException ex) {
+				if (ex instanceof NullPointerException) System.err.println(NPE_ERROR); 
+				else {
+					System.err.println(IAE_ERROR + ex.toString()); 
+					tierList.setTierName(tierList.indexOf(tier), Tier.DEFAULT_TIER_NAME);	
+				}
+		}
+	}
 	@Override
 	public void addTier(Tier t) {
 		try { tierList.addTier(t); }
