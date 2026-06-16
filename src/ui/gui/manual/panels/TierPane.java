@@ -29,7 +29,7 @@ import ui.gui.manual.settings.UISettings;
 
 /**
  * 
- * @version 2.90
+ * @version 3.00
  * @since v1.2.5
  */
 public class TierPane extends HBox {
@@ -75,11 +75,10 @@ public class TierPane extends HBox {
 		//----- settings -----//
 		{
 			this.tierNameLabel.setEditable(true);
-
 			tierNameLabel.setFocusTraversable(false);
 			tierNameLabel.setPrefSize(UISettings.DEFAULT_CELL_SIZE, UISettings.DEFAULT_CELL_SIZE);
 			
-			this.editTierButton.setAlignment(Pos.CENTER_RIGHT);	
+			this.editTierButton.setAlignment(Pos.CENTER);	
 			editTierButton.setFocusTraversable(false);
 			
 			this.setTierNameLabelBackground();
@@ -93,7 +92,28 @@ public class TierPane extends HBox {
 					UISettings.DEFAULT_TIER_PADDING_LEFT)
 			);
 		}
+
+		setupEventHandlers();
+	}
+
+	private void setupEventHandlers() {
+
 		setupDragAndDrop();
+
+		this.tierNameLabel.focusedProperty().addListener( (observed, was, now) -> {
+			if (now)
+				oldTextValue = tierNameLabel.getText();
+			else
+				tierNameLabel.setText(oldTextValue);
+		});
+
+		this.tierNameLabel.setOnAction( event -> {
+			if (!tierNameLabel.getText().isBlank()) {
+				controller.setTierName(tier, tierNameLabel.getText());
+				oldTextValue = tierNameLabel.getText();
+			}
+			tierNameLabel.getScene().getRoot().requestFocus();
+		});
 	}
 
 	private void setupDragAndDrop() { 
@@ -119,19 +139,6 @@ public class TierPane extends HBox {
 		});
 
 		this.tierNameLabel.setOnDragDropped(this::handleDragDropped);
-
-		this.tierNameLabel.focusedProperty().addListener( (observed, was, now) -> {
-			if (now)
-				oldTextValue = tierNameLabel.getText();
-			else
-				tierNameLabel.setText(oldTextValue);
-		});
-
-		this.tierNameLabel.setOnAction( event -> {
-			controller.setTierName(tier, tierNameLabel.getText());
-			oldTextValue = tierNameLabel.getText();
-			tierNameLabel.getScene().getRoot().requestFocus();
-		});
 	}
 	
 	private void handleDragDetected(MouseEvent event) {

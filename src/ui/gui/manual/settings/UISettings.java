@@ -25,7 +25,7 @@ public class UISettings {
 	
 	public final static int DEFAULT_UNRANKED_PADDING_BOTTOM = 20;
 	
-	public final static int DEFAULT_UNRANKED_PADDING_LEFT = 30 + DEFAULT_CELL_SIZE;
+	public final static int DEFAULT_UNRANKED_PADDING_LEFT = 20;
 
 	public final static int DEFAULT_TIER_SPACING = 10;
 

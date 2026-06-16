@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import controller.controllers.TierListController;
+import javafx.geometry.Pos;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.VBox;
@@ -11,7 +12,7 @@ import model.models.Tier;
 
 /**
  * 
- * @version 2.10
+ * @version 2.20
  * @since v1.2.5
  */
 public class TierPanels extends ScrollPane {
@@ -50,10 +51,12 @@ public class TierPanels extends ScrollPane {
 		//----- init vbox -----//
 		tierPanels.getChildren().addAll(tierPaneList);
 		this.setContent(tierPanels);
+		this.setFitToWidth(true);
+		tierPanels.setAlignment(Pos.CENTER);
 	}
 
 	public void updatePane() {
-		tierPaneList = new ArrayList<>();
+		tierPaneList.clear();
 		tierPanels = new VBox();
 		this.initAllTiers();
 		this.setupPane();

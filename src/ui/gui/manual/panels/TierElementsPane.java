@@ -68,13 +68,13 @@ public class TierElementsPane extends FlowPane {
 	}
 	
 	private void setupImages(ImageView imageViewer) {
-		//----- settings -----//
+		// ----- settings -----//
 		imageViewer.setSmooth(false);
-		
+
 		imageViewer.setFitHeight(UISettings.DEFAULT_CELL_SIZE);
 		imageViewer.setFitWidth(UISettings.DEFAULT_CELL_SIZE);
 
-		//----- images drag and drop -----//
+		// ----- images drag and drop -----//
 		imageViewer.setOnDragDetected(this::handleDragDetectedImage);
 
 		imageViewer.setOnDragOver(event -> {
@@ -82,25 +82,27 @@ public class TierElementsPane extends FlowPane {
 				event.acceptTransferModes(TransferMode.MOVE);
 			event.consume();
 		});
-		
-		imageViewer.setOnDragEntered( event -> {
-			if (event.getTarget() instanceof ImageView target && event.getGestureSource() != target &&
+		imageViewer.setOnDragEntered(event -> {
+			if (event.getTarget() instanceof ImageView target && event.getGestureSource() instanceof ImageView source &&
 					event.getDragboard().hasImage()) {
 				target.setBlendMode(BlendMode.RED);
+				source.setBlendMode(BlendMode.GREEN);
 			}
 			event.consume();
 		});
 
 		imageViewer.setOnDragExited(event -> {
-			if (event.getTarget() instanceof ImageView target)
+			if (event.getTarget() instanceof ImageView target && event.getGestureSource() instanceof ImageView source) {
+				source.setBlendMode(getBlendMode());
 				target.setBlendMode(getBlendMode());
+			}
 			event.consume();
 		});
 
 		imageViewer.setOnDragDropped(this::handleDragDroppedImage);
 
 		imageViewer.setOnDragDone(event -> {
-			if (event.getTransferMode() == TransferMode.MOVE) 
+			if (event.getTransferMode() == TransferMode.MOVE)
 				this.updateImages();
 			event.consume();
 		});

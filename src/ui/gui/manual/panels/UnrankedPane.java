@@ -4,6 +4,7 @@ import java.util.function.BiConsumer;
 
 import controller.controllers.TierListController;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.DragEvent;
@@ -60,6 +61,9 @@ public class UnrankedPane extends ScrollPane {
 		this.setPrefWidth(UISettings.DEFAULT_BAR_WIDTH);
 		this.setMaxHeight(UISettings.DEFAULT_UNRANKED_PANE_MAX_HEIGHT);
 		this.setMinHeight(UISettings.DEFAULT_UNRANKED_PANE_MAX_WIDHT);
+		this.setFitToWidth(true);
+		this.unrankedPane.setAlignment(Pos.CENTER_LEFT);
+
 		this.setOnDragEntered(this::handleDragEntered);
 		this.setOnDragExited(event -> this.setTierElementsPaneBorder(UISettings.DEFAULT_BAR_BORDER_COLOR));
 		
