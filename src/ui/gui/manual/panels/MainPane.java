@@ -7,7 +7,9 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import ui.gui.manual.settings.UISettings;
 
 /**
  * 
@@ -38,7 +40,11 @@ public class MainPane extends BorderPane {
 		titleLabel.setFocusTraversable(false);
 		HBox titleBox = new HBox(titleLabel);
 		setTop(titleBox);
-		titleBox.setPadding(new Insets(30, 0, 10, 40));
+		titleBox.setPadding(new Insets(
+				UISettings.DEFAULT_TITLE_PADDING_TOP,
+				UISettings.DEFAULT_TITLE_PADDING_RIGHT,
+				UISettings.DEFAULT_TITLE_PADDING_BOTTOM,
+				UISettings.DEFAULT_TITLE_PADDING_LEFT));
 		titleBox.setAlignment(Pos.CENTER);
 
 		// ----- unranked -----//
@@ -54,13 +60,13 @@ public class MainPane extends BorderPane {
 
 		buttons = new VBox();
 		buttons.getChildren().addAll(addTierButton, addElementButton);
-		addTierButton.setPadding(new Insets(5));
-		addElementButton.setPadding(new Insets(5));
+		addTierButton.setPadding(new Insets(UISettings.DEFAULT_RBUTTON_PADDING / 3));
+		addElementButton.setPadding(new Insets(UISettings.DEFAULT_RBUTTON_PADDING / 3));
 
 		addTierButton.setAlignment(Pos.CENTER);	
 		addElementButton.setAlignment(Pos.CENTER);	
-		buttons.setPadding(new Insets(15));
-		buttons.setSpacing(15);
+		buttons.setPadding(new Insets(UISettings.DEFAULT_RBUTTON_PADDING));
+		buttons.setSpacing(UISettings.DEFAULT_RBUTTON_PADDING);
 
 		setRight(buttons);
 
@@ -68,13 +74,13 @@ public class MainPane extends BorderPane {
 		tiersPane = new TierPanels(controller);
 		HBox tiersBox = new HBox(tiersPane);
 		tiersBox.setAlignment(Pos.CENTER); 
-		tiersBox.setPadding(new Insets(0, 0, 0, buttons.getWidth() + 50));
+		tiersBox.setPadding(new Insets(0, 0, 0, 0));
 		setCenter(tiersBox);
 
-
-		VBox emptyBox = new VBox();
-		emptyBox.setPadding(new Insets(15));
-		setLeft(emptyBox);
+		HBox leftSpacer = new HBox();
+		leftSpacer.setPrefWidth(buttons.getWidth() + UISettings.DEFAULT_RBUTTON_PADDING * 8); // I'm never doing UI manualy again
+		HBox.setHgrow(leftSpacer, Priority.NEVER);
+		setLeft(leftSpacer);
 
 		setupEventHandlers();
 	}
