@@ -24,6 +24,7 @@ public class MainPane extends BorderPane {
 	private TierPanels tiersPane;
 	private VBox buttons;
 	private Button addTierButton, addElementButton;
+	// TODO: file selector
 
 	private TierListController controller;
 	private String oldTitle;

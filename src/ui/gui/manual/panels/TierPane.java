@@ -99,7 +99,9 @@ public class TierPane extends HBox {
 	private void setupEventHandlers() {
 
 		setupDragAndDrop();
-
+		
+		// TODO: on hover -> suggestion
+		
 		this.tierNameLabel.focusedProperty().addListener( (observed, was, now) -> {
 			if (now)
 				oldTextValue = tierNameLabel.getText();

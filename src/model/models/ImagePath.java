@@ -23,7 +23,11 @@ public class ImagePath {
     }
 
     public static ImagePath of(String path) {
-        Path real = basePath().resolve(".." + DEFAULT_IMAGES_FOLDER).resolve(path).normalize();
+    	Path jarPath = basePath();
+    	String base = jarPath.toString().contains("bin") ? ".." + DEFAULT_IMAGES_FOLDER : "." + DEFAULT_IMAGES_FOLDER;
+
+        Path real = jarPath.resolve(base).resolve(path).normalize();
+        
         if (path != null && Files.exists(real)) {
             return new ImagePath(real.toUri().toString());
         }

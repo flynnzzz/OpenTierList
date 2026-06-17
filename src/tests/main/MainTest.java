@@ -38,7 +38,6 @@ public class MainTest {
 			controller.rank(unranked.get(0), A);
 			controller.rank(unranked.get(0), A);
 			
-			
 			IO.println(controller.toString(TierStringFormat.COMPACT));
 			
 			controller.moveTo(m, A, 0);
