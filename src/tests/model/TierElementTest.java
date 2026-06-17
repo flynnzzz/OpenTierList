@@ -2,9 +2,6 @@ package tests.model;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.nio.file.Path;
-import java.nio.file.Paths;
-
 import static model.enums.TierElementStatus.*;
 
 import org.junit.jupiter.api.AfterAll;
@@ -15,12 +12,13 @@ import org.junit.jupiter.api.Test;
 
 import model.models.TierElement;
 
+
+/* DEPRECATED, NEEDS REWORK */
+
 class TierElementTest {
 	private static TierElement immortal;
 	private TierElement whole, noImage, noNameNoImage;
-	private static Path basePath = 
-			Paths.get(System.getProperty("user.dir")).resolve("resources/images/");
-	
+
 	@BeforeAll
 	static void setUpBeforeClass() throws Exception {
 		immortal = new TierElement(RANKED, "immortal", "wheresomniman.jpg");
@@ -58,12 +56,6 @@ class TierElementTest {
 		assertEquals(noImage.getName(), "makoto yuki");
 		assertEquals(noNameNoImage.getName(), "element");
 		assertNotEquals(noNameNoImage.getName(), "some name");
-
-		assertEquals(immortal.getImagePath(), basePath.resolve("wheresomniman.jpg").toString());
-		assertEquals(whole.getImagePath(), basePath.resolve("sunwukong.png").toString());
-		assertEquals(noImage.getImagePath(), basePath.resolve("default.jpeg").toString());
-		assertEquals(noNameNoImage.getImagePath(), basePath.resolve("default.jpeg").toString());
-		assertNotEquals(noNameNoImage.getImagePath(), basePath.resolve("some path").toString());
 	}
 
 
@@ -121,34 +113,6 @@ class TierElementTest {
 		whole.setName("first");
 		whole.setName("second");
 		assertEquals(whole.getName(), "second");
-	}
-
-	@Test
-	void testSetImagePath_normal() {
-		noImage.setImagePath("newimage.png");
-		assertEquals(noImage.getImagePath(), basePath.resolve("newimage.png").toString());
-	}
-
-	@Test
-	void testSetImagePath_overwriteDefault() {
-		noNameNoImage.setImagePath("added.jpg");
-		assertEquals(noNameNoImage.getImagePath(), basePath.resolve("added.jpg").toString());
-		assertNotEquals(noNameNoImage.getImagePath(), basePath.resolve("default.png").toString());
-	}
-
-	@Test
-	void testSetImagePath_emptyString() {
-		assertThrows(IllegalArgumentException.class, () -> {
-			whole.setImagePath("");			
-		});
-		assertEquals(whole.getImagePath(), basePath.resolve("sunwukong.png").toString());
-	}
-
-	@Test
-	void testSetImagePath_multipleUpdates() {
-		whole.setImagePath("first.png");
-		whole.setImagePath("second.png");
-		assertEquals(whole.getImagePath(), basePath.resolve("second.png").toString());
 	}
 
 	@Test
@@ -225,10 +189,5 @@ class TierElementTest {
 	@Test
 	void testDefaultNameConstant() {
 		assertEquals(TierElement.DEFAULT_ELEMENT_NAME, "element");
-	}
-
-	@Test
-	void testDefaultImagePathConstant() {
-		assertEquals(TierElement.DEFAULT_ELEMENT_IMAGE_PATH, "default.jpeg");
 	}
 }

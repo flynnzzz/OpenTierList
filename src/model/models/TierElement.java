@@ -1,9 +1,7 @@
 package model.models;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Objects;
+import java.util.Optional;
 
 import model.enums.TierElementStatus;
 
@@ -17,16 +15,12 @@ import model.enums.TierElementStatus;
 public class TierElement {
 	private TierElementStatus status;
 	private String name;
-	private Path imagePath;
+	private ImagePath imagePath;
 	
 	private static long NEXT_ID = 1;
 	private final long id;
 	
-	private static final Path BASE_PATH = Paths.get(System.getProperty("user.dir")).resolve("resources/images/");
-	
 	public static final String DEFAULT_ELEMENT_NAME = "element";
-	public static final String DEFAULT_ELEMENT_IMAGE_PATH = "default.jpeg";
-	
 	
 	//---------------------------------- Ctors ----------------------------------//	
 	
@@ -48,9 +42,7 @@ public class TierElement {
 		this.status = status;
 		this.name = name;
 		this.id = NEXT_ID++;
-		this.imagePath = BASE_PATH.resolve(imagePath).normalize();
-		Path path = Paths.get(this.imagePath.toString());
-		if (!Files.exists(path)) this.imagePath = BASE_PATH.resolve(DEFAULT_ELEMENT_IMAGE_PATH).normalize();
+		this.imagePath =  ImagePath.of(imagePath);
 	}
 	
 	/**
@@ -63,7 +55,7 @@ public class TierElement {
 	 * @throws IllegalArgumentException if name is blank
 	 */
 	public TierElement(TierElementStatus status,  String name) throws IllegalArgumentException {
-		this(status, name, DEFAULT_ELEMENT_IMAGE_PATH);
+		this(status, name, null);
 	}
 	
 	/**
@@ -74,8 +66,8 @@ public class TierElement {
 	 * 
 	 * @throws IllegalArgumentException either name or path is blank
 	 */
-	public TierElement(String name, String path) throws IllegalArgumentException {
-		this(TierElementStatus.UNRANKED, name, path);
+	public TierElement(String name, String imagePath) throws IllegalArgumentException {
+		this(TierElementStatus.UNRANKED, name, imagePath);
 	}
 	
 	/**
@@ -87,7 +79,7 @@ public class TierElement {
 	 * @throws IllegalArgumentException if path is blank
 	 */
 	public TierElement(String name) throws IllegalArgumentException {
-		this(TierElementStatus.UNRANKED, name, DEFAULT_ELEMENT_IMAGE_PATH);
+		this(TierElementStatus.UNRANKED, name, null);
 	}
 	
 	/**
@@ -139,15 +131,7 @@ public class TierElement {
 
 	public String getName() { return name; }
 	
-	public void setImagePath(String imagePath) throws IllegalArgumentException {
-		Objects.requireNonNull(name);
-		if (imagePath.isBlank()) throw new IllegalArgumentException();
-		this.imagePath = BASE_PATH.resolve(imagePath).normalize();; 
-	}
-	
-	public String getImagePath() { return imagePath.toString(); }
-
-	public String getImageUrl() { return imagePath.toUri().toASCIIString(); }
+	public String getImageUrl() { return this.imagePath.getUrl(); }
 
 	
 	//---------------------------------- hashCode, equals and toString ----------------------------------//	

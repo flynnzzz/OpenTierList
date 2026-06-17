@@ -3,7 +3,7 @@ package model.models;
 import javafx.scene.paint.Color;
 
 /**
- * Record class used by {@link Tier}
+ * Self-explanatory 
  * 
  * @param name string representing a {@link Tier}'s name
  * @param color a {@link Tier}'s {@link Color}
