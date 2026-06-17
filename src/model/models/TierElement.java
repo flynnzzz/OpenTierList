@@ -1,7 +1,6 @@
 package model.models;
 
 import java.util.Objects;
-import java.util.Optional;
 
 import model.enums.TierElementStatus;
 
@@ -21,6 +20,7 @@ public class TierElement {
 	private final long id;
 	
 	public static final String DEFAULT_ELEMENT_NAME = "element";
+	public static final String IMAGE_UNAVAILABLE = "N/A";
 	
 	//---------------------------------- Ctors ----------------------------------//	
 	
@@ -55,7 +55,7 @@ public class TierElement {
 	 * @throws IllegalArgumentException if name is blank
 	 */
 	public TierElement(TierElementStatus status,  String name) throws IllegalArgumentException {
-		this(status, name, null);
+		this(status, name, IMAGE_UNAVAILABLE);
 	}
 	
 	/**
@@ -79,7 +79,7 @@ public class TierElement {
 	 * @throws IllegalArgumentException if path is blank
 	 */
 	public TierElement(String name) throws IllegalArgumentException {
-		this(TierElementStatus.UNRANKED, name, null);
+		this(TierElementStatus.UNRANKED, name, IMAGE_UNAVAILABLE);
 	}
 	
 	/**

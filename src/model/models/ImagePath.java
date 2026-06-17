@@ -15,7 +15,7 @@ import java.nio.file.Path;
  */
 public class ImagePath {
     private String url;
-    private static final String DEFAULT_IMAGE_RESOURCE = "/images/default.jpeg";
+    private static final String DEFAULT_IMAGE_RESOURCE = "/default_icon.jpeg";
     private static final String DEFAULT_IMAGES_FOLDER = "/external/images/";
 
     private ImagePath(String url) {
