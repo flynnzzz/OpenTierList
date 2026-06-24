@@ -15,14 +15,14 @@ import model.models.Tier;
  * @version 2.20
  * @since v1.2.5
  */
-public class TierPanels extends ScrollPane {
+public class TiersScrollPane extends ScrollPane {
 	//----- panels -----//
 	private VBox tierPanels;
-	private List<TierPane> tierPaneList;
+	private List<TierHBox> tierPaneList;
 
 	private TierListController controller;
 	
-	public TierPanels(TierListController controller) {
+	public TiersScrollPane(TierListController controller) {
 		this.controller = controller;
 		this.tierPaneList = new ArrayList<>();
 		this.tierPanels = new VBox();
@@ -35,7 +35,7 @@ public class TierPanels extends ScrollPane {
 		List<Tier> tiers = controller.getTiers();
 		
 		tiers.forEach( tier -> {
-			var tierPane = new TierPane(controller, tier);
+			var tierPane = new TierHBox(controller, tier);
 
 			tierPane.getTextField().setOnDragDone(event -> {
 				if (event.getTransferMode() == TransferMode.MOVE)

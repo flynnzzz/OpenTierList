@@ -6,14 +6,13 @@ import java.util.List;
 import controller.controllers.TierListController;
 import model.enums.DefaultTier;
 import model.enums.TierStringFormat;
-import model.models.ListTierElement;
 import model.models.Tier;
 import model.models.TierElement;
 import model.models.TierList;
 
 public class MainTest {
 		public static void main() {
-			var unranked = new ListTierElement();
+			var unranked = new ArrayList<TierElement>();
 			TierElement m, p, s, g, o, a;
 			unranked.add(m = new TierElement("Mookka")); unranked.add(p = new TierElement("Pehkura")); unranked.add(s = new TierElement("Suynoh"));
 			unranked.add(g = new TierElement("Galeena")); unranked.add(o = new TierElement("Okha")); unranked.add(a = new TierElement("Aseeno"));

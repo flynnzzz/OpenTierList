@@ -21,7 +21,7 @@ import model.exceptions.TierNotFoundException;
 public class TierList {
 
 	private String name;
-	private ListTierElement unranked;
+	private List<TierElement> unranked;
 	private List<Tier> tiers;
 
 	public static final String DEFAULT_TIERLIST_NAME = "New Tierlist";
@@ -38,7 +38,7 @@ public class TierList {
 	 * @param tiers tiers to associate 
 	 * @throws IllegalArgumentException if name is blank
 	 */
-	public TierList(String name, ListTierElement unranked, List<Tier> tiers) {
+	public TierList(String name, List<TierElement> unranked, List<Tier> tiers) {
 		Objects.requireNonNull(name); Objects.requireNonNull(unranked); 
 		Objects.requireNonNull(tiers);	
 		if (name.isBlank()) throw new IllegalArgumentException();
@@ -58,7 +58,7 @@ public class TierList {
 	 * @param unranked elements to rank
 	 * @throws IllegalArgumentException if name is blank
 	 */
-	public TierList(String name, ListTierElement unranked) {
+	public TierList(String name, List<TierElement> unranked) {
 		this(name, unranked, new ArrayList<>());
 	}
 	
@@ -71,7 +71,7 @@ public class TierList {
 	 * 
 	 * @param unranked elements to rank
 	 */
-	public TierList(ListTierElement unranked) {
+	public TierList(List<TierElement> unranked) {
 		this(DEFAULT_TIERLIST_NAME, unranked);
 	}
 	
@@ -85,14 +85,14 @@ public class TierList {
 	 * @throws IllegalArgumentException if name is blank
 	 */
 	public TierList(String name) {
-		this(name, new ListTierElement());
+		this(name, new ArrayList<TierElement>());
 	}  
 	
 	/**
 	 * Constructs an empty {@link TierList} instance.
 	 */
 	public TierList() {
-		this(new ListTierElement());
+		this(new ArrayList<TierElement>());
 	}
 	
 
@@ -110,7 +110,7 @@ public class TierList {
 	 * @throws ElementNotFoundException
 	 */
 	public boolean rank(TierElement e, int toTierIndex) throws TierNotFoundException, ElementNotFoundException {
-		this.removeFromUnranked(e);
+		removeFromUnranked(e);
 		return addToTier(toTierIndex, e);
 	}
 	
@@ -124,7 +124,7 @@ public class TierList {
 	 * @throws ElementNotFoundException
 	 */
 	public boolean rank(TierElement e, Tier toTier) throws TierNotFoundException, ElementNotFoundException {
-		this.removeFromUnranked(e);
+		removeFromUnranked(e);
 		return addToTier(toTier, e);
 	}
 	
@@ -138,8 +138,8 @@ public class TierList {
 	 */
 	public boolean unrank(TierElement e) throws TierNotFoundException, ElementNotFoundException {
 		Tier fromTier = findTierByElement(e);
-		this.checkElementExistenceInTier(e, fromTier);
-		this.addToUnranked(e);
+		verifyElementExistenceInTier(e, fromTier);
+		addToUnranked(e);
 		return removeFromTier(fromTier, e);
 	}
 	
@@ -154,7 +154,7 @@ public class TierList {
 	 * @throws ElementNotFoundException
 	 */
 	public boolean rankInsert(int toTierIndex, TierElement e, int insertIndex) throws TierNotFoundException, ElementNotFoundException {
-		this.removeFromUnranked(e);
+		removeFromUnranked(e);
 		boolean added = addToTier(toTierIndex, e);
 		tiers.get(insertIndex).moveTo(insertIndex, e);
 		return added;
@@ -171,7 +171,7 @@ public class TierList {
 	 * @throws ElementNotFoundException
 	 */
 	public boolean rankInsert(Tier toTier, TierElement e, int insertIndex) throws TierNotFoundException, ElementNotFoundException {
-		this.removeFromUnranked(e);
+		removeFromUnranked(e);
 		boolean added = addToTier(toTier, e);
 		toTier.moveTo(insertIndex, e);
 		return added;
@@ -188,11 +188,10 @@ public class TierList {
 	 */
 	public boolean unrankInsert(TierElement e, int insertIndex) throws TierNotFoundException, ElementNotFoundException {
 		Tier fromTier = findTierByElement(e);
-		this.checkElementExistenceInTier(e, fromTier);
-		this.addToUnranked(e);
-		boolean removed = removeFromTier(fromTier, e);
-		unranked.moveTo(insertIndex, e);
-		return removed;
+		verifyElementExistenceInTier(e, fromTier);
+		addToUnranked(insertIndex, e);
+		
+		return removeFromTier(fromTier, e);
 	}
 
 	
@@ -205,24 +204,26 @@ public class TierList {
 	 * @param e element to add
 	 */
 	public void addToUnranked(TierElement e) { unranked.add(e); e.changeTo(UNRANKED); }
+
+	public void addToUnranked(int index, TierElement e) { unranked.add(index, e); e.changeTo(UNRANKED); }
 	
 	public boolean addToTier(int tierIndex, TierElement e) throws TierNotFoundException {
-		this.checkTierExistence(tierIndex);
+		verifyTierExistence(tierIndex);
 		return tiers.get(tierIndex).add(e);
 	}
 	
 	public boolean addToTier(Tier tier, TierElement e) throws TierNotFoundException {
-		this.checkTierExistence(tier);
+		checkTierExistence(tier);
 		return tier.add(e);
 	}
 	
 	public Tier removeTier(int tierIndex) throws TierNotFoundException  {
-		this.checkTierExistence(tierIndex);
+		verifyTierExistence(tierIndex);
 		return tiers.remove(tierIndex);
 	}
 
 	public boolean removeTier(Tier t) throws TierNotFoundException {
-		this.checkTierExistence(tiers.indexOf(t));
+		verifyTierExistence(tiers.indexOf(t));
 		return tiers.remove(t);
 	}
 	
@@ -231,20 +232,20 @@ public class TierList {
 	 * @param e element to add
 	 */
 	public void removeFromUnranked(TierElement e) throws ElementNotFoundException {
-		this.checkElementExistence(e, unranked);
+		verifyElementExistence(e, unranked);
 		unranked.remove(e);
 		e.changeTo(RANKED);
 	}
 	
 	public boolean removeFromTier(int tierIndex, TierElement e) throws TierNotFoundException, ElementNotFoundException {
-		this.checkElementExistenceInTier(e, tierIndex);
+		this.verifyElementExistenceInTier(e, tierIndex);
 		if (!tiers.get(tierIndex).remove(e)) 
 			throw new ElementNotFoundException();
 		else return true;
 	}
 	
 	public boolean removeFromTier(Tier tier, TierElement e) throws TierNotFoundException, ElementNotFoundException {
-		this.checkElementExistenceInTier(e, tier);
+		this.verifyElementExistenceInTier(e, tier);
 		if (!tier.remove(e)) 
 			throw new ElementNotFoundException();
 		else return true;
@@ -273,8 +274,8 @@ public class TierList {
 	 * @throws ElementNotFoundException
 	 */
 	public void swapElements(int tierIndex, TierElement a, TierElement b) throws TierNotFoundException, ElementNotFoundException {
-		this.checkElementExistenceInTier(a, tierIndex); 
-		this.checkElementExistenceInTier(b, tierIndex);
+		verifyElementExistenceInTier(a, tierIndex); 
+		verifyElementExistenceInTier(b, tierIndex);
 		Tier t = tiers.get(tierIndex);
 		t.swap(a, b);
 	}
@@ -289,8 +290,8 @@ public class TierList {
 	 * @throws ElementNotFoundException
 	 */
 	public void swapElements(Tier tier, TierElement a, TierElement b) throws TierNotFoundException, ElementNotFoundException {
-		this.checkElementExistenceInTier(a, tier); 
-		this.checkElementExistenceInTier(b, tier);
+		verifyElementExistenceInTier(a, tier); 
+		verifyElementExistenceInTier(b, tier);
 		tier.swap(a, b);
 	}
 	
@@ -302,7 +303,7 @@ public class TierList {
 	 * @throws ElementNotFoundException
 	 */
 	public void swapUnranked(TierElement a, TierElement b) throws ElementNotFoundException {
-		int ai = checkElementExistence(a, unranked), bi = checkElementExistence(b, unranked);
+		int ai = verifyElementExistence(a, unranked), bi = verifyElementExistence(b, unranked);
 		Collections.swap(unranked, ai, bi);
 	}
 	
@@ -315,7 +316,7 @@ public class TierList {
 	 * @return the tier's index
 	 * @throws TierNotFoundException
 	 */
-	public int indexOf(Tier t) throws TierNotFoundException { return checkTierExistence(tiers.indexOf(t)); }
+	public int indexOf(Tier t) throws TierNotFoundException { return verifyTierExistence(tiers.indexOf(t)); }
 	
 	public int size() { return this.tiers.size(); }
 
@@ -332,7 +333,7 @@ public class TierList {
 	 * @throws TierNotFoundException
 	 */
 	public boolean moveToTier(int toTierIndex, TierElement e) throws ElementNotFoundException, TierNotFoundException {
-		this.checkTierExistence(toTierIndex);
+		verifyTierExistence(toTierIndex);
 		int fromTierIndex = findTierIndexByElement(e);
 		if (tiers.get(fromTierIndex).remove(e)) 
 			return tiers.get(toTierIndex).add(e);
@@ -349,7 +350,7 @@ public class TierList {
 	 * @throws TierNotFoundException
 	 */
 	public boolean moveToTier(Tier toTier, TierElement e) throws ElementNotFoundException, TierNotFoundException {
-		this.checkTierExistence(toTier);
+		checkTierExistence(toTier);
 		if (findTierByElement(e).remove(e)) 
 			return toTier.add(e);
 		else return false;
@@ -366,7 +367,7 @@ public class TierList {
 	 * @throws TierNotFoundException
 	 */
 	public boolean moveToTier(int toTierIndex, TierElement e, int toElementIndex) throws TierNotFoundException, IndexOutOfBoundsException {
-		this.checkTierExistence(toTierIndex);
+		verifyTierExistence(toTierIndex);
 		int fromTierIndex = findTierIndexByElement(e);
 		if (tiers.get(fromTierIndex).remove(e)) {
 			tiers.get(toTierIndex).add(e);
@@ -387,7 +388,7 @@ public class TierList {
 	 * @throws TierNotFoundException
 	 */
 	public boolean moveToTier(Tier toTier, TierElement e, int toElementIndex) throws TierNotFoundException, IndexOutOfBoundsException {
-		this.checkTierExistence(toTier);
+		checkTierExistence(toTier);
 		int fromTierIndex = findTierIndexByElement(e);
 		if (tiers.get(fromTierIndex).remove(e)) {
 			toTier.add(e);
@@ -397,32 +398,18 @@ public class TierList {
 		else return false;
 	}
 	
-	public TierElement moveUnranked(TierElement e, int toElementIndex) throws TierNotFoundException, IndexOutOfBoundsException {
-		this.checkElementExistence(e, unranked);
-		return unranked.moveTo(toElementIndex, e);
+	public void moveUnranked(TierElement e, int toElementIndex) throws TierNotFoundException, IndexOutOfBoundsException {
+		verifyElementExistence(e, unranked);
+		unranked.remove(e);
+		unranked.add(toElementIndex, e);
 	}
 
-	public Tier moveTierTo(Tier from, Tier to) throws TierNotFoundException {
-		this.checkTierExistence(from);
-		this.checkTierExistence(to);
-		int ai = this.tiers.indexOf(from);
-		int bi = this.tiers.indexOf(to);
-		if (ai < 0 || bi < 0)
-			throw new TierNotFoundException(); 
-		if (ai < bi) {
-			for (int i = ai; i < bi; i++) {
-				tiers.set(i, tiers.get(i + 1));
-			}
-			tiers.set(bi, from); 
-			return from;
-		} else if (ai > bi) {
-			for (int i = ai; i > bi; i--) {
-				tiers.set(i, tiers.get(i - 1));
-			}
-			tiers.set(bi, from); 
-			return from;
-		}
-		return from;
+	public void moveTierTo(Tier from, Tier to) throws TierNotFoundException {
+		int indexFrom = checkTierExistence(from),
+			indexTo = checkTierExistence(to);
+		
+		tiers.remove(indexFrom);
+		tiers.add(indexTo, from);
 	}
 	
 	//------------------------------ exceptions ------------------------------//
@@ -436,7 +423,7 @@ public class TierList {
 	
 	public boolean contains(Tier tier) { return this.tiers.contains(tier); }
 	
-	private int checkTierExistence(int tierIndex) throws TierNotFoundException {
+	private int verifyTierExistence(int tierIndex) throws TierNotFoundException {
 		var exception = new TierNotFoundException("Tier at index \"" + tierIndex + "\" not found");
 		try {
 			if (tierIndex == -1) 
@@ -455,11 +442,10 @@ public class TierList {
 		} catch (IndexOutOfBoundsException indexException) { throw exception; }
 	}
 	
-	private int checkElementExistence(TierElement e, List<TierElement> ec) throws ElementNotFoundException {
+	private int verifyElementExistence(TierElement e, List<TierElement> ec) throws ElementNotFoundException {
 		var exception = new ElementNotFoundException("Element \"" + e + "\" not found in list \"" + ec + "\"");
 		try {
-			Objects.requireNonNull(e); 
-			Objects.requireNonNull(ec);
+			Objects.requireNonNull(e); Objects.requireNonNull(ec);
 			int elementIndex = ec.indexOf(e);
 			if (elementIndex == -1) 
 				throw exception; 
@@ -469,14 +455,14 @@ public class TierList {
 		}
 	}
 	
-	private void checkElementExistenceInTier(TierElement e, int tierIndex) throws ElementNotFoundException, TierNotFoundException {
-		this.checkTierExistence(tierIndex);
-		this.checkElementExistence(e, tiers.get(tierIndex).getElements());
+	private void verifyElementExistenceInTier(TierElement e, int tierIndex) throws ElementNotFoundException, TierNotFoundException {
+		verifyTierExistence(tierIndex);
+		verifyElementExistence(e, tiers.get(tierIndex).getElements());
 	}
 	
-	private void checkElementExistenceInTier(TierElement e, Tier tier) throws ElementNotFoundException, TierNotFoundException {
-		this.checkTierExistence(tier);
-		this.checkElementExistence(e, tier.getElements());
+	private void verifyElementExistenceInTier(TierElement e, Tier tier) throws ElementNotFoundException, TierNotFoundException {
+		checkTierExistence(tier);
+		verifyElementExistence(e, tier.getElements());
 	}
 
 	private int findTierIndexByElement(TierElement e) throws ElementNotFoundException {

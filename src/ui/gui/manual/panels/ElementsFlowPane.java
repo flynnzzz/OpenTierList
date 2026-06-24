@@ -32,7 +32,7 @@ import ui.gui.manual.settings.UISettings;
  * @version 2.90
  * @since v1.2.5
  */
-public class TierElementsPane extends FlowPane {
+public class ElementsFlowPane extends FlowPane {
 	
 	private TierListController controller;
 	private Optional<Tier> tier;
@@ -41,7 +41,7 @@ public class TierElementsPane extends FlowPane {
 	private List<ImageView> images;
 	private BiConsumer<TierElement, TierElement> onDragDropped;
 	
-	public TierElementsPane(TierListController controller, List<TierElement> elements, 
+	public ElementsFlowPane(TierListController controller, List<TierElement> elements, 
 			Optional<Tier> tier, BiConsumer<TierElement, TierElement> onDragDropped) {
 		this.controller = controller;
 		this.tier = tier;
@@ -52,7 +52,7 @@ public class TierElementsPane extends FlowPane {
 		this.setupPane();
 	}
 	
-	public TierElementsPane(TierListController controller, List<TierElement> elements, 
+	public ElementsFlowPane(TierListController controller, List<TierElement> elements, 
 			BiConsumer<TierElement, TierElement> onDragDropped) {
 		this.controller = controller;
 		this.tier = Optional.empty();
@@ -228,7 +228,7 @@ public class TierElementsPane extends FlowPane {
 		boolean success = false;
 
 		if (dragBoard.hasImage() && dragBoard.hasString()
-				&& event.getTarget() instanceof TierElementsPane targetElementPane) {
+				&& event.getTarget() instanceof ElementsFlowPane targetElementPane) {
 
 			TierElement sourceElement = controller.getElementByHash(dragBoard.getString());
 
@@ -241,7 +241,7 @@ public class TierElementsPane extends FlowPane {
 		event.consume();
 	}
 	
-	private void updateModel(TierElementStatus status, TierElement sourceElement, TierElementsPane targetPane) {
+	private void updateModel(TierElementStatus status, TierElement sourceElement, ElementsFlowPane targetPane) {
 		Optional<Tier> targetTier = targetPane.getTier();
 		switch (status) {
 			case TierElementStatus.RANKED: {

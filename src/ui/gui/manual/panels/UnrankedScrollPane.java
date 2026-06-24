@@ -23,15 +23,15 @@ import ui.gui.manual.settings.UISettings;
  * @version 2.20
  * @since v1.2.5
  */
-public class UnrankedPane extends ScrollPane {
+public class UnrankedScrollPane extends ScrollPane {
 
 	//----- panels -----//
-	private TierElementsPane unrankedPane;
+	private ElementsFlowPane unrankedPane;
 	
 	private TierListController controller;
 	private BiConsumer<TierElement, TierElement> onDragDropped;
 	
-	public UnrankedPane(TierListController controller) {
+	public UnrankedScrollPane(TierListController controller) {
 		this.controller = controller;
 
 		//----- TierElementsPane's on 'drag dropped' behaviour -----//
@@ -49,7 +49,7 @@ public class UnrankedPane extends ScrollPane {
 			}
 		};
 		
-		this.unrankedPane = new TierElementsPane(controller, controller.getUnranked(), onDragDropped);
+		this.unrankedPane = new ElementsFlowPane(controller, controller.getUnranked(), onDragDropped);
 		
 		this.setupPane();
 	}	
@@ -65,7 +65,7 @@ public class UnrankedPane extends ScrollPane {
 		this.unrankedPane.setAlignment(Pos.CENTER_LEFT);
 
 		this.setOnDragEntered(this::handleDragEntered);
-		this.setOnDragExited(event -> this.setTierElementsPaneBorder(UISettings.DEFAULT_BAR_BORDER_COLOR));
+		this.setOnDragExited(_ -> this.setTierElementsPaneBorder(UISettings.DEFAULT_BAR_BORDER_COLOR));
 		
 		this.setPadding(new Insets(
 				UISettings.DEFAULT_UNRANKED_PADDING_TOP,
@@ -91,7 +91,7 @@ public class UnrankedPane extends ScrollPane {
 	}
 	
 	private void handleDragEntered(DragEvent event) {
-		if (event.getGestureSource()instanceof ImageView && event.getTarget() instanceof UnrankedPane
+		if (event.getGestureSource()instanceof ImageView && event.getTarget() instanceof UnrankedScrollPane
 				&& event.getDragboard().hasImage())
 			this.setTierElementsPaneBorder(UISettings.DEFAULT_BAR_HIGHLIGHT_COLOR);
                

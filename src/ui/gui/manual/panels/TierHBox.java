@@ -32,11 +32,11 @@ import ui.gui.manual.settings.UISettings;
  * @version 3.00
  * @since v1.2.5
  */
-public class TierPane extends HBox {
+public class TierHBox extends HBox {
 	
 	//----- panels -----//
 	private TextField tierNameLabel;
-	private TierElementsPane elementsPane;
+	private ElementsFlowPane elementsPane;
 	private Button editTierButton;
 
 	private TierListController controller;
@@ -44,7 +44,7 @@ public class TierPane extends HBox {
 	private BiConsumer<TierElement, TierElement> onDragDropped;
 	private String oldTextValue;
 	
-	public TierPane(TierListController controller, Tier tier) {	
+	public TierHBox(TierListController controller, Tier tier) {	
 		this.tierNameLabel = new TextField(tier.getHeader().name());
 		this.controller = controller;
 		this.tier = tier;
@@ -64,7 +64,7 @@ public class TierPane extends HBox {
 			}
 		};
 		
-		this.elementsPane = new TierElementsPane(controller, tier.getElements(), Optional.of(tier), onDragDropped);
+		this.elementsPane = new ElementsFlowPane(controller, tier.getElements(), Optional.of(tier), onDragDropped);
 		
 		this.setupPane();
 	}
@@ -102,14 +102,14 @@ public class TierPane extends HBox {
 		
 		// TODO: on hover -> suggestion
 		
-		this.tierNameLabel.focusedProperty().addListener( (observed, was, now) -> {
+		this.tierNameLabel.focusedProperty().addListener( (_, _, now) -> {
 			if (now)
 				oldTextValue = tierNameLabel.getText();
 			else
 				tierNameLabel.setText(oldTextValue);
 		});
 
-		this.tierNameLabel.setOnAction( event -> {
+		this.tierNameLabel.setOnAction( _ -> {
 			if (!tierNameLabel.getText().isBlank()) {
 				controller.setTierName(tier, tierNameLabel.getText());
 				oldTextValue = tierNameLabel.getText();
@@ -163,11 +163,11 @@ public class TierPane extends HBox {
 			Tier source = controller.getTierByHash(db.getString());
 			Node potentialTarget = (Node) event.getTarget();
 		
-			while (potentialTarget != null && !(potentialTarget instanceof TierPane)) {
+			while (potentialTarget != null && !(potentialTarget instanceof TierHBox)) {
 				potentialTarget = potentialTarget.getParent();
 			}
 
-			if (potentialTarget instanceof TierPane targetPane) {
+			if (potentialTarget instanceof TierHBox targetPane) {
 				Tier target = (Tier) targetPane.getTier();
 				controller.moveTierTo(source, target);
 			}
@@ -192,7 +192,7 @@ public class TierPane extends HBox {
 		tierNameLabel.setBackground(nameLabelBackground);
 	}
 
-	public Tier getTier() {	return this.tier; }
+	private Tier getTier() { return this.tier; }
 
 	public TextField getTextField() {
 		return this.tierNameLabel;

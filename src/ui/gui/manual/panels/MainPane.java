@@ -20,8 +20,8 @@ public class MainPane extends BorderPane {
 
 	// ----- panels -----//
 	private TextField titleLabel;
-	private UnrankedPane unrankedPane;
-	private TierPanels tiersPane;
+	private UnrankedScrollPane unrankedPane;
+	private TiersScrollPane tiersPane;
 	private VBox buttons;
 	private Button addTierButton, addElementButton;
 	// TODO: file selector
@@ -49,7 +49,7 @@ public class MainPane extends BorderPane {
 		titleBox.setAlignment(Pos.CENTER);
 
 		// ----- unranked -----//
-		unrankedPane = new UnrankedPane(controller);
+		unrankedPane = new UnrankedScrollPane(controller);
 		HBox unrankedBox = new HBox(unrankedPane);
 		unrankedBox.setAlignment(Pos.CENTER);
 
@@ -72,7 +72,7 @@ public class MainPane extends BorderPane {
 		setRight(buttons);
 
 		// ----- tiers -----//
-		tiersPane = new TierPanels(controller);
+		tiersPane = new TiersScrollPane(controller);
 		HBox tiersBox = new HBox(tiersPane);
 		tiersBox.setAlignment(Pos.CENTER); 
 		tiersBox.setPadding(new Insets(0, 0, 0, 0));
@@ -87,14 +87,14 @@ public class MainPane extends BorderPane {
 	}
 
 	private void setupEventHandlers() {
-		titleLabel.focusedProperty().addListener((observed, was, now) -> {
+		titleLabel.focusedProperty().addListener((_, _, now) -> {
 			if (now)
 				this.oldTitle = titleLabel.getText();
 			else
 				titleLabel.setText(oldTitle);
 		});
 
-		titleLabel.setOnAction( event -> {
+		titleLabel.setOnAction( _ -> {
 			if (!titleLabel.getText().isBlank()) {
 				controller.setTierListName(titleLabel.getText());
 				this.oldTitle = titleLabel.getText();

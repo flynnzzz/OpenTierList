@@ -1,6 +1,8 @@
 package model.models;
 
 import javafx.scene.paint.Color;
+
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -21,7 +23,7 @@ public class Tier {
 	public static final Color DEFAULT_TIER_COLOR = Color.GRAY;
 	
 	private TierHeader header;
-	private ListTierElement elements;
+	private List<TierElement> elements;
 	
 	private static long NEXT_ID = 1;
 	private final long id;
@@ -35,7 +37,7 @@ public class Tier {
 	 * @param elements list to associate
 	 * @throws IllegalArgumentException if the header's name is blank
 	 */
-	public Tier(TierHeader header, ListTierElement elements) {
+	public Tier(TierHeader header, List<TierElement> elements) {
 		Objects.requireNonNull(header); Objects.requireNonNull(elements);
 		if (header.name().isBlank()) throw new IllegalArgumentException(
 				"TierHeader's name parameter must not be blank");
@@ -52,7 +54,7 @@ public class Tier {
 	 * @throws IllegalArgumentException if the header's name is blank
 	 */
 	public Tier(TierHeader header) { 
-		this(header, new ListTierElement());
+		this(header, new ArrayList<TierElement>());
 	}
 	
 	/**
@@ -62,7 +64,7 @@ public class Tier {
 	 * @throws IllegalArgumentException if name is blank
 	 */
 	public Tier(String name) { 
-		this(new TierHeader(name, DEFAULT_TIER_COLOR), new ListTierElement());
+		this(new TierHeader(name, DEFAULT_TIER_COLOR), new ArrayList<TierElement>());
 	}
 	
 	/**
@@ -89,18 +91,6 @@ public class Tier {
 		else return elements.add(e);
 	}
 	
-	/**
-	 * Moves an element to a certain index, automatically shifts all the others
-	 * 
-	 * @param to destination index 
-	 * @param e element to move
-	 * @return {@link TierElement} previously at the specified location
-	 * @throws IndexOutOfBoundsException
-	 * @throws ElementNotFoundException
-	 */
-	public TierElement moveTo(int to, TierElement e) throws IndexOutOfBoundsException, ElementNotFoundException 
-	{ return elements.moveTo(to, e); }
-	
 	public boolean remove(TierElement e) throws ElementNotFoundException {
 		if (!elements.remove(e)) throw new ElementNotFoundException();
 		else return true;
@@ -116,6 +106,22 @@ public class Tier {
 	
 	public boolean contains(TierElement element) {
 		return this.elements.contains(element);
+	}
+	
+	/**
+	 * Moves an element to a certain index, automatically shifts all the others
+	 * 
+	 * @param to destination index 
+	 * @param e element to move
+	 * @throws IndexOutOfBoundsException
+	 * @throws ElementNotFoundException
+	 */
+	public void moveTo(int to, TierElement e) throws IndexOutOfBoundsException, ElementNotFoundException {
+		if (!elements.contains(e)) throw new ElementNotFoundException();
+		if (to > elements.size()) throw new IndexOutOfBoundsException();
+
+		elements.remove(elements.indexOf(e));
+		elements.add(to, e);
 	}
 	
 	//---------------------------------- setters and getters ----------------------------------//	
@@ -198,10 +204,24 @@ public class Tier {
 		}
 	}
 	
+	private String toStringElements(List<TierElement> elements) {
+		var sb = new StringBuilder();
+		sb.append("[ ");
+		for (TierElement e : elements) {	
+			sb.append(e); 
+			if (!elements.getLast().equals(e)) 
+				sb.append(", ");
+			else
+				sb.append(".");
+		}
+		sb.append(" ]");
+		return sb.toString();
+	}
+	
 	private String toStringCompact() {
 		var sb = new StringBuilder();
 		sb.append(getHeader().name() + ":" + System.lineSeparator());
-		sb.append(new ListTierElement(getElements()).toString());
+		sb.append(toStringElements(getElements()));
 		return sb.toString();
 	}
 	

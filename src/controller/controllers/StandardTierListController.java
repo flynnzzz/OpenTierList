@@ -60,8 +60,8 @@ public class StandardTierListController implements TierListController {
 		try { tierList.rank(e, toTier); }
 		catch(NullPointerException | IllegalArgumentException |
 				  TierNotFoundException | ElementNotFoundException ex) {
-				if (ex instanceof NullPointerException) System.err.println(NPE_ERROR); 
-				else System.err.println(IAE_ERROR + ex.toString());
+			if (ex instanceof NullPointerException) System.err.println(NPE_ERROR); 
+			else System.err.println(IAE_ERROR + ex.toString());
 		}
 	}
 	
@@ -289,13 +289,14 @@ public class StandardTierListController implements TierListController {
 	@Override
 	public Tier getTierByElement(TierElement e) {
 		try {
-			List<Tier> filtered = 
-					 tierList.getTiers().stream()
-					.filter( tier -> (tier.getElements().indexOf(e) != -1) )
-					.collect(Collectors.toList());
-			if (filtered.size() > 1 || filtered.size() == 0)
-				throw new ElementNotFoundException();
-			else return filtered.get(0);
+			var element = tierList.getTiers().stream()
+					.filter(t -> t.contains(e))
+					.collect(Collectors.toUnmodifiableList())
+					.getFirst();
+			
+			if (element == null) throw new ElementNotFoundException();
+			
+			return element;
 		}
 		catch(NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) {
 			if (ex instanceof NullPointerException) System.err.println(NPE_ERROR); 
@@ -324,10 +325,15 @@ public class StandardTierListController implements TierListController {
 	@Override
 	public Tier getTierByHash(String hashCode) {
 		try {
-			for (var tier : tierList.getTiers())
-					if (Integer.valueOf(tier.hashCode()).toString().equals(hashCode))
-						return tier;
-			throw new TierNotFoundException();
+			
+			var tier = tierList.getTiers().stream()
+					.filter( t -> String.valueOf(t.hashCode()).contains(hashCode))
+					.collect(Collectors.toUnmodifiableList())
+					.getFirst();
+			
+			if (tier == null) throw new TierNotFoundException();
+			
+			return tier;
 		} catch (NullPointerException | IllegalArgumentException | TierNotFoundException ex) {
 			System.err.println("getTierByHash failed");	
 		}

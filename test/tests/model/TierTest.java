@@ -4,6 +4,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import static model.enums.TierElementStatus.*;
 
 import javafx.scene.paint.Color;
+
+import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.jupiter.api.AfterAll;
@@ -13,7 +15,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import model.exceptions.ElementNotFoundException;
-import model.models.ListTierElement;
 import model.models.Tier;
 import model.models.TierElement;
 import model.models.TierHeader;
@@ -21,7 +22,7 @@ import model.models.TierHeader;
 class TierTest {
 	private Tier emptyCtor, fullCtor, onlyHeaderCtor, tier;
 	private static TierHeader header;
-	private static ListTierElement elements;
+	private static List<TierElement> elements;
 	private static TierElement e1, e2, e3, e4, e5, e6;
 	
 	@BeforeAll
@@ -33,7 +34,7 @@ class TierTest {
 		e4 = new TierElement(RANKED, "Lyffu");
 		e5 = new TierElement(RANKED, "Ruben"); 
 		e6 = new TierElement(RANKED, "Chipper");
-		elements = new ListTierElement(List.of(new TierElement(RANKED),
+		elements = new ArrayList<TierElement>(List.of(new TierElement(RANKED),
 				   new TierElement(RANKED),
 				   new TierElement(RANKED)));
 	}
@@ -49,7 +50,7 @@ class TierTest {
 
 	@BeforeEach
 	void setUp() throws Exception {
-		tier = new Tier(header, new ListTierElement(List.of(e1, e2, e3)));
+		tier = new Tier(header, new ArrayList<TierElement>(List.of(e1, e2, e3)));
 	}
 
 	@AfterEach
@@ -63,9 +64,9 @@ class TierTest {
 		onlyHeaderCtor = new Tier(header);
 		fullCtor = new Tier(header, elements);
 		assertEquals(emptyCtor.getHeader(), new TierHeader(Tier.DEFAULT_TIER_NAME, Tier.DEFAULT_TIER_COLOR));
-		assertEquals(emptyCtor.getElements(), new ListTierElement() );
+		assertEquals(emptyCtor.getElements(), new ArrayList<TierElement>() );
 		assertEquals(onlyHeaderCtor.getHeader(), new TierHeader("S", Color.RED));
-		assertEquals(onlyHeaderCtor.getElements(), new ListTierElement() );
+		assertEquals(onlyHeaderCtor.getElements(), new ArrayList<TierElement>() );
 		assertEquals(fullCtor.getHeader(), new TierHeader("S", Color.RED));
 		assertEquals(fullCtor.getElements(), elements);
 	}

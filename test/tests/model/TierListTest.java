@@ -15,7 +15,6 @@ import org.junit.jupiter.api.Test;
 import model.enums.TierElementStatus;
 import model.exceptions.ElementNotFoundException;
 import model.exceptions.TierNotFoundException;
-import model.models.ListTierElement;
 import model.models.Tier;
 import model.models.TierElement;
 import model.models.TierHeader;
@@ -24,7 +23,7 @@ import model.models.TierList;
 class TierListTest {
 	private TierList emptyCtor, fullCtor, essentialsCtor, unrankedOnlyCtor, tierlist;
 	private static String name;
-	private ListTierElement unranked;
+	private List<TierElement> unranked;
 	private List<Tier> tiers;
 	private List<Tier> extraTiers;
 	
@@ -40,7 +39,7 @@ class TierListTest {
 
 	@BeforeEach
 	void setUp() throws Exception {
-		unranked = new ListTierElement(
+		unranked = new ArrayList<TierElement>(
 				List.of(
 					new TierElement("Jack Frost"),
 					new TierElement("Pyro Jack"),
