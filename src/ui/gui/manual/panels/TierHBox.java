@@ -6,9 +6,13 @@ import java.util.function.BiConsumer;
 import controller.controllers.TierListController;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.geometry.Side;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.control.ContextMenu;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Tooltip;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
@@ -39,12 +43,15 @@ public class TierHBox extends HBox {
 	private ElementsFlowPane elementsPane;
 	private Button editTierButton;
 
+	private TiersScrollPane parent;
+	
 	private TierListController controller;
 	private Tier tier;
 	private BiConsumer<TierElement, TierElement> onDragDropped;
 	private String oldTextValue;
 	
-	public TierHBox(TierListController controller, Tier tier) {	
+	public TierHBox(TiersScrollPane parent, TierListController controller, Tier tier) {	
+		this.parent = parent;
 		this.tierNameLabel = new TextField(tier.getHeader().name());
 		this.controller = controller;
 		this.tier = tier;
@@ -52,13 +59,13 @@ public class TierHBox extends HBox {
 		// TODO: add image?
 
 		//----- TierElementsPane's on 'drag dropped' behaviour -----//
-		this.onDragDropped = (s, t) -> {
-			switch (s.status()) {
+		this.onDragDropped = (element, t) -> {
+			switch (element.status()) {
 			case TierElementStatus.RANKED:
-				controller.moveTo(s, controller.getTierByElement(t), t); break;
+				controller.moveTo(element, controller.getTierByElement(t), t); break;
 			case TierElementStatus.UNRANKED: {
 				Tier targetTier = controller.getTierByElement(t); 
-				controller.rank(targetTier.getElements().indexOf(t), s, targetTier); break;
+				controller.rank(targetTier.getElements().indexOf(t), element, targetTier); break;
 			}
 			default: break;
 			}
@@ -100,8 +107,6 @@ public class TierHBox extends HBox {
 
 		setupDragAndDrop();
 		
-		// TODO: on hover -> suggestion
-		
 		this.tierNameLabel.focusedProperty().addListener( (_, _, now) -> {
 			if (now)
 				oldTextValue = tierNameLabel.getText();
@@ -115,6 +120,34 @@ public class TierHBox extends HBox {
 				oldTextValue = tierNameLabel.getText();
 			}
 			tierNameLabel.getScene().getRoot().requestFocus();
+		});
+		
+		tierNameLabel.setTooltip(new Tooltip("Click to drag and move"));
+		
+		//----- edit button -----//
+		editTierButton.setOnAction(_ -> {
+		    ContextMenu contextMenu = new ContextMenu();
+
+		    MenuItem delete = new MenuItem("Delete");
+		    MenuItem duplicate = new MenuItem("Duplicate");
+		    
+		    delete.setOnAction( _ -> {
+		    	tier.getElements().forEach(controller::unrank);
+		    	
+		    	controller.removeTier(tier);
+		    	parent.updateAll();
+		    });
+		    
+		    duplicate.setOnAction(_ -> {
+		    	Tier clone = new Tier(tier.getHeader());
+		    	controller.addTier(clone);
+		    	controller.moveTierTo(clone, controller.getTiers().indexOf(tier) + 1);
+		    	
+		    	parent.updateAll();
+		    });
+		    
+		    contextMenu.getItems().addAll(delete, duplicate);
+		    contextMenu.show(editTierButton, Side.BOTTOM, 0, 0);
 		});
 	}
 

@@ -11,6 +11,7 @@ import model.models.TierElement;
 import model.models.TierList;
 
 public class MainTest {
+		@SuppressWarnings("unused")
 		public static void main() {
 			var unranked = new ArrayList<TierElement>();
 			TierElement m, p, s, g, o, a;

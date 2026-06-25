@@ -49,7 +49,7 @@ public class MainPane extends BorderPane {
 		titleBox.setAlignment(Pos.CENTER);
 
 		// ----- unranked -----//
-		unrankedPane = new UnrankedScrollPane(controller);
+		unrankedPane = new UnrankedScrollPane(this, controller);
 		HBox unrankedBox = new HBox(unrankedPane);
 		unrankedBox.setAlignment(Pos.CENTER);
 
@@ -58,7 +58,7 @@ public class MainPane extends BorderPane {
 		// ----- buttons -----//
 		addTierButton = new Button("Add Tier");
 		addElementButton = new Button("Add Element");
-
+		
 		buttons = new VBox();
 		buttons.getChildren().addAll(addTierButton, addElementButton);
 		addTierButton.setPadding(new Insets(UISettings.DEFAULT_RBUTTON_PADDING / 3));
@@ -72,7 +72,7 @@ public class MainPane extends BorderPane {
 		setRight(buttons);
 
 		// ----- tiers -----//
-		tiersPane = new TiersScrollPane(controller);
+		tiersPane = new TiersScrollPane(this, controller);
 		HBox tiersBox = new HBox(tiersPane);
 		tiersBox.setAlignment(Pos.CENTER); 
 		tiersBox.setPadding(new Insets(0, 0, 0, 0));
@@ -101,5 +101,15 @@ public class MainPane extends BorderPane {
 			}
 			titleLabel.getScene().getRoot().requestFocus();
 		});
+		
+		addTierButton.setOnAction( _ -> {
+			controller.addTier();
+			tiersPane.updatePane();
+		});
+	}
+	
+	public void updateAll() {
+		tiersPane.updatePane();
+		unrankedPane.updatePane();
 	}
 }

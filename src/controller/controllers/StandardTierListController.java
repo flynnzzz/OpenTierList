@@ -121,6 +121,7 @@ public class StandardTierListController implements TierListController {
 				}
 		}
 	}
+	
 	@Override
 	public void addTier(Tier t) {
 		try { tierList.addTier(t); }
@@ -128,6 +129,11 @@ public class StandardTierListController implements TierListController {
 			if (ex instanceof NullPointerException) System.err.println(NPE_ERROR); 
 			else System.err.println(IAE_ERROR + ex.toString());
 		}
+	}
+	
+	@Override
+	public void addTier() {
+		tierList.addTier(new Tier());
 	}
 	
 	@Override
@@ -253,6 +259,17 @@ public class StandardTierListController implements TierListController {
 	public void moveTierTo(Tier from, Tier to) {
 		try {
 			tierList.moveTierTo(from, to);
+		}
+		catch(NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) {
+			if (ex instanceof NullPointerException) System.err.println(NPE_ERROR); 
+			else System.err.println(IAE_ERROR + ex.toString());
+		}
+	}
+	
+	@Override
+	public void moveTierTo(Tier from, int toIndex) {
+		try {
+			tierList.moveTierTo(from, toIndex);
 		}
 		catch(NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) {
 			if (ex instanceof NullPointerException) System.err.println(NPE_ERROR); 

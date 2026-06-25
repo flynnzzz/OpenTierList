@@ -19,10 +19,13 @@ public class TiersScrollPane extends ScrollPane {
 	//----- panels -----//
 	private VBox tierPanels;
 	private List<TierHBox> tierPaneList;
+	
+	private MainPane parent;
 
 	private TierListController controller;
 	
-	public TiersScrollPane(TierListController controller) {
+	public TiersScrollPane(MainPane parent, TierListController controller) {
+		this.parent = parent;
 		this.controller = controller;
 		this.tierPaneList = new ArrayList<>();
 		this.tierPanels = new VBox();
@@ -35,7 +38,7 @@ public class TiersScrollPane extends ScrollPane {
 		List<Tier> tiers = controller.getTiers();
 		
 		tiers.forEach( tier -> {
-			var tierPane = new TierHBox(controller, tier);
+			var tierPane = new TierHBox(this, controller, tier);
 
 			tierPane.getTextField().setOnDragDone(event -> {
 				if (event.getTransferMode() == TransferMode.MOVE)
@@ -60,6 +63,10 @@ public class TiersScrollPane extends ScrollPane {
 		tierPanels = new VBox();
 		this.initAllTiers();
 		this.setupPane();
+	}
+	
+	public void updateAll() {
+		parent.updateAll();
 	}
 }
 

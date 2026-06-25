@@ -28,10 +28,13 @@ public class UnrankedScrollPane extends ScrollPane {
 	//----- panels -----//
 	private ElementsFlowPane unrankedPane;
 	
+	@SuppressWarnings("unused")
+	private MainPane parent;
 	private TierListController controller;
 	private BiConsumer<TierElement, TierElement> onDragDropped;
 	
-	public UnrankedScrollPane(TierListController controller) {
+	public UnrankedScrollPane(MainPane parent, TierListController controller) {
+		this.parent = parent;
 		this.controller = controller;
 
 		//----- TierElementsPane's on 'drag dropped' behaviour -----//
@@ -108,5 +111,9 @@ public class UnrankedScrollPane extends ScrollPane {
 						)
 				);
 		this.unrankedPane.setBorder(tierElementsPaneBorder);
+	}
+	
+	public void updatePane() {
+		unrankedPane.updateImages();
 	}
 }

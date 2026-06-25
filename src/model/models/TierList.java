@@ -412,6 +412,12 @@ public class TierList {
 		tiers.add(indexTo, from);
 	}
 	
+	public void moveTierTo(Tier from, int toIndex) throws TierNotFoundException {
+		int indexFrom = checkTierExistence(from);		
+		tiers.remove(indexFrom);
+		tiers.add(toIndex, from);
+	}
+	
 	//------------------------------ exceptions ------------------------------//
 	
 	public boolean contains(TierElement element) {
@@ -512,7 +518,7 @@ public class TierList {
 	public String getTierColor(int tierIndex) { return getTierHeader(tierIndex).name(); }
 	private TierHeader getTierHeader(int tierIndex) { return tiers.get(tierIndex).getHeader(); }
 	public List<TierElement> getUnranked() { return List.copyOf(unranked); };
-	public List<Tier> getTiers() { return List.copyOf(tiers); }
+	public List<Tier> getTiers() { return new ArrayList<>(tiers); }
 	
 	
 	//---------------------------------- hashCode, equals and toString ----------------------------------//
