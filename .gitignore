@@ -2,3 +2,6 @@ bin/
 *.class
 src/quicktest/
 .vscode
+.project
+.classpath
+.settings
