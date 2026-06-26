@@ -61,11 +61,15 @@ public class TierHBox extends HBox {
 		//----- TierElementsPane's on 'drag dropped' behaviour -----//
 		this.onDragDropped = (element, t) -> {
 			switch (element.status()) {
-			case TelementStatus.RANKED:
-				controller.moveTo(element, controller.getTierByElement(t), t); break;
+			case TelementStatus.RANKED: {
+				Optional<Tier> targetTier = controller.getTierByElement(t);
+				if (targetTier.isPresent())
+					controller.moveTo(element, targetTier.get(), t); break;
+			}
 			case TelementStatus.UNRANKED: {
-				Tier targetTier = controller.getTierByElement(t); 
-				controller.rank(targetTier.getElements().indexOf(t), element, targetTier); break;
+				Optional<Tier> targetTier = controller.getTierByElement(t); 
+				if (targetTier.isPresent())
+					controller.rank(targetTier.get().getElements().indexOf(t), element, targetTier.get()); break;
 			}
 			default: break;
 			}
@@ -193,7 +197,14 @@ public class TierHBox extends HBox {
 	private void handleDragDropped(DragEvent event) {
 		Dragboard db = event.getDragboard();
 		if (db.hasString() && !event.getDragboard().hasImage()) {
-			Tier source = controller.getTierByHash(db.getString());
+			
+			Tier source;
+			
+			Optional<Tier> sourceOptional = controller.getTierByHash(db.getString());
+			
+			if (sourceOptional.isEmpty()) return;
+			else source = sourceOptional.get();
+			
 			Node potentialTarget = (Node) event.getTarget();
 		
 			while (potentialTarget != null && !(potentialTarget instanceof TierHBox)) {

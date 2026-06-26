@@ -2,6 +2,7 @@ package controller.controllers;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import model.enums.TierStringFormat;
 import model.models.Tier;
@@ -12,7 +13,7 @@ import model.models.TierList;
  * Controller interface for creating and modifying tier lists.
  * 
  * @author flynnz
- * @version 1.17
+ * @version 2.0.0
  * @since v0.0.0
  */
 public interface TierListController {
@@ -27,10 +28,9 @@ public interface TierListController {
 		return new StandardTierListController();
 	}
 	
-	public void setTierListName(String name); 
 
-	public void setTierName(Tier tier, String name);
-
+	//----- ranking ------//
+	
 	public void rank(Telement e, Tier toTier);
 	
 	public void rank(int toIndex, Telement e, Tier toTier);
@@ -38,7 +38,10 @@ public interface TierListController {
 	public void unrank(Telement e);
 
 	public void unrank(int toIndex, Telement e);
+
 	
+	//----- adding and removing ------//
+
 	public void addTier(Tier t);
 
 	public void addTier();
@@ -49,12 +52,18 @@ public interface TierListController {
 
 	public void removeFromUnranked(Telement e);
 	
+	
+	//----- swapping ------//
+	
 	public void swapTiers(Tier a, Tier b);
 
-	public void swapTierElements(Tier tier, Telement a, Telement b);
+	public void swapTelements(Tier tier, Telement a, Telement b);
 
-	public void swapUnrankedElements(Telement a, Telement b);
+	public void swapUnranked(Telement a, Telement b);
 	
+	
+	//----- moving ------//
+
 	public void moveTo(Telement e, Tier toTier);
 
 	public void moveTo(Telement e, Tier toTier, Telement toElement);
@@ -69,16 +78,28 @@ public interface TierListController {
 
 	public void moveTierTo(Tier from, int toindex);
 	
-	public Tier getTierByElement(Telement e);
+	
+	//----- setters and getters ------//
+	
+	public void setTierListName(String name); 
 
-	public Telement getElementByHash(String hashCode);
+	public void setTierName(Tier tier, String name);
+	
+	public Optional<Tier> getTierByElement(Telement e);
 
-	public Tier getTierByHash(String hashCode);
+	public Optional<Telement> getElementByHash(String hashCode);
+
+	public Optional<Tier> getTierByHash(String hashCode);
 	
 	public List<Telement> getUnranked();
 
 	public List<Tier> getTiers();
+
+	public String getTierListName();
 	
+
+	//----- misc ------//
+
 	public String toString();
 
 	public String toString(TierStringFormat format);

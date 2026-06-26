@@ -2,6 +2,7 @@ package controller.controllers;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import model.enums.TierStringFormat;
@@ -15,7 +16,7 @@ import model.models.TierList;
  * Main implementation of {@link TierListController}.
  * 
  * @author flynnz
- * @version 1.96
+ * @version 2.0.0
  * @since v0.0.0
  */ 
 public class StandardTierListController implements TierListController {
@@ -58,41 +59,25 @@ public class StandardTierListController implements TierListController {
 	@Override
 	public void rank(Telement e, Tier toTier) {
 		try { tierList.rank(e, toTier); }
-		catch(NullPointerException | IllegalArgumentException |
-				  TierNotFoundException | TelementNotFoundException ex) {
-			if (ex instanceof NullPointerException) System.err.println(NPE_ERROR); 
-			else System.err.println(IAE_ERROR + ex.toString());
-		}
+		catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) { printStackTrace(ex); }
 	}
 	
 	@Override
 	public void rank(int toIndex, Telement e, Tier toTier) {
 		try { tierList.rankInsert(e, toTier,  toIndex); }
-		catch(NullPointerException | IllegalArgumentException |
-				TierNotFoundException | TelementNotFoundException ex) {
-			if (ex instanceof NullPointerException) System.err.println(NPE_ERROR); 
-			else System.err.println(IAE_ERROR + ex.toString());
-		}
+		catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) { printStackTrace(ex); }
 	}
 	
 	@Override
 	public void unrank(Telement e) {
 		try { tierList.unrank(e); }
-		catch(NullPointerException | IllegalArgumentException |
-				TierNotFoundException | TelementNotFoundException ex) {
-			if (ex instanceof NullPointerException) System.err.println(NPE_ERROR); 
-			else System.err.println(IAE_ERROR + ex.toString());
-		}
+		catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) { printStackTrace(ex); }
 	}
 	
 	@Override
 	public void unrank(int toIndex, Telement e) {
 		try { tierList.unrankInsert(e, toIndex); }
-		catch(NullPointerException | IllegalArgumentException |
-				TierNotFoundException | TelementNotFoundException ex) {
-			if (ex instanceof NullPointerException) System.err.println(NPE_ERROR); 
-			else System.err.println(IAE_ERROR + ex.toString());
-		}
+		catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) { printStackTrace(ex); }
 	}
 
 
@@ -101,34 +86,19 @@ public class StandardTierListController implements TierListController {
 	@Override
 	public void setTierListName(String name) {
 		try { tierList.setTierListName(name); }
-		catch(NullPointerException | IllegalArgumentException ex) {
-				if (ex instanceof NullPointerException) System.err.println(NPE_ERROR); 
-				else {
-					System.err.println(IAE_ERROR + ex.toString()); 
-					tierList.setTierListName(TierList.DEFAULT_TIERLIST_NAME);	
-				}
-		}
+		catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) { printStackTrace(ex); }
 	}
 	
 	@Override
 	public void setTierName(Tier tier, String name) {
 		try { tierList.setTierName(tierList.indexOf(tier), name); }
-		catch(NullPointerException | IllegalArgumentException ex) {
-				if (ex instanceof NullPointerException) System.err.println(NPE_ERROR); 
-				else {
-					System.err.println(IAE_ERROR + ex.toString()); 
-					tierList.setTierName(tierList.indexOf(tier), Tier.DEFAULT_TIER_NAME);	
-				}
-		}
+		catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) { printStackTrace(ex); }
 	}
 	
 	@Override
 	public void addTier(Tier t) {
 		try { tierList.addTier(t); }
-		catch(NullPointerException | IllegalArgumentException ex) {
-			if (ex instanceof NullPointerException) System.err.println(NPE_ERROR); 
-			else System.err.println(IAE_ERROR + ex.toString());
-		}
+		catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) { printStackTrace(ex); }
 	}
 	
 	@Override
@@ -139,28 +109,19 @@ public class StandardTierListController implements TierListController {
 	@Override
 	public void addToUnranked(Telement e) {
 		try { tierList.addToUnranked(e); }
-		catch(NullPointerException | IllegalArgumentException ex) {
-			if (ex instanceof NullPointerException) System.err.println(NPE_ERROR); 
-			else System.err.println(IAE_ERROR + ex.toString());
-		}
+		catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) { printStackTrace(ex); }
 	}
 	
 	@Override
 	public void removeTier(Tier t) {
 		try { tierList.removeTier(t); }  
-		catch(NullPointerException | IllegalArgumentException | TierNotFoundException ex) {
-			if (ex instanceof NullPointerException) System.err.println(NPE_ERROR); 
-			else System.err.println(IAE_ERROR + ex.toString());
-		}
+		catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) { printStackTrace(ex); }
 	}
 
 	@Override
 	public void removeFromUnranked(Telement e) {
 		try { tierList.removeFromUnranked(e); }
-		catch(NullPointerException | IllegalArgumentException | TelementNotFoundException ex) {
-			if (ex instanceof NullPointerException) System.err.println(NPE_ERROR); 
-			else System.err.println(IAE_ERROR + ex.toString());
-		}
+		catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) { printStackTrace(ex); }
 	}
 
 	
@@ -169,29 +130,19 @@ public class StandardTierListController implements TierListController {
 	@Override
 	public void swapTiers(Tier a, Tier b) {
 		try { tierList.swapTiers(a, b); }
-		catch(NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) {
-			if (ex instanceof NullPointerException) System.err.println(NPE_ERROR); 
-			else System.err.println(IAE_ERROR + ex.toString());
-		}
+		catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) { printStackTrace(ex); }
 	}
 
 	@Override
-	public void swapTierElements(Tier tier, Telement a, Telement b) {
+	public void swapTelements(Tier tier, Telement a, Telement b) {
 		try { tierList.swapElements(tier, a, b); }
-		catch(NullPointerException | IllegalArgumentException |
-				TierNotFoundException | TelementNotFoundException ex) {
-			if (ex instanceof NullPointerException) System.err.println(NPE_ERROR); 
-			else System.err.println(IAE_ERROR + ex.toString());
-		}
+		catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) { printStackTrace(ex); }
 	}
 
 	@Override
-	public void swapUnrankedElements(Telement a, Telement b) {
+	public void swapUnranked(Telement a, Telement b) {
 		try { tierList.swapUnranked(a, b); }
-		catch(NullPointerException | IllegalArgumentException | TelementNotFoundException ex) {
-			if (ex instanceof NullPointerException) System.err.println(NPE_ERROR); 
-			else System.err.println(IAE_ERROR + ex.toString());
-		}
+		catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) { printStackTrace(ex); }
 	}
 	
 
@@ -201,12 +152,7 @@ public class StandardTierListController implements TierListController {
 	public void moveTo(Telement e, Tier toTier) {
 		try {
 			tierList.moveToTier(toTier, e);
-		}
-		catch(NullPointerException | IllegalArgumentException |
-				TierNotFoundException | TelementNotFoundException ex) {
-			if (ex instanceof NullPointerException) System.err.println(NPE_ERROR); 
-			else System.err.println(IAE_ERROR + ex.toString());
-		}
+		} catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) { printStackTrace(ex); }
 	}
 	
 	@Override
@@ -214,22 +160,14 @@ public class StandardTierListController implements TierListController {
 		try {
 			int toIndex = toTier.getElements().indexOf(toElement);
 			tierList.moveToTier(toTier, e, toIndex);
-		}
-		catch(NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) {
-			if (ex instanceof NullPointerException) System.err.println(NPE_ERROR); 
-			else System.err.println(IAE_ERROR + ex.toString());
-		}
+		} catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) { printStackTrace(ex); }
 	}
 	
 	@Override
 	public void moveTo(Telement e, Tier toTier, int toIndex) {
 		try {
 			tierList.moveToTier(toTier, e, toIndex);
-		}
-		catch(NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) {
-			if (ex instanceof NullPointerException) System.err.println(NPE_ERROR); 
-			else System.err.println(IAE_ERROR + ex.toString());
-		}
+		} catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) { printStackTrace(ex); }
 	}
 
 	@Override
@@ -237,44 +175,28 @@ public class StandardTierListController implements TierListController {
 		try {
 			int toIndex = tierList.getUnranked().indexOf(toElement);
 			tierList.moveUnranked(e, toIndex);
-		}
-		catch(NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) {
-			if (ex instanceof NullPointerException) System.err.println(NPE_ERROR); 
-			else System.err.println(IAE_ERROR + ex.toString());
-		}
+		} catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) { printStackTrace(ex); }
 	}
 
 	@Override
 	public void moveUnranked(Telement e, int toIndex) {
 		try {
 			tierList.moveUnranked(e, toIndex);
-		}
-		catch(NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) {
-			if (ex instanceof NullPointerException) System.err.println(NPE_ERROR); 
-			else System.err.println(IAE_ERROR + ex.toString());
-		}
+		} catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) { printStackTrace(ex); }
 	}
 
 	@Override
 	public void moveTierTo(Tier from, Tier to) {
 		try {
 			tierList.moveTierTo(from, to);
-		}
-		catch(NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) {
-			if (ex instanceof NullPointerException) System.err.println(NPE_ERROR); 
-			else System.err.println(IAE_ERROR + ex.toString());
-		}
+		} catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) { printStackTrace(ex); }
 	}
 	
 	@Override
 	public void moveTierTo(Tier from, int toIndex) {
 		try {
 			tierList.moveTierTo(from, toIndex);
-		}
-		catch(NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) {
-			if (ex instanceof NullPointerException) System.err.println(NPE_ERROR); 
-			else System.err.println(IAE_ERROR + ex.toString());
-		}
+		} catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) { printStackTrace(ex); }
 	}
 	
 	
@@ -294,6 +216,11 @@ public class StandardTierListController implements TierListController {
 	//------------------------------ getters ------------------------------//
 	
 	@Override
+	public String getTierListName() {
+		return tierList.getTierListName();
+	}
+	
+	@Override
 	public List<Telement> getUnranked() {
 		return tierList.getUnranked();
 	}
@@ -304,56 +231,63 @@ public class StandardTierListController implements TierListController {
 	}
 
 	@Override
-	public Tier getTierByElement(Telement e) {
+	public Optional<Tier> getTierByElement(Telement e) {
+		Optional<Tier> element = Optional.empty();
+		
 		try {
-			var element = tierList.getTiers().stream()
+			element = Optional.of(tierList.getTiers().stream()
 					.filter(t -> t.contains(e))
 					.collect(Collectors.toUnmodifiableList())
-					.getFirst();
-			
-			if (element == null) throw new TelementNotFoundException();
-			
-			return element;
-		}
-		catch(NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) {
-			if (ex instanceof NullPointerException) System.err.println(NPE_ERROR); 
-			else System.err.println(IAE_ERROR + ex.toString());
-		}
-		return null;
+					.getFirst());
+			if (element.isEmpty()) throw new TelementNotFoundException();
+		} catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) { printStackTrace(ex); }
+		
+		return element;
 	}
 
 	@Override
-	public Telement getElementByHash(String hashCode) {
+	public Optional<Telement> getElementByHash(String hashCode) {
+		Optional<Telement> telement = Optional.empty();
+		
 		try {
-			for (var tier : tierList.getTiers())
-				for (var element : tier.getElements()) 
-					if (Integer.valueOf(element.hashCode()).toString().equals(hashCode))
-						return element;
-			throw new TelementNotFoundException();
-		} catch (NullPointerException | IllegalArgumentException | TelementNotFoundException ex) {
-			for (var unranked : tierList.getUnranked()) {
-				if (Integer.valueOf(unranked.hashCode()).toString().equals(hashCode))
-					return unranked;
-			}
-		}
-		return null;
+			var telements = tierList.getTiers().stream()
+			.flatMap( t -> t.getElements().stream())
+			.filter(e -> String.valueOf(e.hashCode()).equals(hashCode))
+			.collect(Collectors.toList());
+			
+			
+			telement = telements.size() == 1 
+					? Optional.of(telements.getFirst()) 
+					: Optional.of(tierList.getUnranked().stream()
+							.filter(e -> String.valueOf(e.hashCode()).equals(hashCode))
+							.collect(Collectors.toList())
+							.getFirst());
+			
+		} catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) { printStackTrace(ex); }
+		
+		return telement;
 	}
 
 	@Override
-	public Tier getTierByHash(String hashCode) {
+	public Optional<Tier> getTierByHash(String hashCode) {
+		Optional<Tier> tier = Optional.empty();
+		
 		try {
-			
-			var tier = tierList.getTiers().stream()
+			tier = Optional.of(tierList.getTiers().stream()
 					.filter( t -> String.valueOf(t.hashCode()).contains(hashCode))
 					.collect(Collectors.toUnmodifiableList())
-					.getFirst();
+					.getFirst());
 			
-			if (tier == null) throw new TierNotFoundException();
-			
-			return tier;
-		} catch (NullPointerException | IllegalArgumentException | TierNotFoundException ex) {
-			System.err.println("getTierByHash failed");	
-		}
-		return null;
+			if (tier.isEmpty()) throw new TierNotFoundException();
+		} catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) { printStackTrace(ex); }
+		
+		return tier;
+	}
+	
+	private void printStackTrace(Exception ex) {
+		if (ex instanceof NullPointerException) 
+			System.err.println(NPE_ERROR + System.lineSeparator() + ex); 
+		else
+			System.err.println(IAE_ERROR + System.lineSeparator() + ex);
 	}
 }

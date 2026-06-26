@@ -48,9 +48,9 @@ public class MainTest {
 			controller.swapTiers(A, S);
 			controller.swapTiers(A, S);
 			
-			controller.swapTierElements(A, s, g);
+			controller.swapTelements(A, s, g);
 			IO.println(controller.toString(TierStringFormat.COMPACT));
-			controller.swapTierElements(A, m, s);
+			controller.swapTelements(A, m, s);
 			
 			controller.removeFromUnranked(a);
 			controller.removeFromUnranked(o);

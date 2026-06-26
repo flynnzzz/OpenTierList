@@ -37,7 +37,7 @@ public class MainPane extends BorderPane {
 	public void initPane() {
 
 		// ----- title -----//
-		titleLabel = new TextField("Temp");
+		titleLabel = new TextField(controller.getTierListName());
 		titleLabel.setFocusTraversable(false);
 		HBox titleBox = new HBox(titleLabel);
 		setTop(titleBox);

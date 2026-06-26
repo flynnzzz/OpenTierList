@@ -203,7 +203,12 @@ public class TelementsFlowPane extends FlowPane {
 
 		boolean success = false;
 
-		Telement sourceData = controller.getElementByHash(dragBoard.getString());
+		Telement sourceData;
+		Optional<Telement> sourceDataOptional = controller.getElementByHash(dragBoard.getString());
+		
+		if (sourceDataOptional.isEmpty()) return;
+		else sourceData = sourceDataOptional.get();
+		
 		EventTarget dragAndDropTarget = event.getTarget();
 
 		// ----- update model -----//
@@ -230,9 +235,14 @@ public class TelementsFlowPane extends FlowPane {
 		if (dragBoard.hasImage() && dragBoard.hasString()
 				&& event.getTarget() instanceof TelementsFlowPane targetElementPane) {
 
-			Telement sourceElement = controller.getElementByHash(dragBoard.getString());
+			Telement sourceData;
+			
+			Optional<Telement> sourceDataOptional = controller.getElementByHash(dragBoard.getString());
 
-			updateModel(sourceElement.status(), sourceElement, targetElementPane);
+			if (sourceDataOptional.isEmpty()) return;
+			else sourceData = sourceDataOptional.get();
+			
+			updateModel(sourceData.status(), sourceData, targetElementPane);
 			updateImages();
 			success = true;
 		}
