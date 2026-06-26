@@ -10,7 +10,7 @@ import java.nio.file.Path;
  * Self-explanatory
  * 
  * @author flynnz
- * @version 0.00
+ * @version 0.10
  * @since v1.7.0
  */
 public class ImagePath {
@@ -62,10 +62,3 @@ public class ImagePath {
         }
     }
 }
-
-/*
-        this.imagePath = (path.isEmpty() || !Files.exists(Path.of(path.get())))
-                ? getClass().getResource(DEFAULT_ELEMENT_IMAGE_FILE).toString()
-                : BASE_PATH.resolve(path.get()).normalize().toString();
-
-*/

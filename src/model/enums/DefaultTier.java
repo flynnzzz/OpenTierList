@@ -3,11 +3,10 @@ package model.enums;
 import javafx.scene.paint.Color;
 
 import model.models.Tier;
-import model.models.TierHeader;
 
 /**
  * 
- * @version 1.11
+ * @version 1.15
  * @since v1.2.5
  */
 public enum DefaultTier {
@@ -22,7 +21,7 @@ public enum DefaultTier {
     private Tier value;
 
     DefaultTier(Color color) {
-        this.value = new Tier(new TierHeader(name(), color));
+        this.value = new Tier(name(), color);
     }
 
     public Tier value() { return value; }

@@ -5,10 +5,10 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import model.enums.TierStringFormat;
-import model.exceptions.ElementNotFoundException;
+import model.exceptions.TelementNotFoundException;
 import model.exceptions.TierNotFoundException;
 import model.models.Tier;
-import model.models.TierElement;
+import model.models.Telement;
 import model.models.TierList;
 
 /**
@@ -56,40 +56,40 @@ public class StandardTierListController implements TierListController {
 	//------------------------------ ranking ------------------------------//
 
 	@Override
-	public void rank(TierElement e, Tier toTier) {
+	public void rank(Telement e, Tier toTier) {
 		try { tierList.rank(e, toTier); }
 		catch(NullPointerException | IllegalArgumentException |
-				  TierNotFoundException | ElementNotFoundException ex) {
+				  TierNotFoundException | TelementNotFoundException ex) {
 			if (ex instanceof NullPointerException) System.err.println(NPE_ERROR); 
 			else System.err.println(IAE_ERROR + ex.toString());
 		}
 	}
 	
 	@Override
-	public void rank(int toIndex, TierElement e, Tier toTier) {
-		try { tierList.rankInsert(toTier, e, toIndex); }
+	public void rank(int toIndex, Telement e, Tier toTier) {
+		try { tierList.rankInsert(e, toTier,  toIndex); }
 		catch(NullPointerException | IllegalArgumentException |
-				TierNotFoundException | ElementNotFoundException ex) {
+				TierNotFoundException | TelementNotFoundException ex) {
 			if (ex instanceof NullPointerException) System.err.println(NPE_ERROR); 
 			else System.err.println(IAE_ERROR + ex.toString());
 		}
 	}
 	
 	@Override
-	public void unrank(TierElement e) {
+	public void unrank(Telement e) {
 		try { tierList.unrank(e); }
 		catch(NullPointerException | IllegalArgumentException |
-				TierNotFoundException | ElementNotFoundException ex) {
+				TierNotFoundException | TelementNotFoundException ex) {
 			if (ex instanceof NullPointerException) System.err.println(NPE_ERROR); 
 			else System.err.println(IAE_ERROR + ex.toString());
 		}
 	}
 	
 	@Override
-	public void unrank(int toIndex, TierElement e) {
+	public void unrank(int toIndex, Telement e) {
 		try { tierList.unrankInsert(e, toIndex); }
 		catch(NullPointerException | IllegalArgumentException |
-				TierNotFoundException | ElementNotFoundException ex) {
+				TierNotFoundException | TelementNotFoundException ex) {
 			if (ex instanceof NullPointerException) System.err.println(NPE_ERROR); 
 			else System.err.println(IAE_ERROR + ex.toString());
 		}
@@ -137,7 +137,7 @@ public class StandardTierListController implements TierListController {
 	}
 	
 	@Override
-	public void addToUnranked(TierElement e) {
+	public void addToUnranked(Telement e) {
 		try { tierList.addToUnranked(e); }
 		catch(NullPointerException | IllegalArgumentException ex) {
 			if (ex instanceof NullPointerException) System.err.println(NPE_ERROR); 
@@ -155,9 +155,9 @@ public class StandardTierListController implements TierListController {
 	}
 
 	@Override
-	public void removeFromUnranked(TierElement e) {
+	public void removeFromUnranked(Telement e) {
 		try { tierList.removeFromUnranked(e); }
-		catch(NullPointerException | IllegalArgumentException | ElementNotFoundException ex) {
+		catch(NullPointerException | IllegalArgumentException | TelementNotFoundException ex) {
 			if (ex instanceof NullPointerException) System.err.println(NPE_ERROR); 
 			else System.err.println(IAE_ERROR + ex.toString());
 		}
@@ -176,19 +176,19 @@ public class StandardTierListController implements TierListController {
 	}
 
 	@Override
-	public void swapTierElements(Tier tier, TierElement a, TierElement b) {
+	public void swapTierElements(Tier tier, Telement a, Telement b) {
 		try { tierList.swapElements(tier, a, b); }
 		catch(NullPointerException | IllegalArgumentException |
-				TierNotFoundException | ElementNotFoundException ex) {
+				TierNotFoundException | TelementNotFoundException ex) {
 			if (ex instanceof NullPointerException) System.err.println(NPE_ERROR); 
 			else System.err.println(IAE_ERROR + ex.toString());
 		}
 	}
 
 	@Override
-	public void swapUnrankedElements(TierElement a, TierElement b) {
+	public void swapUnrankedElements(Telement a, Telement b) {
 		try { tierList.swapUnranked(a, b); }
-		catch(NullPointerException | IllegalArgumentException | ElementNotFoundException ex) {
+		catch(NullPointerException | IllegalArgumentException | TelementNotFoundException ex) {
 			if (ex instanceof NullPointerException) System.err.println(NPE_ERROR); 
 			else System.err.println(IAE_ERROR + ex.toString());
 		}
@@ -198,19 +198,19 @@ public class StandardTierListController implements TierListController {
 	//------------------------------ moving ------------------------------//
 	
 	@Override
-	public void moveTo(TierElement e, Tier toTier) {
+	public void moveTo(Telement e, Tier toTier) {
 		try {
 			tierList.moveToTier(toTier, e);
 		}
 		catch(NullPointerException | IllegalArgumentException |
-				TierNotFoundException | ElementNotFoundException ex) {
+				TierNotFoundException | TelementNotFoundException ex) {
 			if (ex instanceof NullPointerException) System.err.println(NPE_ERROR); 
 			else System.err.println(IAE_ERROR + ex.toString());
 		}
 	}
 	
 	@Override
-	public void moveTo(TierElement e, Tier toTier, TierElement toElement) {
+	public void moveTo(Telement e, Tier toTier, Telement toElement) {
 		try {
 			int toIndex = toTier.getElements().indexOf(toElement);
 			tierList.moveToTier(toTier, e, toIndex);
@@ -222,7 +222,7 @@ public class StandardTierListController implements TierListController {
 	}
 	
 	@Override
-	public void moveTo(TierElement e, Tier toTier, int toIndex) {
+	public void moveTo(Telement e, Tier toTier, int toIndex) {
 		try {
 			tierList.moveToTier(toTier, e, toIndex);
 		}
@@ -233,7 +233,7 @@ public class StandardTierListController implements TierListController {
 	}
 
 	@Override
-	public void moveUnranked(TierElement e, TierElement toElement) {
+	public void moveUnranked(Telement e, Telement toElement) {
 		try {
 			int toIndex = tierList.getUnranked().indexOf(toElement);
 			tierList.moveUnranked(e, toIndex);
@@ -245,7 +245,7 @@ public class StandardTierListController implements TierListController {
 	}
 
 	@Override
-	public void moveUnranked(TierElement e, int toIndex) {
+	public void moveUnranked(Telement e, int toIndex) {
 		try {
 			tierList.moveUnranked(e, toIndex);
 		}
@@ -294,7 +294,7 @@ public class StandardTierListController implements TierListController {
 	//------------------------------ getters ------------------------------//
 	
 	@Override
-	public List<TierElement> getUnranked() {
+	public List<Telement> getUnranked() {
 		return tierList.getUnranked();
 	}
 	
@@ -304,14 +304,14 @@ public class StandardTierListController implements TierListController {
 	}
 
 	@Override
-	public Tier getTierByElement(TierElement e) {
+	public Tier getTierByElement(Telement e) {
 		try {
 			var element = tierList.getTiers().stream()
 					.filter(t -> t.contains(e))
 					.collect(Collectors.toUnmodifiableList())
 					.getFirst();
 			
-			if (element == null) throw new ElementNotFoundException();
+			if (element == null) throw new TelementNotFoundException();
 			
 			return element;
 		}
@@ -323,14 +323,14 @@ public class StandardTierListController implements TierListController {
 	}
 
 	@Override
-	public TierElement getElementByHash(String hashCode) {
+	public Telement getElementByHash(String hashCode) {
 		try {
 			for (var tier : tierList.getTiers())
 				for (var element : tier.getElements()) 
 					if (Integer.valueOf(element.hashCode()).toString().equals(hashCode))
 						return element;
-			throw new ElementNotFoundException();
-		} catch (NullPointerException | IllegalArgumentException | ElementNotFoundException ex) {
+			throw new TelementNotFoundException();
+		} catch (NullPointerException | IllegalArgumentException | TelementNotFoundException ex) {
 			for (var unranked : tierList.getUnranked()) {
 				if (Integer.valueOf(unranked.hashCode()).toString().equals(hashCode))
 					return unranked;

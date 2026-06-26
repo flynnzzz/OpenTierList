@@ -9,7 +9,7 @@ import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import model.enums.DefaultTier;
-import model.models.TierElement;
+import model.models.Telement;
 import model.models.TierList;
 import ui.gui.manual.panels.MainPane;
 
@@ -24,12 +24,12 @@ public class MainApplicationMock extends Application {
 	@SuppressWarnings("exports")
 	public void start(Stage stage) throws Exception {
 		
-		var unranked = new ArrayList<TierElement>();
+		var unranked = new ArrayList<Telement>();
 
 		@SuppressWarnings("unused")
-		TierElement m, p, s, g, o, a;
-		unranked.add(m = new TierElement("Mookka", "cow.jpg")); unranked.add(p = new TierElement("Pehkura", "sheep.jpg")); unranked.add(s = new TierElement("Suynoh"));
-		unranked.add(g = new TierElement("Galeena")); unranked.add(o = new TierElement("Okha", "duck.jpg")); unranked.add(a = new TierElement("Aseeno", "usagi.jpg"));
+		Telement m, p, s, g, o, a;
+		unranked.add(m = new Telement("Mookka", "cow.jpg")); unranked.add(p = new Telement("Pehkura", "sheep.jpg")); unranked.add(s = new Telement("Suynoh"));
+		unranked.add(g = new Telement("Galeena")); unranked.add(o = new Telement("Okha", "duck.jpg")); unranked.add(a = new Telement("Aseeno", "usagi.jpg"));
 		
 		var defaultTierList = new TierList("Test", unranked);
 		for (var defaultTier : DefaultTier.values()) {

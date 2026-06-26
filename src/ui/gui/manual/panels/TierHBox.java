@@ -26,9 +26,9 @@ import javafx.scene.layout.BorderWidths;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Paint;
-import model.enums.TierElementStatus;
+import model.enums.TelementStatus;
 import model.models.Tier;
-import model.models.TierElement;
+import model.models.Telement;
 import ui.gui.manual.settings.UISettings;
 
 /**
@@ -40,14 +40,14 @@ public class TierHBox extends HBox {
 	
 	//----- panels -----//
 	private TextField tierNameLabel;
-	private ElementsFlowPane elementsPane;
+	private TelementsFlowPane elementsPane;
 	private Button editTierButton;
 
 	private TiersScrollPane parent;
 	
 	private TierListController controller;
 	private Tier tier;
-	private BiConsumer<TierElement, TierElement> onDragDropped;
+	private BiConsumer<Telement, Telement> onDragDropped;
 	private String oldTextValue;
 	
 	public TierHBox(TiersScrollPane parent, TierListController controller, Tier tier) {	
@@ -61,9 +61,9 @@ public class TierHBox extends HBox {
 		//----- TierElementsPane's on 'drag dropped' behaviour -----//
 		this.onDragDropped = (element, t) -> {
 			switch (element.status()) {
-			case TierElementStatus.RANKED:
+			case TelementStatus.RANKED:
 				controller.moveTo(element, controller.getTierByElement(t), t); break;
-			case TierElementStatus.UNRANKED: {
+			case TelementStatus.UNRANKED: {
 				Tier targetTier = controller.getTierByElement(t); 
 				controller.rank(targetTier.getElements().indexOf(t), element, targetTier); break;
 			}
@@ -71,7 +71,7 @@ public class TierHBox extends HBox {
 			}
 		};
 		
-		this.elementsPane = new ElementsFlowPane(controller, tier.getElements(), Optional.of(tier), onDragDropped);
+		this.elementsPane = new TelementsFlowPane(controller, tier.getElements(), Optional.of(tier), onDragDropped);
 		
 		this.setupPane();
 	}
@@ -139,7 +139,7 @@ public class TierHBox extends HBox {
 		    });
 		    
 		    duplicate.setOnAction(_ -> {
-		    	Tier clone = new Tier(tier.getHeader());
+		    	Tier clone = tier.copy();
 		    	controller.addTier(clone);
 		    	controller.moveTierTo(clone, controller.getTiers().indexOf(tier) + 1);
 		    	

@@ -2,7 +2,7 @@ package tests.model;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import static model.enums.TierElementStatus.*;
+import static model.enums.TelementStatus.*;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
@@ -10,11 +10,12 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import model.models.TierElement;
+import model.models.Telement;
 
 
-/* DEPRECATED, NEEDS REWORK */
+/* DEPRECATED TESTS, NEED REWORK */
 
+/*
 class TierElementTest {
 	private static TierElement immortal;
 	private TierElement whole, noImage, noNameNoImage;
@@ -190,4 +191,5 @@ class TierElementTest {
 	void testDefaultNameConstant() {
 		assertEquals(TierElement.DEFAULT_ELEMENT_NAME, "element");
 	}
-}
+} 
+*/

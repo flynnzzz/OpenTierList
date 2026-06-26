@@ -7,16 +7,16 @@ import controller.controllers.TierListController;
 import model.enums.DefaultTier;
 import model.enums.TierStringFormat;
 import model.models.Tier;
-import model.models.TierElement;
+import model.models.Telement;
 import model.models.TierList;
 
 public class MainTest {
 		@SuppressWarnings("unused")
 		public static void main() {
-			var unranked = new ArrayList<TierElement>();
-			TierElement m, p, s, g, o, a;
-			unranked.add(m = new TierElement("Mookka")); unranked.add(p = new TierElement("Pehkura")); unranked.add(s = new TierElement("Suynoh"));
-			unranked.add(g = new TierElement("Galeena")); unranked.add(o = new TierElement("Okha")); unranked.add(a = new TierElement("Aseeno"));
+			var unranked = new ArrayList<Telement>();
+			Telement m, p, s, g, o, a;
+			unranked.add(m = new Telement("Mookka")); unranked.add(p = new Telement("Pehkura")); unranked.add(s = new Telement("Suynoh"));
+			unranked.add(g = new Telement("Galeena")); unranked.add(o = new Telement("Okha")); unranked.add(a = new Telement("Aseeno"));
 			List<Tier> tiers = new ArrayList<>();
 			
 			Tier S, A, B, C, D, E, S_Double, S_Triple;

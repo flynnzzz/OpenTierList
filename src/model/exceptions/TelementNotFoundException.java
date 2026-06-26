@@ -6,15 +6,15 @@ package model.exceptions;
  * @version 0.00
  * @since v1.0.0
  */
-public class ElementNotFoundException extends IndexOutOfBoundsException {
+public class TelementNotFoundException extends IndexOutOfBoundsException {
 
 	private static final long serialVersionUID = -6509042509524524415L;
 	
-	public ElementNotFoundException(String message) {
+	public TelementNotFoundException(String message) {
 		super(message);
 	}
 	
-	public ElementNotFoundException() {
+	public TelementNotFoundException() {
 		super();
 	}
 }

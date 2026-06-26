@@ -14,8 +14,8 @@ import javafx.scene.layout.BorderStrokeStyle;
 import javafx.scene.layout.BorderWidths;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.paint.Paint;
-import model.enums.TierElementStatus;
-import model.models.TierElement;
+import model.enums.TelementStatus;
+import model.models.Telement;
 import ui.gui.manual.settings.UISettings;
 
 /**
@@ -26,25 +26,25 @@ import ui.gui.manual.settings.UISettings;
 public class UnrankedScrollPane extends ScrollPane {
 
 	//----- panels -----//
-	private ElementsFlowPane unrankedPane;
+	private TelementsFlowPane unrankedPane;
 	
 	@SuppressWarnings("unused")
 	private MainPane parent;
 	private TierListController controller;
-	private BiConsumer<TierElement, TierElement> onDragDropped;
+	private BiConsumer<Telement, Telement> onDragDropped;
 	
 	public UnrankedScrollPane(MainPane parent, TierListController controller) {
 		this.parent = parent;
 		this.controller = controller;
 
 		//----- TierElementsPane's on 'drag dropped' behaviour -----//
-		this.onDragDropped = (TierElement s, TierElement t) -> {
+		this.onDragDropped = (Telement s, Telement t) -> {
 			switch (s.status()) {
-			case TierElementStatus.UNRANKED: {
+			case TelementStatus.UNRANKED: {
 				this.controller.moveUnranked(s, t);
 				break;
 			}
-			case TierElementStatus.RANKED: {
+			case TelementStatus.RANKED: {
 				this.controller.unrank(controller.getUnranked().indexOf(t), s); 
 				break;
 			}
@@ -52,7 +52,7 @@ public class UnrankedScrollPane extends ScrollPane {
 			}
 		};
 		
-		this.unrankedPane = new ElementsFlowPane(controller, controller.getUnranked(), onDragDropped);
+		this.unrankedPane = new TelementsFlowPane(controller, controller.getUnranked(), onDragDropped);
 		
 		this.setupPane();
 	}	

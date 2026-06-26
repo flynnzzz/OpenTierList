@@ -1,12 +1,12 @@
 package model.enums;
 
-public enum TierElementStatus {
+public enum TelementStatus {
 	RANKED(true), UNRANKED(false), METASTABLE; 
 	
 	private boolean value;
 	
-	private TierElementStatus() {}
-	private TierElementStatus(boolean value) { this.setValue(value); }
+	private TelementStatus() {}
+	private TelementStatus(boolean value) { this.setValue(value); }
 
 	public boolean value() { return value; }
 

@@ -5,7 +5,7 @@ import java.util.Objects;
 
 import model.enums.TierStringFormat;
 import model.models.Tier;
-import model.models.TierElement;
+import model.models.Telement;
 import model.models.TierList;
 
 /**
@@ -31,51 +31,51 @@ public interface TierListController {
 
 	public void setTierName(Tier tier, String name);
 
-	public void rank(TierElement e, Tier toTier);
+	public void rank(Telement e, Tier toTier);
 	
-	public void rank(int toIndex, TierElement e, Tier toTier);
+	public void rank(int toIndex, Telement e, Tier toTier);
 	
-	public void unrank(TierElement e);
+	public void unrank(Telement e);
 
-	public void unrank(int toIndex, TierElement e);
+	public void unrank(int toIndex, Telement e);
 	
 	public void addTier(Tier t);
 
 	public void addTier();
 	
-	public void addToUnranked(TierElement e);
+	public void addToUnranked(Telement e);
 
 	public void removeTier(Tier t);
 
-	public void removeFromUnranked(TierElement e);
+	public void removeFromUnranked(Telement e);
 	
 	public void swapTiers(Tier a, Tier b);
 
-	public void swapTierElements(Tier tier, TierElement a, TierElement b);
+	public void swapTierElements(Tier tier, Telement a, Telement b);
 
-	public void swapUnrankedElements(TierElement a, TierElement b);
+	public void swapUnrankedElements(Telement a, Telement b);
 	
-	public void moveTo(TierElement e, Tier toTier);
+	public void moveTo(Telement e, Tier toTier);
 
-	public void moveTo(TierElement e, Tier toTier, TierElement toElement);
+	public void moveTo(Telement e, Tier toTier, Telement toElement);
 	
-	public void moveTo(TierElement e, Tier toTier, int toIndex);
+	public void moveTo(Telement e, Tier toTier, int toIndex);
 
-	public void moveUnranked(TierElement e, TierElement toElement);
+	public void moveUnranked(Telement e, Telement toElement);
 	
-	public void moveUnranked(TierElement e, int toIndex);
+	public void moveUnranked(Telement e, int toIndex);
 
 	public void moveTierTo(Tier from, Tier to);
 
 	public void moveTierTo(Tier from, int toindex);
 	
-	public Tier getTierByElement(TierElement e);
+	public Tier getTierByElement(Telement e);
 
-	public TierElement getElementByHash(String hashCode);
+	public Telement getElementByHash(String hashCode);
 
 	public Tier getTierByHash(String hashCode);
 	
-	public List<TierElement> getUnranked();
+	public List<Telement> getUnranked();
 
 	public List<Tier> getTiers();
 	
