@@ -1,4 +1,4 @@
-module openTierLists {
+module openTierList {
 	requires org.junit.jupiter.api;
 	requires java.desktop;
 	requires javafx.graphics;
