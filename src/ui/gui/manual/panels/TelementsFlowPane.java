@@ -203,11 +203,9 @@ public class TelementsFlowPane extends FlowPane {
 
 		boolean success = false;
 
-		Telement sourceData;
-		Optional<Telement> sourceDataOptional = controller.getElementByHash(dragBoard.getString());
+		Optional<Telement> sourceData = controller.getElementByHash(dragBoard.getString());
 		
-		if (sourceDataOptional.isEmpty()) return;
-		else sourceData = sourceDataOptional.get();
+		if (sourceData.isEmpty()) return;
 		
 		EventTarget dragAndDropTarget = event.getTarget();
 
@@ -216,7 +214,7 @@ public class TelementsFlowPane extends FlowPane {
 				dragAndDropTarget instanceof ImageView targetImage &&
 				!sourceData.equals(targetImage.getUserData())) {
 
-			onDragDropped.accept(sourceData, (Telement) targetImage.getUserData());
+			onDragDropped.accept(sourceData.get(), (Telement) targetImage.getUserData());
 
 			success = true;
 
@@ -235,14 +233,11 @@ public class TelementsFlowPane extends FlowPane {
 		if (dragBoard.hasImage() && dragBoard.hasString()
 				&& event.getTarget() instanceof TelementsFlowPane targetElementPane) {
 
-			Telement sourceData;
-			
-			Optional<Telement> sourceDataOptional = controller.getElementByHash(dragBoard.getString());
+			Optional<Telement> sourceData = controller.getElementByHash(dragBoard.getString());
 
-			if (sourceDataOptional.isEmpty()) return;
-			else sourceData = sourceDataOptional.get();
+			if (sourceData.isEmpty()) return;
 			
-			updateModel(sourceData.status(), sourceData, targetElementPane);
+			updateModel(sourceData.get().status(), sourceData.get(), targetElementPane);
 			updateImages();
 			success = true;
 		}

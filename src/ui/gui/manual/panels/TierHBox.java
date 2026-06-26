@@ -42,12 +42,12 @@ public class TierHBox extends HBox {
 	private TextField tierNameLabel;
 	private TelementsFlowPane elementsPane;
 	private Button editTierButton;
-
 	private TiersScrollPane parent;
 	
 	private TierListController controller;
 	private Tier tier;
 	private BiConsumer<Telement, Telement> onDragDropped;
+	
 	private String oldTextValue;
 	
 	public TierHBox(TiersScrollPane parent, TierListController controller, Tier tier) {	
@@ -87,6 +87,7 @@ public class TierHBox extends HBox {
 		{
 			this.tierNameLabel.setEditable(true);
 			tierNameLabel.setFocusTraversable(false);
+			tierNameLabel.setAlignment(Pos.CENTER);
 			tierNameLabel.setPrefSize(UISettings.DEFAULT_CELL_SIZE, UISettings.DEFAULT_CELL_SIZE);
 			
 			this.editTierButton.setAlignment(Pos.CENTER);	
@@ -182,10 +183,10 @@ public class TierHBox extends HBox {
 	
 	private void handleDragDetected(MouseEvent event) {
 
-		// ----- define transfer mode -----//
+		//----- define transfer mode -----//
 		Dragboard dragBoard = ((TextField) event.getSource()).startDragAndDrop(TransferMode.MOVE);
 
-		// ----- put Text on dragboard -----//
+		//----- put Text on dragboard -----//
 		var content = new ClipboardContent();
 		String sourceId = Integer.valueOf(tier.hashCode()).toString();
 
@@ -198,12 +199,9 @@ public class TierHBox extends HBox {
 		Dragboard db = event.getDragboard();
 		if (db.hasString() && !event.getDragboard().hasImage()) {
 			
-			Tier source;
+			Optional<Tier> source = controller.getTierByHash(db.getString());
 			
-			Optional<Tier> sourceOptional = controller.getTierByHash(db.getString());
-			
-			if (sourceOptional.isEmpty()) return;
-			else source = sourceOptional.get();
+			if (source.isEmpty()) return;
 			
 			Node potentialTarget = (Node) event.getTarget();
 		
@@ -213,7 +211,7 @@ public class TierHBox extends HBox {
 
 			if (potentialTarget instanceof TierHBox targetPane) {
 				Tier target = (Tier) targetPane.getTier();
-				controller.moveTierTo(source, target);
+				controller.moveTierTo(source.get(), target);
 			}
 		}
 		event.setDropCompleted(true);

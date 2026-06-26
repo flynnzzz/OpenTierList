@@ -10,6 +10,7 @@ import model.models.Tier;
  * @since v1.2.5
  */
 public enum DefaultTier {
+	// temporary colors
     S(Color.ORANGERED),
     A(Color.ORANGE),
     B(Color.YELLOW),

@@ -94,9 +94,10 @@ public class UnrankedScrollPane extends ScrollPane {
 	}
 	
 	private void handleDragEntered(DragEvent event) {
-		if (event.getGestureSource()instanceof ImageView && event.getTarget() instanceof UnrankedScrollPane
-				&& event.getDragboard().hasImage())
-			this.setTierElementsPaneBorder(UISettings.DEFAULT_BAR_HIGHLIGHT_COLOR);
+		if (event.getGestureSource() instanceof ImageView 
+			&& event.getTarget() instanceof UnrankedScrollPane
+			&& event.getDragboard().hasImage())
+			setTierElementsPaneBorder(UISettings.DEFAULT_BAR_HIGHLIGHT_COLOR);
                
 		event.consume();
 	}

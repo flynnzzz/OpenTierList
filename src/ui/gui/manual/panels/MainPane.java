@@ -39,6 +39,9 @@ public class MainPane extends BorderPane {
 		// ----- title -----//
 		titleLabel = new TextField(controller.getTierListName());
 		titleLabel.setFocusTraversable(false);
+		titleLabel.setStyle("-fx-focus-color: transparent; -fx-text-box-border: transparent;");
+		titleLabel.setAlignment(Pos.CENTER);
+
 		HBox titleBox = new HBox(titleLabel);
 		setTop(titleBox);
 		titleBox.setPadding(new Insets(
