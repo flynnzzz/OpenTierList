@@ -6,6 +6,8 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import persistence.ResourceHolder;
+
 /**
  * Self-explanatory
  * 
@@ -15,8 +17,8 @@ import java.nio.file.Path;
  */
 public class ImagePath {
     private String url;
-    private static final String DEFAULT_IMAGE_RESOURCE = "/default_icon.jpeg";
-    private static final String DEFAULT_IMAGES_FOLDER = "/external/images/";
+    private static final String DEFAULT_IMAGE_RESOURCE = ResourceHolder.getDefaultTelementIcon();
+    private static final String DEFAULT_IMAGES_FOLDER = ResourceHolder.getDefaultImagesFolder();
 
     private ImagePath(String url) {
         this.url = url;

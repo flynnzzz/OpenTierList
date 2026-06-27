@@ -9,6 +9,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 import ui.gui.manual.settings.UISettings;
 
 /**
@@ -27,10 +28,12 @@ public class MainPane extends BorderPane {
 	// TODO: file selector
 
 	private TierListController controller;
+	private Stage stage;
 	private String oldTitle;
 	
-	public MainPane(TierListController controller) {
+	public MainPane(TierListController controller, Stage stage) {
 		this.controller = controller;
+		this.stage = stage;
 		this.initPane();
 	}
 	
@@ -114,5 +117,9 @@ public class MainPane extends BorderPane {
 	public void updateAll() {
 		tiersPane.updatePane();
 		unrankedPane.updatePane();
+	}
+	
+	public Stage getStage() {
+		return this.stage;
 	}
 }

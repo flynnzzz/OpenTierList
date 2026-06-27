@@ -1,11 +1,12 @@
 package ui.gui.manual.panels;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.BiConsumer;
 
 import controller.controllers.TierListController;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.EventTarget;
 import javafx.scene.effect.BlendMode;
 import javafx.scene.image.Image;
@@ -36,19 +37,18 @@ public class TelementsFlowPane extends FlowPane {
 	
 	private TierListController controller;
 	private Optional<Tier> tier;
-	private List<Telement> elements;
+	private ObservableList<Telement> elements;
 	
-	private List<ImageView> images;
+	private ObservableList<ImageView> images;
 	private BiConsumer<Telement, Telement> onDragDropped;
 	
 	public TelementsFlowPane(TierListController controller, List<Telement> elements, 
 			Optional<Tier> tier, BiConsumer<Telement, Telement> onDragDropped) {
 		this.controller = controller;
 		this.tier = tier;
-		this.elements = elements;
+		this.elements = FXCollections.observableArrayList(elements);
 		this.onDragDropped = onDragDropped;
 		this.images = loadImages();
-		
 		this.setupPane();
 	}
 	
@@ -56,7 +56,7 @@ public class TelementsFlowPane extends FlowPane {
 			BiConsumer<Telement, Telement> onDragDropped) {
 		this.controller = controller;
 		this.tier = Optional.empty();
-		this.elements = elements;
+		this.elements = FXCollections.observableArrayList(elements);
 		this.onDragDropped = onDragDropped;
 		this.images = loadImages();
 		
@@ -108,8 +108,20 @@ public class TelementsFlowPane extends FlowPane {
 		});
 	}
 	
-	private List<ImageView> loadImages() {
-		this.images = new ArrayList<>();
+	
+	public void updateImages() {
+		elements = tier.isPresent() 
+				? FXCollections.observableArrayList(tier.get().getElements())
+				: FXCollections.observableArrayList(controller.getUnranked());
+		
+		images.clear();
+		images = loadImages();
+		this.getChildren().clear();
+		this.getChildren().addAll(images);
+	}
+	
+	private ObservableList<ImageView> loadImages() {
+		this.images = FXCollections.observableArrayList();
 		
 		elements.forEach( element -> {
 			var imageViewer = new ImageView(new Image(element.getImageUrl(),
@@ -275,16 +287,6 @@ public class TelementsFlowPane extends FlowPane {
 						CornerRadii.EMPTY,
 						BorderWidths.DEFAULT));
 		this.setBorder(tierElementsPaneBorder);
-}
-	
-	public void updateImages() {
-		List<Telement> toUpdate;
-
-		toUpdate = tier.isPresent() ? tier.get().getElements() : controller.getUnranked();
-		this.elements = toUpdate;
-
-		this.images = loadImages();
-		this.getChildren().clear();
-		this.getChildren().addAll(images);
 	}
+
 }

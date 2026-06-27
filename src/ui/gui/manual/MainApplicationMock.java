@@ -43,7 +43,7 @@ public class MainApplicationMock extends Application {
 		controller.rank(s, DefaultTier.A.value());
 		
 		stage.setTitle("Open Tier Lists");
-		BorderPane root = new MainPane(controller);
+		BorderPane root = new MainPane(controller, stage);
 		Scene scene = new Scene(root);
 		
 		stage.setHeight(900);

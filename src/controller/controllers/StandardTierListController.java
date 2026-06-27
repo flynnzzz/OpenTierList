@@ -3,7 +3,6 @@ package controller.controllers;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import model.enums.TierStringFormat;
 import model.exceptions.TelementNotFoundException;
@@ -237,15 +236,12 @@ public class StandardTierListController implements TierListController {
 		Optional<Tier> element = Optional.empty();
 		
 		try {
-			var elements = 
+			element = 
 			tierList.getTiers().stream()
 			.filter(t -> t.contains(e))
-			.collect(Collectors.toUnmodifiableList());
+			.findFirst();
 			
-			if (elements.size() < 0) throw new TelementNotFoundException();
-			
-			element = Optional.of(elements.getFirst());
-			
+			if (element.isEmpty()) throw new TelementNotFoundException();
 		} catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) { printStackTrace(ex); }
 		
 		return element;
@@ -257,22 +253,20 @@ public class StandardTierListController implements TierListController {
 		
 		try {
 			// firstly, search in tiers
-			var telements = 
+			telement =
 			tierList.getTiers().stream()
 			.flatMap( t -> t.getElements().stream())
-			.filter(e -> String.valueOf(e.hashCode()).equals(hashCode))
-			.collect(Collectors.toList());
+			.filter(e -> String.valueOf(e.hashCode()).equals(hashCode)).findFirst();
 			
-			if (telements.size() >= 1) return Optional.of(telements.getFirst());	
+			if (telement.isEmpty()) {
+				// if not found, seach in unranked
+				telement = 
+				tierList.getUnranked().stream()
+				.filter(e -> String.valueOf(e.hashCode()).equals(hashCode))
+				.findFirst();
+			}
 			
-			// if not found, seach in unranked
-			telements = 
-			tierList.getUnranked().stream()
-			.filter(e -> String.valueOf(e.hashCode()).equals(hashCode))
-			.collect(Collectors.toList());
-
-			if (telements.size() >= 1) return Optional.of(telements.getFirst());	
-			
+			if (telement.isEmpty()) throw new TelementNotFoundException();	
 		} catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) { printStackTrace(ex); }
 		
 		return telement;
@@ -283,15 +277,12 @@ public class StandardTierListController implements TierListController {
 		Optional<Tier> tier = Optional.empty();
 		
 		try {
-			var tiers = 
+			tier = 
 			tierList.getTiers().stream()
 			.filter( t -> String.valueOf(t.hashCode()).contains(hashCode))
-			.collect(Collectors.toUnmodifiableList());
+			.findFirst();
 
-			if (tiers.size() < 1) throw new TierNotFoundException();
-			
-			tier = Optional.of(tiers.getFirst());
-
+			if (tier.isEmpty()) throw new TierNotFoundException();
 		} catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) { printStackTrace(ex); }
 		
 		return tier;

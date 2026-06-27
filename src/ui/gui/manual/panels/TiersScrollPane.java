@@ -38,7 +38,7 @@ public class TiersScrollPane extends ScrollPane {
 		List<Tier> tiers = controller.getTiers();
 		
 		tiers.forEach( tier -> {
-			var tierPane = new TierHBox(this, controller, tier);
+			var tierPane = new TierHBox(this, parent.getStage(), controller, tier);
 
 			tierPane.getTextField().setOnDragDone(event -> {
 				if (event.getTransferMode() == TransferMode.MOVE)
