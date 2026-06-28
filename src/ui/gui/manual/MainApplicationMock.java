@@ -6,11 +6,13 @@ import controller.controllers.StandardTierListController;
 import controller.controllers.TierListController;
 import javafx.application.Application;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import model.enums.DefaultTier;
 import model.models.Telement;
 import model.models.TierList;
+import persistence.ResourceHolder;
 import ui.gui.manual.panels.MainPane;
 
 /**
@@ -48,6 +50,7 @@ public class MainApplicationMock extends Application {
 		
 		stage.setHeight(900);
 		stage.setWidth(1100);
+		stage.getIcons().add(new Image(ResourceHolder.getEditButtonIcon()));
 		stage.setScene(scene);
 		stage.show();
 	}

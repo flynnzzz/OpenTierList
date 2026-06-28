@@ -1,5 +1,7 @@
 package ui.gui.manual.panels;
 
+import java.io.File;
+
 import controller.controllers.TierListController;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -9,7 +11,11 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import javafx.stage.FileChooser;
+import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
+import model.models.ImagePath;
+import model.models.Telement;
 import ui.gui.manual.settings.UISettings;
 
 /**
@@ -25,7 +31,7 @@ public class MainPane extends BorderPane {
 	private TiersScrollPane tiersPane;
 	private VBox buttons;
 	private Button addTierButton, addElementButton;
-	// TODO: file selector
+	private FileChooser fileChooser;
 
 	private TierListController controller;
 	private Stage stage;
@@ -44,7 +50,11 @@ public class MainPane extends BorderPane {
 		titleLabel.setFocusTraversable(false);
 		titleLabel.setStyle("-fx-focus-color: transparent; -fx-text-box-border: transparent;");
 		titleLabel.setAlignment(Pos.CENTER);
-
+		
+		fileChooser = new FileChooser();
+		fileChooser.setTitle("Select file");
+		fileChooser.getExtensionFilters().add(new ExtensionFilter("Image Files", "*.png", "*.jpg", "*.jpeg", "*.gif"));
+		
 		HBox titleBox = new HBox(titleLabel);
 		setTop(titleBox);
 		titleBox.setPadding(new Insets(
@@ -111,6 +121,15 @@ public class MainPane extends BorderPane {
 		addTierButton.setOnAction( _ -> {
 			controller.addTier();
 			tiersPane.updatePane();
+		});
+		
+		addElementButton.setOnAction( _ -> {
+			File selectedFile = fileChooser.showOpenDialog(stage);
+			
+			if (selectedFile != null && selectedFile.exists()) {
+				controller.addToUnranked(new Telement(selectedFile.getName(), ImagePath.of(selectedFile)));
+				updateAll();
+			}
 		});
 	}
 	

@@ -37,6 +37,10 @@ public class Telement {
 		this.imagePath = imagePath;
 	}
 	
+	public Telement(String name, ImagePath imagePath) throws IllegalArgumentException {
+		this(TelementStatus.UNRANKED, name , imagePath);
+	}
+	
 	/**
 	 * Constructs a {@link TierList} entry given the following parameters.
 	 * 
@@ -109,7 +113,13 @@ public class Telement {
 
 	public String getName() { return name; }
 	
-	public String getImageUrl() { return this.imagePath.getUrl(); }
+	public String getImageUrl() { 
+		return this.imagePath.getUrl(); 
+	}
+	
+	public void updateImagePath() {
+		this.imagePath = imagePath.exists() ? imagePath : ImagePath.defaultResource();
+	}
 
 	
 	//---------------------------------- hashCode, equals and toString ----------------------------------//	

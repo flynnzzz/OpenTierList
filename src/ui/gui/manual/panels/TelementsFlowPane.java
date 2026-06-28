@@ -124,6 +124,7 @@ public class TelementsFlowPane extends FlowPane {
 		this.images = FXCollections.observableArrayList();
 		
 		elements.forEach( element -> {
+			element.updateImagePath();
 			var imageViewer = new ImageView(new Image(element.getImageUrl(),
 					UISettings.DEFAULT_CELL_SIZE,
 					UISettings.DEFAULT_CELL_SIZE,

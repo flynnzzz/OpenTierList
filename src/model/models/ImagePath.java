@@ -1,5 +1,6 @@
 package model.models;
 
+import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -17,7 +18,9 @@ import persistence.ResourceHolder;
  */
 public class ImagePath {
     private String url;
+    
     private static final String DEFAULT_IMAGE_RESOURCE = ResourceHolder.getDefaultTelementIcon();
+    
     private static final String DEFAULT_IMAGES_FOLDER = ResourceHolder.getDefaultImagesFolder();
 
     private ImagePath(String url) {
@@ -26,7 +29,7 @@ public class ImagePath {
 
     public static ImagePath of(String path) {
     	Path jarPath = basePath();
-    	String base = jarPath.toString().contains("bin") ? ".." + DEFAULT_IMAGES_FOLDER : "." + DEFAULT_IMAGES_FOLDER;
+    	String base = jarPath.toString().contains("bin") ? ".." + DEFAULT_IMAGES_FOLDER : DEFAULT_IMAGES_FOLDER;
 
         Path real = jarPath.resolve(base).resolve(path).normalize();
         
@@ -34,6 +37,13 @@ public class ImagePath {
             return new ImagePath(real.toUri().toString());
         }
         return defaultResource();
+    }
+    
+    public static ImagePath of(File file) {
+    	if (file != null && file.exists()) {
+    		return new ImagePath(file.toURI().toString());
+    	}
+    	return defaultResource();
     }
 
     public static ImagePath defaultResource() {
@@ -62,5 +72,14 @@ public class ImagePath {
         } catch (URISyntaxException e) {
             throw new IllegalStateException("Could not determine application directory", e);
         }
+    }
+    
+    public boolean exists() {
+    	try {
+			return Files.exists(Path.of(new URI(url)));
+		} catch (URISyntaxException e) {
+			e.printStackTrace();
+			return false;
+		}
     }
 }
