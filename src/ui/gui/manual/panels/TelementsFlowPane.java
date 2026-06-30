@@ -67,7 +67,13 @@ public class TelementsFlowPane extends FlowPane {
 		return this.tier;
 	}
 	
+	// TODO: create new class extending imageViewer 
+	// 		 that incorporates the Telement it represents
 	private void setupImages(ImageView imageViewer) {
+		
+		// repurpose into a new class extending imageViewer
+		// TODO: add delete element functionality
+		
 		// ----- settings -----//
 		imageViewer.setSmooth(false);
 
@@ -108,13 +114,14 @@ public class TelementsFlowPane extends FlowPane {
 		});
 	}
 	
-	
 	public void updateImages() {
 		elements = tier.isPresent() 
 				? FXCollections.observableArrayList(tier.get().getElements())
 				: FXCollections.observableArrayList(controller.getUnranked());
 		
 		images.clear();
+
+		// TODO: can definitely be optimized
 		images = loadImages();
 		this.getChildren().clear();
 		this.getChildren().addAll(images);

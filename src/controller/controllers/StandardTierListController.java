@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+import model.enums.DefaultTier;
 import model.enums.TierStringFormat;
 import model.exceptions.TelementNotFoundException;
 import model.exceptions.TierNotFoundException;
@@ -50,7 +51,7 @@ public class StandardTierListController implements TierListController {
 	 * 
 	 * Instanciates an empty {@link TierList}
 	 */
-	public StandardTierListController() { this(new TierList()); }
+	public StandardTierListController() { this.tierList = defaultTierList(); }
 
 	
 	//---------------------------------- methods ----------------------------------//
@@ -201,7 +202,7 @@ public class StandardTierListController implements TierListController {
 	}
 	
 	
-	//------------------------------ toString ------------------------------//
+	//------------------------------ misc ------------------------------//
 
 	@Override
 	public String toString() {
@@ -212,7 +213,14 @@ public class StandardTierListController implements TierListController {
 	public String toString(TierStringFormat format) {
 		return tierList.toString(format);
 	}
-
+	
+	@Override
+	public TierList defaultTierList() {
+		var tierList = new TierList();
+		for (DefaultTier tier : DefaultTier.values())
+			tierList.addTier(tier.value());
+		return tierList;
+	}
 	
 	//------------------------------ getters ------------------------------//
 	

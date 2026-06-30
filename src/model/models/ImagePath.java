@@ -20,16 +20,21 @@ public class ImagePath {
     private String url;
     
     private static final String DEFAULT_IMAGE_RESOURCE = ResourceHolder.getDefaultTelementIcon();
-    
+
+    // for testing only
     private static final String DEFAULT_IMAGES_FOLDER = ResourceHolder.getDefaultImagesFolder();
 
     private ImagePath(String url) {
         this.url = url;
     }
 
+    // for testing only
     public static ImagePath of(String path) {
     	Path jarPath = basePath();
-    	String base = jarPath.toString().contains("bin") ? ".." + DEFAULT_IMAGES_FOLDER : DEFAULT_IMAGES_FOLDER;
+    				// to make it work in the IDE
+    	String base = jarPath.toString().contains("bin") 
+    				? ".." + DEFAULT_IMAGES_FOLDER 
+    				: DEFAULT_IMAGES_FOLDER;
 
         Path real = jarPath.resolve(base).resolve(path).normalize();
         
@@ -58,6 +63,7 @@ public class ImagePath {
         return this.url;
     }
 
+    // for testing only
     private static Path basePath() {
         try {
             URI jarUri = ImagePath.class

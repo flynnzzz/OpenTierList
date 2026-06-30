@@ -103,4 +103,6 @@ public interface TierListController {
 	public String toString();
 
 	public String toString(TierStringFormat format);
+	
+	public TierList defaultTierList();
 }

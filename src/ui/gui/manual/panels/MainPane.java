@@ -75,6 +75,9 @@ public class MainPane extends BorderPane {
 		addTierButton = new Button("Add Tier");
 		addElementButton = new Button("Add Element");
 		
+		addTierButton.setFocusTraversable(false);
+		addElementButton.setFocusTraversable(false);
+		
 		buttons = new VBox();
 		buttons.getChildren().addAll(addTierButton, addElementButton);
 		addTierButton.setPadding(new Insets(UISettings.DEFAULT_RBUTTON_PADDING / 3));

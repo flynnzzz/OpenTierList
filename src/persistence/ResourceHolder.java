@@ -1,8 +1,12 @@
 package persistence;
 
 public class ResourceHolder {
+	
 	private final static String defaultTelementIcon = "/default_icon.jpeg";
+	
+	// for testing only
 	private final static String defaultImagesFolder = "/external/images/";
+	
 	private final static String editButtonIcon = "/edit_icon_resized.png";
 	
 	public static String getDefaultTelementIcon() {
