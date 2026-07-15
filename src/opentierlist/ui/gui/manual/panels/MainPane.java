@@ -70,6 +70,9 @@ public class MainPane extends BorderPane {
 		unrankedBox.setAlignment(Pos.CENTER);
 
 		setBottom(unrankedBox);
+		
+		// TODO: center main pane
+		unrankedBox.setTranslateX(-100);
 
 		// ----- buttons -----//
 		addTierButton = new Button("Add Tier");

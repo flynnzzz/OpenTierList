@@ -191,7 +191,10 @@ public class TierHBox extends HBox {
 
 	    color.setOnAction(_ -> {
 	    	colorStage.show();
-	        mainStage.setOnCloseRequest(_ -> {
+	    	colorStage.setX(mainStage.getX() + (mainStage.getWidth() - colorStage.getWidth()) / 2.0);
+	    	colorStage.setY(mainStage.getY() + (mainStage.getHeight() - colorStage.getHeight()) / 2.0);
+		    
+		    mainStage.setOnCloseRequest(_ -> {
 		    	if (colorStage.isShowing()) {
 		    		colorStage.close(); 
 		    	}
@@ -211,7 +214,7 @@ public class TierHBox extends HBox {
 	
 	private void setupColorPicker() {
 	    colorStage = new Stage();
-
+	    
 	    colorPane = new BorderPane();
 	    
 	    colorMenu = new Scene(colorPane, 200, 150);
