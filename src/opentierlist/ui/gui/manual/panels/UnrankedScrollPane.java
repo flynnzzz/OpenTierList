@@ -48,7 +48,10 @@ public class UnrankedScrollPane extends ScrollPane {
 				this.controller.unrank(controller.getUnranked().indexOf(t), s); 
 				break;
 			}
-			default: break;
+			default: {
+				System.err.println("--- Unexpected error, exiting ---");
+				System.exit(-1);
+			}
 			}
 		};
 		

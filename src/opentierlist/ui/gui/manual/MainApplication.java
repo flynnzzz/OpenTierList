@@ -25,9 +25,12 @@ public class MainApplication extends Application {
 		stage.setHeight(900);
 		stage.setWidth(1100);
 		
-		stage.getIcons().add(new Image(ResourceHolder.getEditButtonIcon()));
+		var imageResource = ResourceHolder.getEditButtonIcon();
+		stage.getIcons().add(new Image(imageResource));
 		stage.setScene(scene);
 		stage.show();
+		stage.setX((1980 - stage.getWidth())/ 2);
+		stage.setY(1080 - stage.getHeight()/ 2);
 	}
 	
 	public static void main(String[] args) {

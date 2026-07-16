@@ -8,7 +8,6 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.VBox;
 import opentierlist.controller.controllers.TierListController;
-import opentierlist.model.models.Tier;
 
 /**
  * 
@@ -35,11 +34,9 @@ public class TiersScrollPane extends ScrollPane {
 	}
 	
 	private void initAllTiers() {
-		List<Tier> tiers = controller.getTiers();
-		
-		tiers.forEach( tier -> {
+		controller.getTiers().forEach( tier -> {
 			var tierPane = new TierHBox(this, parent.getStage(), controller, tier);
-
+			
 			tierPane.getTextField().setOnDragDone(event -> {
 				if (event.getTransferMode() == TransferMode.MOVE)
 					updatePane();

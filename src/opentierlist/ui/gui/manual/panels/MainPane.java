@@ -1,14 +1,16 @@
 package opentierlist.ui.gui.manual.panels;
 
 import java.io.File;
+import java.net.URISyntaxException;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
@@ -16,6 +18,7 @@ import javafx.stage.Stage;
 import opentierlist.controller.controllers.TierListController;
 import opentierlist.model.models.ImagePath;
 import opentierlist.model.models.Telement;
+import opentierlist.persistence.ResourceHolder;
 import opentierlist.ui.gui.manual.settings.UISettings;
 
 /**
@@ -29,7 +32,7 @@ public class MainPane extends BorderPane {
 	private TextField titleLabel;
 	private UnrankedScrollPane unrankedPane;
 	private TiersScrollPane tiersPane;
-	private VBox buttons;
+	private HBox buttons;
 	private Button addTierButton, addElementButton;
 	private FileChooser fileChooser;
 
@@ -44,13 +47,11 @@ public class MainPane extends BorderPane {
 	}
 	
 	public void initPane() {
-
 		// ----- title -----//
 		titleLabel = new TextField(controller.getTierListName());
 		titleLabel.setFocusTraversable(false);
-		titleLabel.setStyle("-fx-focus-color: transparent; -fx-text-box-border: transparent;");
-		titleLabel.setAlignment(Pos.CENTER);
 		
+		// ----- file chooser -----//
 		fileChooser = new FileChooser();
 		fileChooser.setTitle("Select file");
 		fileChooser.getExtensionFilters().add(new ExtensionFilter("Image Files", "*.png", "*.jpg", "*.jpeg", "*.gif"));
@@ -62,48 +63,55 @@ public class MainPane extends BorderPane {
 				UISettings.DEFAULT_TITLE_PADDING_RIGHT,
 				UISettings.DEFAULT_TITLE_PADDING_BOTTOM,
 				UISettings.DEFAULT_TITLE_PADDING_LEFT));
-		titleBox.setAlignment(Pos.CENTER);
+		titleBox.setAlignment(Pos.BASELINE_CENTER);
 
 		// ----- unranked -----//
 		unrankedPane = new UnrankedScrollPane(this, controller);
 		HBox unrankedBox = new HBox(unrankedPane);
-		unrankedBox.setAlignment(Pos.CENTER);
-
+		unrankedBox.setAlignment(Pos.BASELINE_CENTER);
 		setBottom(unrankedBox);
 		
-		// TODO: center main pane
-		unrankedBox.setTranslateX(-100);
-
 		// ----- buttons -----//
-		addTierButton = new Button("Add Tier");
-		addElementButton = new Button("Add Element");
+		addTierButton = new Button("Tier");
+		addElementButton = new Button("Elem");
 		
 		addTierButton.setFocusTraversable(false);
 		addElementButton.setFocusTraversable(false);
+
+		try {
+			var imageURI = getClass().getResource(ResourceHolder.getAddtierbuttonicon());
+			if (imageURI == null) 
+				throw new URISyntaxException("imageURI", "--- addtier button resource not found, exiting ---");
+			addTierButton.setGraphic(new ImageView(new Image(imageURI.toURI().toString())));
+
+			imageURI = getClass().getResource(ResourceHolder.getAddelementbuttonicon());
+			if (imageURI == null) 
+				throw new URISyntaxException("imageURI", "--- addelement button resource not found, exiting ---");
+			addElementButton.setGraphic(new ImageView(new Image(imageURI.toURI().toString())));
+		} catch (URISyntaxException e) {
+			System.err.println(e.getReason());
+			System.exit(-1);
+		}
 		
-		buttons = new VBox();
+		buttons = new HBox();
 		buttons.getChildren().addAll(addTierButton, addElementButton);
-		addTierButton.setPadding(new Insets(UISettings.DEFAULT_RBUTTON_PADDING / 3));
-		addElementButton.setPadding(new Insets(UISettings.DEFAULT_RBUTTON_PADDING / 3));
 
-		addTierButton.setAlignment(Pos.CENTER);	
-		addElementButton.setAlignment(Pos.CENTER);	
-		buttons.setPadding(new Insets(UISettings.DEFAULT_RBUTTON_PADDING));
-		buttons.setSpacing(UISettings.DEFAULT_RBUTTON_PADDING);
-
-		setRight(buttons);
+		buttons.setPadding(new Insets(UISettings.DEFAULT_DBUTTON_PADDING,
+				UISettings.DEFAULT_DBUTTON_PADDING,
+				UISettings.DEFAULT_DBUTTON_PADDING,
+				UISettings.DEFAULT_DBUTTON_PADDING));
+		
+		buttons.setSpacing(UISettings.DEFAULT_DBUTTON_PADDING / 3);
+		buttons.setAlignment(Pos.BOTTOM_CENTER);
 
 		// ----- tiers -----//
 		tiersPane = new TiersScrollPane(this, controller);
 		HBox tiersBox = new HBox(tiersPane);
-		tiersBox.setAlignment(Pos.CENTER); 
-		tiersBox.setPadding(new Insets(0, 0, 0, 0));
 		setCenter(tiersBox);
 
-		HBox leftSpacer = new HBox();
-		leftSpacer.setPrefWidth(buttons.getWidth() + UISettings.DEFAULT_RBUTTON_PADDING * 8); // I'm never doing UI manualy again
-		HBox.setHgrow(leftSpacer, Priority.NEVER);
-		setLeft(leftSpacer);
+		var centerBox = new VBox(tiersPane, buttons);
+		centerBox.setAlignment(Pos.CENTER);
+		setCenter(centerBox);
 
 		setupEventHandlers();
 	}
@@ -119,6 +127,7 @@ public class MainPane extends BorderPane {
 		titleLabel.setOnAction( _ -> {
 			if (!titleLabel.getText().isBlank()) {
 				controller.setTierListName(titleLabel.getText());
+				stage.setTitle(titleLabel.getText());
 				this.oldTitle = titleLabel.getText();
 			}
 			titleLabel.getScene().getRoot().requestFocus();

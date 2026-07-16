@@ -67,16 +67,11 @@ public class TelementsFlowPane extends FlowPane {
 		return this.tier;
 	}
 	
-	// TODO: create new class extending imageViewer 
-	// 		 that incorporates the Telement it represents
 	private void setupImages(ImageView imageViewer) {
 		
-		// repurpose into a new class extending imageViewer
 		// TODO: add delete element functionality
 		
 		// ----- settings -----//
-		imageViewer.setSmooth(false);
-
 		imageViewer.setFitHeight(UISettings.DEFAULT_CELL_SIZE);
 		imageViewer.setFitWidth(UISettings.DEFAULT_CELL_SIZE);
 
@@ -121,7 +116,6 @@ public class TelementsFlowPane extends FlowPane {
 		
 		images.clear();
 
-		// TODO: can definitely be optimized
 		images = loadImages();
 		this.getChildren().clear();
 		this.getChildren().addAll(images);
@@ -149,10 +143,12 @@ public class TelementsFlowPane extends FlowPane {
 	private void setupPane() {
 		this.getChildren().addAll(images);
 		this.initFlowPaneBorder();
+		
 		//----- settings -----//
 		this.setPrefWidth(UISettings.DEFAULT_BAR_WIDTH);
 		this.setMaxHeight(UISettings.DEFAULT_BAR_MAX_HEIGHT);
 		this.setMinHeight(UISettings.DEFAULT_BAR_MIN_HEIGHT);
+		
 		this.setupDragAndDrop();	
 	}
 

@@ -84,15 +84,6 @@ public class TierHBox extends HBox {
 		this.tier = tier;
 		this.editTierButton = new Button();
 		
-		// TODO: sort later
-		Image img;
-		try {
-			img = new Image(getClass().getResource(ResourceHolder.getEditButtonIcon()).toURI().toString()); 
-			editTierButton.setGraphic(new ImageView(img));
-		} catch (URISyntaxException e) {
-			e.printStackTrace();
-		}
-
 		//----- TierElementsPane's on 'drag dropped' behaviour -----//
 		this.onDragDropped = (element, t) -> {
 			switch (element.status()) {
@@ -131,6 +122,8 @@ public class TierHBox extends HBox {
 			this.setTierNameLabelBackground();
 			this.setTierNameLabelBorder(UISettings.DEFAULT_BAR_BORDER_COLOR);
 			
+			this.setAlignment(Pos.CENTER);
+			
 			this.setSpacing(UISettings.DEFAULT_TIER_SPACING);
 			this.setPadding(new Insets(
 					UISettings.DEFAULT_TIER_PADDING_TOP,
@@ -139,7 +132,7 @@ public class TierHBox extends HBox {
 					UISettings.DEFAULT_TIER_PADDING_LEFT)
 			);
 		}
-
+		setupEditButton();
 		setupEventHandlers();
 	}
 
@@ -235,6 +228,17 @@ public class TierHBox extends HBox {
     	colorStage.initModality(Modality.WINDOW_MODAL);
     	colorStage.initStyle(StageStyle.UTILITY);
     	colorStage.setAlwaysOnTop(true);
+	}
+	
+	private void setupEditButton() {
+		try {
+			var imageURI = getClass().getResource(ResourceHolder.getEditButtonIcon());
+			if (imageURI == null) throw new URISyntaxException("imageURI", "--- Default edit tier resource not found, exiting ---");
+			editTierButton.setGraphic(new ImageView(new Image(imageURI.toURI().toString())));
+		} catch (URISyntaxException e) {
+			System.err.println(e.getReason());
+			System.exit(-1);
+		}
 	}
 	
 	private void setupEditMenu() {
