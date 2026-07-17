@@ -141,6 +141,7 @@ public class TierList {
 		Tier fromTier = findTierByElement(element);
 		verifyElementExistenceInTier(element, fromTier);
 		addToUnranked(element);
+		element.changeTo(UNRANKED);
 		return removeFromTier(fromTier, element);
 	}
 	
@@ -205,11 +206,13 @@ public class TierList {
 	
 	public boolean addToTier(int tierIndex, Telement element) throws TierNotFoundException {
 		verifyTierExistence(tierIndex);
+		element.changeTo(RANKED);
 		return tiers.get(tierIndex).add(element);
 	}
 	
 	public boolean addToTier(Tier tier, Telement element) throws TierNotFoundException {
 		checkTierExistence(tier);
+		element.changeTo(RANKED);
 		return tier.add(element);
 	}
 	

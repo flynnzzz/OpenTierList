@@ -121,6 +121,20 @@ public class StandardTierListController implements TierListController {
 	}
 
 	@Override
+	public void removeTelement(Telement e) {
+		try { 
+			var tier = getTierByElement(e); 
+			if (e.isRanked() && tier.isPresent())
+				tierList.removeFromTier(tier.get(), e);
+			else if (!e.isRanked()) {
+				tierList.removeFromUnranked(e);
+			}
+			else throw new TierNotFoundException("could not remove Telement: " + e);
+		}
+		catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) { printStackTrace(ex); }
+	}
+	
+	@Override
 	public void removeFromUnranked(Telement e) {
 		try { tierList.removeFromUnranked(e); }
 		catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) { printStackTrace(ex); }
@@ -249,7 +263,6 @@ public class StandardTierListController implements TierListController {
 			.filter(t -> t.contains(e))
 			.findFirst();
 			
-			if (element.isEmpty()) throw new TelementNotFoundException();
 		} catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) { printStackTrace(ex); }
 		
 		return element;

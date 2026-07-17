@@ -101,7 +101,7 @@ public class TierHBox extends HBox {
 			}
 		};
 		
-		this.elementsPane = new TelementsFlowPane(controller, tier.getElements(), Optional.of(tier), onDragDropped);
+		this.elementsPane = new TelementsFlowPane(parent, controller, tier.getElements(), Optional.of(tier), onDragDropped);
 		
 		this.setupPane();
 	}
@@ -328,7 +328,7 @@ public class TierHBox extends HBox {
 	}
 	
 	private Tier getTier() { return this.tier; }
-
+	
 	public TextField getTextField() {
 		return this.tierNameLabel;
 	}

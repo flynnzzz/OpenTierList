@@ -7,6 +7,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
@@ -27,12 +28,10 @@ import opentierlist.ui.gui.manual.settings.UISettings;
  * @since v1.2.5
  */
 public class MainPane extends BorderPane {
-
 	// ----- panels -----//
 	private TextField titleLabel;
 	private UnrankedScrollPane unrankedPane;
 	private TiersScrollPane tiersPane;
-	private HBox buttons;
 	private Button addTierButton, addElementButton;
 	private FileChooser fileChooser;
 
@@ -72,8 +71,11 @@ public class MainPane extends BorderPane {
 		setBottom(unrankedBox);
 		
 		// ----- buttons -----//
-		addTierButton = new Button("Tier");
-		addElementButton = new Button("Elem");
+		addTierButton = new Button();
+		addElementButton = new Button();
+		
+		addTierButton.setTooltip(new Tooltip("Add new Tier"));
+		addElementButton.setTooltip(new Tooltip("Add new Element"));
 		
 		addTierButton.setFocusTraversable(false);
 		addElementButton.setFocusTraversable(false);
@@ -93,23 +95,23 @@ public class MainPane extends BorderPane {
 			System.exit(-1);
 		}
 		
-		buttons = new HBox();
-		buttons.getChildren().addAll(addTierButton, addElementButton);
+		HBox buttonsHBox = new HBox();
+		buttonsHBox.getChildren().addAll(addTierButton, addElementButton);
 
-		buttons.setPadding(new Insets(UISettings.DEFAULT_DBUTTON_PADDING,
+		buttonsHBox.setPadding(new Insets(UISettings.DEFAULT_DBUTTON_PADDING,
 				UISettings.DEFAULT_DBUTTON_PADDING,
 				UISettings.DEFAULT_DBUTTON_PADDING,
 				UISettings.DEFAULT_DBUTTON_PADDING));
 		
-		buttons.setSpacing(UISettings.DEFAULT_DBUTTON_PADDING / 3);
-		buttons.setAlignment(Pos.BOTTOM_CENTER);
+		buttonsHBox.setSpacing(UISettings.DEFAULT_DBUTTON_PADDING / 3);
+		buttonsHBox.setAlignment(Pos.BOTTOM_CENTER);
 
 		// ----- tiers -----//
 		tiersPane = new TiersScrollPane(this, controller);
 		HBox tiersBox = new HBox(tiersPane);
 		setCenter(tiersBox);
 
-		var centerBox = new VBox(tiersPane, buttons);
+		var centerBox = new VBox(tiersPane, buttonsHBox);
 		centerBox.setAlignment(Pos.CENTER);
 		setCenter(centerBox);
 
@@ -155,5 +157,9 @@ public class MainPane extends BorderPane {
 	
 	public Stage getStage() {
 		return this.stage;
+	}
+	
+	public TiersScrollPane getFirstChild() {
+		return this.tiersPane;
 	}
 }

@@ -24,7 +24,6 @@ import opentierlist.ui.gui.manual.settings.UISettings;
  * @since v1.2.5
  */
 public class UnrankedScrollPane extends ScrollPane {
-
 	//----- panels -----//
 	private TelementsFlowPane unrankedPane;
 	
@@ -55,7 +54,7 @@ public class UnrankedScrollPane extends ScrollPane {
 			}
 		};
 		
-		this.unrankedPane = new TelementsFlowPane(controller, controller.getUnranked(), onDragDropped);
+		this.unrankedPane = new TelementsFlowPane(parent.getFirstChild(), controller, controller.getUnranked(), onDragDropped);
 		
 		this.setupPane();
 	}	

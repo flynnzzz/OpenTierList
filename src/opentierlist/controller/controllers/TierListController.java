@@ -49,7 +49,9 @@ public interface TierListController {
 	public void addToUnranked(Telement e);
 
 	public void removeTier(Tier t);
-
+	
+	public void removeTelement(Telement e);
+	
 	public void removeFromUnranked(Telement e);
 	
 	
