@@ -2,6 +2,7 @@ package opentierlist.ui.gui.manual.panels;
 
 import java.io.File;
 import java.net.URISyntaxException;
+import java.util.List;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -24,7 +25,7 @@ import opentierlist.ui.gui.manual.settings.UISettings;
 
 /**
  * 
- * @version 1.90
+ * @version 2.00
  * @since v1.2.5
  */
 public class MainPane extends BorderPane {
@@ -141,12 +142,13 @@ public class MainPane extends BorderPane {
 		});
 		
 		addElementButton.setOnAction( _ -> {
-			File selectedFile = fileChooser.showOpenDialog(stage);
-			
-			if (selectedFile != null && selectedFile.exists()) {
-				controller.addToUnranked(new Telement(selectedFile.getName(), ImagePath.of(selectedFile)));
-				updateAll();
-			}
+			List<File> files = fileChooser.showOpenMultipleDialog(stage);
+			files.forEach( selectedFile -> {
+				if (selectedFile != null && selectedFile.exists()) {
+					controller.addToUnranked(new Telement(selectedFile.getName(), ImagePath.of(selectedFile)));
+				}
+			});
+			updateAll();
 		});
 	}
 	

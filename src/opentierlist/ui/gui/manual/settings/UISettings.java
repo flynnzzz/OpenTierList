@@ -11,11 +11,15 @@ public class UISettings {
 	public final static int DEFAULT_BAR_MAX_HEIGHT = 4 * DEFAULT_CELL_SIZE;
 	public final static int DEFAULT_BAR_MIN_HEIGHT = DEFAULT_CELL_SIZE + 2;
 	public final static int DEFAULT_MAINPANE_LEFT_PADDING = DEFAULT_CELL_SIZE;
+	public final static int DEFAULT_DRAG_ENTERED_PADDING = 8;
+	public final static double DEFAULT_EXPANDED_IMAGE_SIZE = DEFAULT_CELL_SIZE * 1.2;
 	
 	// ----- colors -----//
 
 	public final static String DEFAULT_BAR_BORDER_COLOR = Color.DIMGRAY.toString();
 	public final static String DEFAULT_BAR_HIGHLIGHT_COLOR = Color.DEEPSKYBLUE.toString();
+	public final static String IMAGE_SOURCE_EFFECT = "-fx-effect: dropshadow(gaussian, rgba(255,64,0,0.95), 6, 0.4, 0, 0);";
+	public final static String IMAGE_TARGET_EFFECT = "-fx-effect: dropshadow(gaussian, rgba(0,191,255,0.95), 6, 0.4, 0, 0);";
 
 	// ----- unranked -----//
 

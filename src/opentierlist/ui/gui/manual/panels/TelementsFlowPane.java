@@ -1,7 +1,5 @@
 package opentierlist.ui.gui.manual.panels;
 
-import java.time.Duration;
-import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.BiConsumer;
@@ -13,7 +11,6 @@ import javafx.geometry.Insets;
 import javafx.geometry.Side;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
-import javafx.scene.effect.BlendMode;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.ClipboardContent;
@@ -37,7 +34,7 @@ import opentierlist.ui.gui.manual.settings.UISettings;
 
 /**
  * 
- * @version 2.90
+ * @version 3.00
  * @since v1.2.5
  */
 public class TelementsFlowPane extends FlowPane {
@@ -78,8 +75,8 @@ public class TelementsFlowPane extends FlowPane {
 		imageViewer.setFitWidth(UISettings.DEFAULT_CELL_SIZE);
 
 		imageContextMenu = new ContextMenu();
-		deleteImageMenu = new MenuItem("Delete");
-		unrankImageMenu = new MenuItem("Unrank");
+		deleteImageMenu = new MenuItem("delete");
+		unrankImageMenu = new MenuItem("unrank");
 
 		imageViewer.setOnMouseClicked( mouseEvent -> {
 			if (mouseEvent.getButton() == MouseButton.SECONDARY) {
@@ -114,15 +111,11 @@ public class TelementsFlowPane extends FlowPane {
 		imageViewer.setOnDragEntered(event -> {
 			if (event.getTarget() instanceof ImageView target && event.getGestureSource() instanceof ImageView source &&
 					event.getDragboard().hasImage()) {
-				target.setStyle(
-						"-fx-effect: dropshadow(gaussian, rgba(255,64,0,0.95), 6, 0.2, 0, 0);"
-				);
-				source.setStyle(
-						"-fx-effect: dropshadow(gaussian, rgba(0,191,255,0.95), 6, 0.2, 0, 0);"
-				);
+				target.setStyle(UISettings.IMAGE_SOURCE_EFFECT);
+				source.setStyle(UISettings.IMAGE_TARGET_EFFECT);
 				
-				this.setPadding(new Insets(8));
-				this.setHgap(4);
+				this.setPadding(new Insets(UISettings.DEFAULT_DRAG_ENTERED_PADDING));
+				imageViewer.setFitHeight(UISettings.DEFAULT_EXPANDED_IMAGE_SIZE);
 			}
 			event.consume();
 		});
@@ -132,9 +125,8 @@ public class TelementsFlowPane extends FlowPane {
 				source.setStyle("-fx-effect: null;");
 				target.setStyle("-fx-effect: null;");
 				
-				// TODO: fix flickering
 				this.setPadding(Insets.EMPTY);
-				this.setHgap(0);
+				imageViewer.setFitHeight(UISettings.DEFAULT_CELL_SIZE);
 			}
 			event.consume();
 		});
