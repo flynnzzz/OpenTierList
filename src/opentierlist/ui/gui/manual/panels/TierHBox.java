@@ -78,7 +78,7 @@ public class TierHBox extends HBox {
 	
 	public TierHBox(TiersScrollPane parent, Stage mainStage, TierListController controller, Tier tier) {	
 		this.parent = parent;
-		this.tierNameLabel = new TextField(tier.getHeader().name());
+		this.tierNameLabel = new TextField(tier.getName());
 		this.controller = controller;
 		this.mainStage = mainStage;
 		this.tier = tier;
@@ -322,7 +322,7 @@ public class TierHBox extends HBox {
 	}
 
 	private void setTierNameLabelBackground() {
-		var backgroundColor = Paint.valueOf(this.tier.getHeader().color().toString());
+		var backgroundColor = Paint.valueOf(tier.getColor().toString());
 		var nameLabelBackground = Background.fill(backgroundColor);
 		tierNameLabel.setBackground(nameLabelBackground);
 	}

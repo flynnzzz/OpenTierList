@@ -466,13 +466,6 @@ public class TierList {
 		verifyElementExistence(e, tier.getElements());
 	}
 
-	/*
-	for (Tier tier : tiers) {
-		for (Telement element : tier.getElements()) {
-			if (e.equals(element)) return tier;
-		}
-	}
-	*/
 	private Tier findTierByElement(Telement e) throws TelementNotFoundException {
 		
 		var matching = tiers.stream()
@@ -497,12 +490,12 @@ public class TierList {
 	}
 	
 	public void setTierName(int tierIndex, String name) {
-		var oldColor = tiers.get(tierIndex).getHeader().color();
+		var oldColor = tiers.get(tierIndex).getColor();
 		setTierHeader(tierIndex, new TierHeader(name, oldColor));
 	}
 	
 	public void setTierColor(int tierIndex, Color color) { 
-		var oldName = tiers.get(tierIndex).getHeader().name();
+		var oldName = tiers.get(tierIndex).getName();
 		setTierHeader(tierIndex, new TierHeader(oldName, color));
 	}
 	
@@ -516,11 +509,9 @@ public class TierList {
 	}
 	public String getTierListName() { return name; }
 	
-	public String getTierName(int tierIndex) { return getTierHeader(tierIndex).name(); }
+	public String getTierName(int tierIndex) { return tiers.get(tierIndex).getName(); }
 	
-	public String getTierColor(int tierIndex) { return getTierHeader(tierIndex).name(); }
-	
-	private TierHeader getTierHeader(int tierIndex) { return tiers.get(tierIndex).getHeader(); }
+	public Color getTierColor(int tierIndex) { return tiers.get(tierIndex).getColor(); }
 	
 	public List<Telement> getUnranked() { return List.copyOf(unranked); };
 	

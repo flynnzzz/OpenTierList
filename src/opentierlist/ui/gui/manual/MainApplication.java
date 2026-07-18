@@ -26,6 +26,11 @@ public class MainApplication extends Application {
 		stage.setWidth(1100);
 		
 		var imageResource = ResourceHolder.getEditButtonIcon();
+		if (imageResource == null) {
+			System.err.println("--- Icon resource not found, exiting ---");
+			System.exit(-1);
+		}
+			
 		stage.getIcons().add(new Image(imageResource));
 		stage.setScene(scene);
 		stage.show();

@@ -165,7 +165,7 @@ public class Tier {
 		this.header = header; 
 	}
 	
-	public TierHeader getHeader() { return new TierHeader(this.header.name(), this.header.color()); }
+	private TierHeader getHeader() { return new TierHeader(this.header.name(), this.header.color()); }
 	
 	public String getName() { return getHeader().name(); }
 
