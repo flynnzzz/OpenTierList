@@ -5,3 +5,4 @@ src/quicktest/
 .project
 .classpath
 .settings
+/target/
