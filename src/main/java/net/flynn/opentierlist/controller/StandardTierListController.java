@@ -1,11 +1,13 @@
 package net.flynn.opentierlist.controller;
 
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
 
 import net.flynn.opentierlist.model.enums.*;
 import net.flynn.opentierlist.model.exceptions.*;
 import net.flynn.opentierlist.model.models.*;
+import net.flynn.opentierlist.persistence.DataHandler;
 
 /**
  * Main implementation of {@link TierListController}.
@@ -18,17 +20,9 @@ public class StandardTierListController implements TierListController {
 
   private TierList tierList;
 
-  // probably useless might delete later
-  private final static String NPE_ERROR = System.lineSeparator()
-      + "Aborting operation for:"
-      + System.lineSeparator()
-      + "\tNullPointerException"
-      + System.lineSeparator();
-  private final static String IAE_ERROR = System.lineSeparator()
-      + "Aborting operation:"
-      + System.lineSeparator()
-      + "\tIllegalArgumentException: unknown error."
-      + System.lineSeparator();
+  private DataHandler dataHandler;
+  private String fileName;
+  private Path savePath;
 
   // ---------------------------------- Ctors ----------------------------------//
 
@@ -41,6 +35,9 @@ public class StandardTierListController implements TierListController {
    */
   public StandardTierListController(TierList tierList) {
     this.tierList = tierList;
+    this.fileName = getTierListName() + ".json";
+    this.savePath = Path.of(System.getProperty("user.home"), "Documents").resolve(fileName);
+    this.dataHandler = new DataHandler();
   }
 
   /**
@@ -49,7 +46,7 @@ public class StandardTierListController implements TierListController {
    * Instanciates an empty {@link TierList}
    */
   public StandardTierListController() {
-    this.tierList = new TierList();
+	  this(new TierList());
   }
 
   // ------------------------------- methods -------------------------------//
@@ -122,7 +119,7 @@ public class StandardTierListController implements TierListController {
   }
 
   @Override
-  public void addTier() {
+  public void addDefaultTier() {
     tierList.addTier(new Tier());
   }
 
@@ -262,8 +259,37 @@ public class StandardTierListController implements TierListController {
     } catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) {
       printStackTrace(ex);
     }
+    try {
+    	tierList.moveTierTo(from, toIndex);
+    } catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) {
+    	printStackTrace(ex);
+    }
+  }
+  
+  // ------------------------------ persistence ------------------------------//
+  
+  @Override
+  public void saveTierList() {
+	  try {
+		  dataHandler.save(savePath.toFile(), tierList);
+	  } catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) {
+		  printStackTrace(ex);
+	  }
   }
 
+  @Override
+  public void saveTierListTo(Path path) {
+	  savePath = path;
+	  saveTierList();
+  }
+
+  @Override
+  public void saveTierListAs(String name) {
+	  fileName = name;
+	  savePath = savePath.getParent().resolve(fileName);
+	  saveTierList();
+  }
+  
   // ------------------------------ misc ------------------------------//
 
   @Override
@@ -355,8 +381,11 @@ public class StandardTierListController implements TierListController {
 
   private void printStackTrace(Exception ex) {
     if (ex instanceof NullPointerException)
-      System.err.println(NPE_ERROR + System.lineSeparator() + ex);
+      System.err.println("--- Aborting operation: NullPointerException ---" + System.lineSeparator() + ex);
     else
-      System.err.println(IAE_ERROR + System.lineSeparator() + ex);
+      System.err.println("--- Aborting operation: ---"
+    	    	      + System.lineSeparator()
+    	    	      + "\tIllegalArgumentException: unknown error."
+    	    	      + System.lineSeparator());
   }
 }

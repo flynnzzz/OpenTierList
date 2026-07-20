@@ -489,7 +489,7 @@ public class TierList {
 	
 	public void setTierName(int tierIndex, String name) {
 		var oldColor = tiers.get(tierIndex).getColor();
-		setTierHeader(tierIndex, new TierHeader(name, oldColor));
+		setTierHeader(tierIndex, new TierHeader(name, Color.valueOf(oldColor)));
 	}
 	
 	public void setTierColor(int tierIndex, Color color) { 
@@ -503,13 +503,13 @@ public class TierList {
 		Objects.requireNonNull(th.color());
 		
 		Tier t = tiers.get(tierIndex);
-		t.setName(th.name()); t.setColor(th.color());
+		t.setName(th.name()); t.setColor(th.color().toString());
 	}
 	public String getTierListName() { return name; }
 	
 	public String getTierName(int tierIndex) { return tiers.get(tierIndex).getName(); }
 	
-	public Color getTierColor(int tierIndex) { return tiers.get(tierIndex).getColor(); }
+	public String getTierColor(int tierIndex) { return tiers.get(tierIndex).getColor(); }
 	
 	public List<Telement> getUnranked() { return List.copyOf(unranked); };
 	

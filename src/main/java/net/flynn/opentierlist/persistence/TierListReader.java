@@ -1,21 +1,17 @@
 package net.flynn.opentierlist.persistence;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
+import java.io.File;
 import java.io.IOException;
-import java.text.ParseException;
+
+import com.fasterxml.jackson.core.exc.StreamReadException;
+import com.fasterxml.jackson.databind.DatabindException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import net.flynn.opentierlist.model.models.TierList;
 
 public class TierListReader {
-	@SuppressWarnings("unused")
-	private BufferedReader bufferedReader;
-	
-	public TierListReader(FileReader reader) {
-		this.bufferedReader = new BufferedReader(reader);
-	}
-	
-	public TierList read() throws IOException, ParseException {
-		return null;
+	public static TierList read(File file) throws IOException, StreamReadException, DatabindException {
+		var tierMapper = new ObjectMapper();
+		return tierMapper.readValue(file, TierList.class);
 	}
 }

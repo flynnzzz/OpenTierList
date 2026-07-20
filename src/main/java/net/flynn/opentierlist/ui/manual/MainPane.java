@@ -136,7 +136,7 @@ public class MainPane extends BorderPane {
     });
 
     addTierButton.setOnAction(_ -> {
-      controller.addTier();
+      controller.addDefaultTier();
       tiersPane.updatePane();
     });
 

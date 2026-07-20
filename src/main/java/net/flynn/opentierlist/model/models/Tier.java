@@ -154,9 +154,11 @@ public class Tier {
 		setHeader(new TierHeader(name, this.header.color()));
 	}
 	
-	public void setColor(Color color) throws IllegalArgumentException {
+	public void setColor(String color) throws IllegalArgumentException {
 		Objects.requireNonNull(color);
-		setHeader(new TierHeader(this.header.name(), color)); 
+		if (color.isBlank()) 
+			throw new IllegalArgumentException("--- Color string must not me blank ---");
+		setHeader(new TierHeader(getName(), Color.valueOf(color)));
 	}
 	
 	private void setHeader(TierHeader header) { 
@@ -164,11 +166,11 @@ public class Tier {
 		this.header = header; 
 	}
 	
-	private TierHeader getHeader() { return new TierHeader(this.header.name(), this.header.color()); }
+	private TierHeader getHeader() { return new TierHeader(header.name(), header.color()); }
 	
 	public String getName() { return getHeader().name(); }
 
-	public Color getColor() { return getHeader().color(); }
+	public String getColor() { return getHeader().color().toString(); }
 	
 	/**
 	 * *Read only*

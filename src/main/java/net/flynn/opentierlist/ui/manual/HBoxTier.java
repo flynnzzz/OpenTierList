@@ -202,7 +202,7 @@ public class HBoxTier extends HBox {
       if (chosenColor.isEmpty())
         return;
 
-      tier.setColor(chosenColor.get());
+      tier.setColor(chosenColor.get().toString());
       parent.updateAll();
       colorStage.close();
     });

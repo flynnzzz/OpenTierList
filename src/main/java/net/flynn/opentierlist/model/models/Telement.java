@@ -1,6 +1,9 @@
 package net.flynn.opentierlist.model.models;
 
 import java.util.Objects;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import net.flynn.opentierlist.model.enums.*;
 
 /**
@@ -89,6 +92,7 @@ public class Telement {
 	
 	public TelementStatus status() { return status; }
 	
+	@JsonIgnore
 	public boolean isRanked() { return status.value(); }
 	
 	
@@ -106,6 +110,10 @@ public class Telement {
 		Objects.requireNonNull(status); 
 		if (name.isBlank()) throw new IllegalArgumentException();
 		this.name = name; 
+	}
+	
+	public void setImageUrl(String imageUri) { 
+		this.imagePath = ImagePath.of(imageUri);
 	}
 
 	public String getName() { return name; }
