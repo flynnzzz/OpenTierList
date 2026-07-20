@@ -1,7 +1,10 @@
 package net.flynn.opentierlist.ui.manual;
 
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.function.BiConsumer;
 
@@ -44,8 +47,11 @@ public class FlowPaneTelements extends FlowPane {
   private ContextMenu imageContextMenu;
   private MenuItem deleteImageMenu, unrankImageMenu;
 
+  // ---- cache -----//
+  private static Map<Telement, ImageView> imageCache;
+
   private Optional<Tier> tier;
-  private ObservableList<Telement> elements;
+  private List<Telement> elements;
   private ObservableList<ImageView> images;
   private BiConsumer<Telement, Telement> onDragDropped;
 
@@ -53,9 +59,10 @@ public class FlowPaneTelements extends FlowPane {
       Optional<Tier> tier, BiConsumer<Telement, Telement> onDragDropped) {
     this.controller = controller;
     this.tier = tier;
-    this.elements = FXCollections.observableArrayList(elements);
+    this.elements = new ArrayList<>(elements);
     this.greatparent = greatparent;
     this.onDragDropped = onDragDropped;
+    this.imageCache = new HashMap<>();
     this.images = loadImages();
     this.setupPane();
   }
@@ -141,8 +148,8 @@ public class FlowPaneTelements extends FlowPane {
   // TODO: optimize
   public void updateImages() {
     elements = tier.isPresent()
-        ? FXCollections.observableArrayList(tier.get().getElements())
-        : FXCollections.observableArrayList(controller.getUnranked());
+        ? new ArrayList<>(tier.get().getElements())
+        : new ArrayList<>(controller.getUnranked());
 
     images.clear();
 
@@ -153,7 +160,6 @@ public class FlowPaneTelements extends FlowPane {
 
   private ObservableList<ImageView> loadImages() {
     this.images = FXCollections.observableArrayList();
-
     elements.forEach(element -> {
       try {
         element.updateImagePath();
@@ -161,14 +167,23 @@ public class FlowPaneTelements extends FlowPane {
         System.err.println("--- Default resource not found, aborting ---");
         System.exit(-1);
       }
-      var imageViewer = new ImageView(new Image(element.getImageUri(),
-          UISettings.DEFAULT_CELL_SIZE,
-          UISettings.DEFAULT_CELL_SIZE,
-          false,
-          false));
 
-      imageViewer.setUserData(element);
-      setupImages(imageViewer);
+      Optional<ImageView> potentialCachedImage = Optional.ofNullable(imageCache.get(element));
+      ImageView imageViewer;
+      if (potentialCachedImage.isPresent()) {
+        imageViewer = potentialCachedImage.get();
+      } else {
+        imageViewer = new ImageView(new Image(element.getImageUri(),
+            UISettings.DEFAULT_CELL_SIZE,
+            UISettings.DEFAULT_CELL_SIZE,
+            false,
+            false));
+
+        imageViewer.setUserData(element);
+        setupImages(imageViewer);
+
+        imageCache.put(element, imageViewer);
+      }
       images.add(imageViewer);
     });
 
