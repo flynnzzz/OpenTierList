@@ -113,7 +113,6 @@ public class FlowPaneTelements extends FlowPane {
         target.setStyle(UISettings.IMAGE_SOURCE_EFFECT);
         source.setStyle(UISettings.IMAGE_TARGET_EFFECT);
 
-        this.setPadding(new Insets(UISettings.DEFAULT_DRAG_ENTERED_PADDING));
         imageViewer.setFitHeight(UISettings.DEFAULT_EXPANDED_IMAGE_SIZE);
       }
       event.consume();
@@ -124,7 +123,6 @@ public class FlowPaneTelements extends FlowPane {
         source.setStyle("-fx-effect: null;");
         target.setStyle("-fx-effect: null;");
 
-        this.setPadding(Insets.EMPTY);
         imageViewer.setFitHeight(UISettings.DEFAULT_CELL_SIZE);
       }
       event.consume();
@@ -139,6 +137,7 @@ public class FlowPaneTelements extends FlowPane {
     });
   }
 
+  // TODO: optimize
   public void updateImages() {
     elements = tier.isPresent()
         ? FXCollections.observableArrayList(tier.get().getElements())
@@ -191,15 +190,19 @@ public class FlowPaneTelements extends FlowPane {
 
     this.setOnDragEntered(event -> {
       var sourceData = event.getGestureSource();
-      if (sourceData instanceof ImageView && event.getDragboard().hasImage())
+      if (sourceData instanceof ImageView && event.getDragboard().hasImage()) {
         this.setTierElementsPaneBorder(UISettings.DEFAULT_BAR_HIGHLIGHT_COLOR);
+        this.setPadding(new Insets(UISettings.DEFAULT_DRAG_ENTERED_PADDING));
+      }
       event.consume();
     });
 
     this.setOnDragExited(event -> {
       var sourceData = event.getGestureSource();
-      if (sourceData instanceof ImageView && event.getDragboard().hasImage())
+      if (sourceData instanceof ImageView && event.getDragboard().hasImage()) {
         this.setTierElementsPaneBorder(UISettings.DEFAULT_BAR_BORDER_COLOR);
+        this.setPadding(Insets.EMPTY);
+      }
       event.consume();
     });
 
