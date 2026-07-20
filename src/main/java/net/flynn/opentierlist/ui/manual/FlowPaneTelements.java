@@ -1,5 +1,6 @@
 package net.flynn.opentierlist.ui.manual;
 
+import java.io.FileNotFoundException;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.BiConsumer;
@@ -154,8 +155,13 @@ public class FlowPaneTelements extends FlowPane {
     this.images = FXCollections.observableArrayList();
 
     elements.forEach(element -> {
-      element.updateImagePath();
-      var imageViewer = new ImageView(new Image(element.getImageUrl(),
+      try {
+        element.updateImagePath();
+      } catch (FileNotFoundException e) {
+        System.err.println("--- Default resource not found, aborting ---");
+        System.exit(-1);
+      }
+      var imageViewer = new ImageView(new Image(element.getImageUri(),
           UISettings.DEFAULT_CELL_SIZE,
           UISettings.DEFAULT_CELL_SIZE,
           false,
@@ -188,6 +194,7 @@ public class FlowPaneTelements extends FlowPane {
       event.consume();
     });
 
+    // TODO: visuals could be improved
     this.setOnDragEntered(event -> {
       var sourceData = event.getGestureSource();
       if (sourceData instanceof ImageView && event.getDragboard().hasImage()) {

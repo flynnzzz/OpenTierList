@@ -1,6 +1,7 @@
 package net.flynn.opentierlist.ui.manual;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.net.URISyntaxException;
 import java.util.List;
 
@@ -142,9 +143,19 @@ public class MainPane extends BorderPane {
 
     addElementButton.setOnAction(_ -> {
       List<File> files = fileChooser.showOpenMultipleDialog(stage);
+      if (files == null || files.isEmpty()) {
+        System.err.println("--- No file selected ---");
+        return;
+      }
+
       files.forEach(selectedFile -> {
         if (selectedFile != null && selectedFile.exists()) {
-          controller.addToUnranked(new Telement(selectedFile.getName(), ImagePath.of(selectedFile)));
+          try {
+            controller.addToUnranked(new Telement(selectedFile.getName(), ImagePath.of(selectedFile)));
+          } catch (FileNotFoundException e) {
+            System.err.println("--- Resource not found, aborting ---");
+            System.exit(-1);
+          }
         }
       });
       updateAll();

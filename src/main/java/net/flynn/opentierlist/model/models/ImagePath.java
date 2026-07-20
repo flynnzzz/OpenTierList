@@ -1,11 +1,14 @@
 package net.flynn.opentierlist.model.models;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
+
+import net.flynn.opentierlist.persistence.ResourceHolder;
 
 /**
  * Self-explanatory
@@ -15,75 +18,71 @@ import java.nio.file.Path;
  * @since v1.7.0
  */
 public class ImagePath {
-    private String url;
-    
-    private static final String DEFAULT_IMAGE_RESOURCE = "";//ResourceHolder.getDefaultTelementIcon();
+  private URI uri;
 
-    // for testing only
-    private static final String DEFAULT_IMAGES_FOLDER = "";//ResourceHolder.getDefaultImagesFolder();
+  private static final String DEFAULT_IMAGE_RESOURCE = ResourceHolder.getDefaultTelementIcon();
 
-    private ImagePath(String url) {
-        this.url = url;
+  private ImagePath(URI uri) {
+    this.uri = uri;
+  }
+
+  public static ImagePath of(File file) throws FileNotFoundException {
+    if (file != null && file.exists()) {
+      return new ImagePath(file.toURI());
     }
+    return defaultResource();
+  }
 
-    // for testing only
-    public static ImagePath of(String path) {
-    	Path jarPath = basePath();
-    				// to make it work in the IDE
-    	String base = jarPath.toString().contains("bin") 
-    				? ".." + DEFAULT_IMAGES_FOLDER 
-    				: DEFAULT_IMAGES_FOLDER;
+  public static ImagePath defaultResource() throws FileNotFoundException {
+    URL url = ImagePath.class.getResource(DEFAULT_IMAGE_RESOURCE);
+    if (url == null)
+      throw new IllegalStateException("Resource missing: " + DEFAULT_IMAGE_RESOURCE);
 
-        Path real = jarPath.resolve(base).resolve(path).normalize();
-        
-        if (path != null && Files.exists(real)) {
-            return new ImagePath(real.toUri().toString());
-        }
-        return defaultResource();
+    try {
+      return new ImagePath(url.toURI());
+    } catch (URISyntaxException e) {
+      throw new FileNotFoundException();
     }
-    
-    public static ImagePath of(File file) {
-    	if (file != null && file.exists()) {
-    		return new ImagePath(file.toURI().toString());
-    	}
-    	return defaultResource();
+  }
+
+  public String getUri() {
+    return this.uri.toString();
+  }
+
+  public boolean exists() {
+    return Files.exists(Path.of(uri));
+  }
+
+  // for testing only
+  public static ImagePath of(String path) throws FileNotFoundException {
+    Path jarPath = basePath();
+    // to make it work in the IDE
+    String tail = jarPath.toString().contains("bin")
+        ? ".." + ResourceHolder.getDefaultImagesFolder()
+        : ResourceHolder.getDefaultImagesFolder();
+
+    Path realPath = jarPath.resolve(tail).resolve(path).normalize();
+
+    if (path != null && Files.exists(realPath)) {
+      return new ImagePath(realPath.toUri());
     }
+    return defaultResource();
+  }
 
-    public static ImagePath defaultResource() {
-        URL url = ImagePath.class.getResource(DEFAULT_IMAGE_RESOURCE);
-        if (url == null)
-            throw new IllegalStateException("Default image resource missing: " + DEFAULT_IMAGE_RESOURCE);
+  // for testing only
+  private static Path basePath() {
+    try {
+      URI jarUri = ImagePath.class
+          .getProtectionDomain()
+          .getCodeSource()
+          .getLocation()
+          .toURI();
 
-        return new ImagePath(url.toString());
+      Path jarPath = Path.of(jarUri);
+      return Files.isDirectory(jarPath) ? jarPath : jarPath.getParent();
+
+    } catch (URISyntaxException e) {
+      throw new IllegalStateException("Could not determine application directory", e);
     }
-
-    public String getUrl() {
-        return this.url;
-    }
-
-    // for testing only
-    private static Path basePath() {
-        try {
-            URI jarUri = ImagePath.class
-                    .getProtectionDomain()
-                    .getCodeSource()
-                    .getLocation()
-                    .toURI();
-
-            Path jarPath = Path.of(jarUri);
-            return Files.isDirectory(jarPath) ? jarPath : jarPath.getParent();
-
-        } catch (URISyntaxException e) {
-            throw new IllegalStateException("Could not determine application directory", e);
-        }
-    }
-    
-    public boolean exists() {
-    	try {
-			return Files.exists(Path.of(new URI(url)));
-		} catch (URISyntaxException e) {
-			e.printStackTrace();
-			return false;
-		}
-    }
+  }
 }
