@@ -173,7 +173,7 @@ public class HBoxTier extends HBox {
       tier.getElements().forEach(controller::unrank);
 
       controller.removeTier(tier);
-      parent.updateAll();
+      parent.updateTierList();
     });
 
     duplicate.setOnAction(_ -> {
@@ -181,7 +181,7 @@ public class HBoxTier extends HBox {
       controller.addTier(clone);
       controller.moveTierTo(clone, controller.getTiers().indexOf(tier) + 1);
 
-      parent.updateAll();
+      parent.updateTierList();
     });
 
     color.setOnAction(_ -> {
@@ -203,7 +203,7 @@ public class HBoxTier extends HBox {
         return;
 
       tier.setColor(chosenColor.get().toString());
-      parent.updateAll();
+      parent.updateTierList();
       colorStage.close();
     });
   }

@@ -3,6 +3,7 @@ package net.flynn.opentierlist.controller;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import net.flynn.opentierlist.model.enums.*;
 import net.flynn.opentierlist.model.exceptions.*;
@@ -46,7 +47,7 @@ public class StandardTierListController implements TierListController {
    * Instanciates an empty {@link TierList}
    */
   public StandardTierListController() {
-	  this(new TierList());
+    this(new TierList());
   }
 
   // ------------------------------- methods -------------------------------//
@@ -260,36 +261,36 @@ public class StandardTierListController implements TierListController {
       printStackTrace(ex);
     }
     try {
-    	tierList.moveTierTo(from, toIndex);
+      tierList.moveTierTo(from, toIndex);
     } catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) {
-    	printStackTrace(ex);
+      printStackTrace(ex);
     }
   }
-  
+
   // ------------------------------ persistence ------------------------------//
-  
+
   @Override
   public void saveTierList() {
-	  try {
-		  dataHandler.save(savePath.toFile(), tierList);
-	  } catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) {
-		  printStackTrace(ex);
-	  }
+    try {
+      dataHandler.save(savePath.toFile(), tierList);
+    } catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) {
+      printStackTrace(ex);
+    }
   }
 
   @Override
   public void saveTierListTo(Path path) {
-	  savePath = path;
-	  saveTierList();
+    savePath = path;
+    saveTierList();
   }
 
   @Override
   public void saveTierListAs(String name) {
-	  fileName = name;
-	  savePath = savePath.getParent().resolve(fileName);
-	  saveTierList();
+    fileName = name;
+    savePath = savePath.getParent().resolve(fileName);
+    saveTierList();
   }
-  
+
   // ------------------------------ misc ------------------------------//
 
   @Override
@@ -340,17 +341,11 @@ public class StandardTierListController implements TierListController {
     Optional<Telement> telement = Optional.empty();
 
     try {
-      // firstly, search in tiers
-      telement = tierList.getTiers().stream()
-          .flatMap(t -> t.getElements().stream())
-          .filter(e -> String.valueOf(e.hashCode()).equals(hashCode)).findFirst();
 
-      if (telement.isEmpty()) {
-        // if not found, seach in unranked
-        telement = tierList.getUnranked().stream()
-            .filter(e -> String.valueOf(e.hashCode()).equals(hashCode))
-            .findFirst();
-      }
+      telement = Stream
+          .concat(tierList.getTiers().stream().flatMap(t -> t.getElements().stream()), tierList.getUnranked().stream())
+          .filter(e -> String.valueOf(e.hashCode()).equals(hashCode))
+          .findFirst();
 
       if (telement.isEmpty())
         throw new TelementNotFoundException();
@@ -366,6 +361,7 @@ public class StandardTierListController implements TierListController {
     Optional<Tier> tier = Optional.empty();
 
     try {
+
       tier = tierList.getTiers().stream()
           .filter(t -> String.valueOf(t.hashCode()).contains(hashCode))
           .findFirst();
@@ -379,13 +375,27 @@ public class StandardTierListController implements TierListController {
     return tier;
   }
 
+  @Override
+  public boolean exists(Telement telement) {
+
+    return Stream
+        .concat(
+            tierList.getTiers()
+                .stream()
+                .flatMap(t -> t.getElements().stream()),
+            tierList.getUnranked()
+                .stream())
+        .anyMatch(e -> e.equals(telement));
+
+  }
+
   private void printStackTrace(Exception ex) {
     if (ex instanceof NullPointerException)
       System.err.println("--- Aborting operation: NullPointerException ---" + System.lineSeparator() + ex);
     else
       System.err.println("--- Aborting operation: ---"
-    	    	      + System.lineSeparator()
-    	    	      + "\tIllegalArgumentException: unknown error."
-    	    	      + System.lineSeparator());
+          + System.lineSeparator()
+          + "\tIllegalArgumentException: unknown error."
+          + System.lineSeparator());
   }
 }

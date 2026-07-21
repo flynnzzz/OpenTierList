@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.BiConsumer;
+import java.util.stream.Collectors;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -62,8 +63,9 @@ public class FlowPaneTelements extends FlowPane {
     this.elements = new ArrayList<>(elements);
     this.greatparent = greatparent;
     this.onDragDropped = onDragDropped;
-    this.imageCache = new HashMap<>();
     this.images = loadImages();
+    if (imageCache == null)
+      imageCache = new HashMap<>();
     this.setupPane();
   }
 
@@ -76,7 +78,7 @@ public class FlowPaneTelements extends FlowPane {
     return this.tier;
   }
 
-  private void setupImages(ImageView imageViewer) {
+  private void setupImage(ImageView imageViewer) {
     // ----- settings -----//
     imageViewer.setFitHeight(UISettings.DEFAULT_CELL_SIZE);
     imageViewer.setFitWidth(UISettings.DEFAULT_CELL_SIZE);
@@ -99,7 +101,7 @@ public class FlowPaneTelements extends FlowPane {
           imageContextMenu.getItems().add(unrankImageMenu);
           unrankImageMenu.setOnAction(_ -> {
             controller.unrank(telement);
-            greatparent.updateAll();
+            greatparent.updateTierList();
           });
         }
         imageContextMenu.getItems().add(deleteImageMenu);
@@ -145,7 +147,6 @@ public class FlowPaneTelements extends FlowPane {
     });
   }
 
-  // TODO: optimize
   public void updateImages() {
     elements = tier.isPresent()
         ? new ArrayList<>(tier.get().getElements())
@@ -153,14 +154,26 @@ public class FlowPaneTelements extends FlowPane {
 
     images.clear();
 
+    imageCache.keySet()
+        .removeIf(i -> !controller.exists(i));
+
     images = loadImages();
+
+    System.err.println("--- Image cache ---");
+    System.err.println(imageCache.keySet().stream()
+        .map(t -> t.toString() + ": " + imageCache.get(t))
+        .sorted()
+        .collect(Collectors.joining(System.lineSeparator())));
+    System.err.println(imageCache.keySet().size());
     this.getChildren().clear();
     this.getChildren().addAll(images);
   }
 
   private ObservableList<ImageView> loadImages() {
-    this.images = FXCollections.observableArrayList();
+    images = FXCollections.observableArrayList();
+
     elements.forEach(element -> {
+
       try {
         element.updateImagePath();
       } catch (FileNotFoundException e) {
@@ -170,6 +183,7 @@ public class FlowPaneTelements extends FlowPane {
 
       Optional<ImageView> potentialCachedImage = Optional.ofNullable(imageCache.get(element));
       ImageView imageViewer;
+
       if (potentialCachedImage.isPresent()) {
         imageViewer = potentialCachedImage.get();
       } else {
@@ -180,7 +194,7 @@ public class FlowPaneTelements extends FlowPane {
             false));
 
         imageViewer.setUserData(element);
-        setupImages(imageViewer);
+        setupImage(imageViewer);
 
         imageCache.put(element, imageViewer);
       }

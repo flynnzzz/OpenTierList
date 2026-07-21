@@ -138,7 +138,7 @@ public class MainPane extends BorderPane {
 
     addTierButton.setOnAction(_ -> {
       controller.addDefaultTier();
-      tiersPane.updatePane();
+      tiersPane.updateAllTiers();
     });
 
     addElementButton.setOnAction(_ -> {
@@ -158,12 +158,12 @@ public class MainPane extends BorderPane {
           }
         }
       });
-      updateAll();
+      updateTierList();
     });
   }
 
-  public void updateAll() {
-    tiersPane.updatePane();
+  public void updateTierList() {
+    tiersPane.updateAllTiers();
     unrankedPane.updatePane();
   }
 

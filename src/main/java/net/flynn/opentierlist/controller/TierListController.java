@@ -36,9 +36,11 @@ public interface TierListController {
   // ----- ranking ------//
 
   public void rank(Telement e, Tier toTier);
+
   public void rank(int toIndex, Telement e, Tier toTier);
 
   public void unrank(Telement e);
+
   public void unrank(int toIndex, Telement e);
 
   // ----- adding and removing ------//
@@ -68,12 +70,15 @@ public interface TierListController {
   public void moveTo(Telement e, Tier toTier);
 
   public void moveTo(Telement e, Tier toTier, Telement toElement);
+
   public void moveTo(Telement e, Tier toTier, int toIndex);
 
   public void moveUnranked(Telement e, Telement toElement);
+
   public void moveUnranked(Telement e, int toIndex);
 
   public void moveTierTo(Tier from, Tier to);
+
   public void moveTierTo(Tier from, int toindex);
 
   // ----- setters and getters ------//
@@ -97,12 +102,16 @@ public interface TierListController {
   // ----- persistence ------//
 
   public void saveTierList();
+
   public void saveTierListTo(Path path);
-  
+
   public void saveTierListAs(String name);
-  
+
   // ----- misc ------//
 
   public String toString();
+
   public String toString(TierStringFormat format);
+
+  public boolean exists(Telement telement);
 }
