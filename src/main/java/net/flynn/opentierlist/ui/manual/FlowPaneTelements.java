@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.BiConsumer;
-import java.util.stream.Collectors;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -49,7 +48,7 @@ public class FlowPaneTelements extends FlowPane {
   private MenuItem deleteImageMenu, unrankImageMenu;
 
   // ---- cache -----//
-  private static Map<Telement, ImageView> imageCache;
+  private static Map<Long, Image> imageCache;
 
   private Optional<Tier> tier;
   private List<Telement> elements;
@@ -64,8 +63,10 @@ public class FlowPaneTelements extends FlowPane {
     this.greatparent = greatparent;
     this.onDragDropped = onDragDropped;
     this.images = loadImages();
-    if (imageCache == null)
+    if (imageCache == null) {
+      System.err.println("--- Instantiating new imagecache ---");
       imageCache = new HashMap<>();
+    }
     this.setupPane();
   }
 
@@ -89,6 +90,7 @@ public class FlowPaneTelements extends FlowPane {
 
     imageViewer.setOnMouseClicked(mouseEvent -> {
       if (mouseEvent.getButton() == MouseButton.SECONDARY) {
+
         deleteImageMenu.setOnAction(_ -> {
           if (imageViewer.getUserData() instanceof Telement telement) {
             controller.removeTelement(telement);
@@ -155,16 +157,12 @@ public class FlowPaneTelements extends FlowPane {
     images.clear();
 
     imageCache.keySet()
-        .removeIf(i -> !controller.exists(i));
+        .removeIf(id -> !controller.telementExistsById(id));
 
     images = loadImages();
 
-    System.err.println("--- Image cache ---");
-    System.err.println(imageCache.keySet().stream()
-        .map(t -> t.toString() + ": " + imageCache.get(t))
-        .sorted()
-        .collect(Collectors.joining(System.lineSeparator())));
-    System.err.println(imageCache.keySet().size());
+    IO.println(imageCache);
+
     this.getChildren().clear();
     this.getChildren().addAll(images);
   }
@@ -180,24 +178,19 @@ public class FlowPaneTelements extends FlowPane {
         System.err.println("--- Default resource not found, aborting ---");
         System.exit(-1);
       }
-
-      Optional<ImageView> potentialCachedImage = Optional.ofNullable(imageCache.get(element));
-      ImageView imageViewer;
-
-      if (potentialCachedImage.isPresent()) {
-        imageViewer = potentialCachedImage.get();
-      } else {
-        imageViewer = new ImageView(new Image(element.getImageUri(),
+      Image img = imageCache.get(element.getId());
+      if (img == null) {
+        img = new Image(element.getImageUri(),
             UISettings.DEFAULT_CELL_SIZE,
             UISettings.DEFAULT_CELL_SIZE,
             false,
-            false));
-
-        imageViewer.setUserData(element);
-        setupImage(imageViewer);
-
-        imageCache.put(element, imageViewer);
+            false);
+        imageCache.put(element.getId(), img);
       }
+
+      var imageViewer = new ImageView(img);
+      imageViewer.setUserData(element);
+      setupImage(imageViewer);
       images.add(imageViewer);
     });
 

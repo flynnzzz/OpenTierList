@@ -131,6 +131,10 @@ public class Telement {
     return this.imagePath.getUri();
   }
 
+  public Long getId() {
+    return this.id;
+  }
+
   public void updateImagePath() throws FileNotFoundException {
     this.imagePath = imagePath.exists() ? imagePath : ImagePath.defaultResource();
   }

@@ -376,7 +376,7 @@ public class StandardTierListController implements TierListController {
   }
 
   @Override
-  public boolean exists(Telement telement) {
+  public boolean telementExists(Telement telement) {
 
     return Stream
         .concat(
@@ -389,6 +389,27 @@ public class StandardTierListController implements TierListController {
 
   }
 
+  @Override
+  public boolean telementExistsById(Long id) {
+
+    return Stream
+        .concat(
+            tierList.getTiers()
+                .stream()
+                .flatMap(t -> t.getElements().stream()),
+            tierList.getUnranked()
+                .stream())
+        .anyMatch(e -> e.getId() == id);
+
+  }
+
+  @Override
+  public boolean tierExists(Tier tier) {
+
+    return getTiers().stream().anyMatch(t -> t.equals(tier));
+
+  }
+
   private void printStackTrace(Exception ex) {
     if (ex instanceof NullPointerException)
       System.err.println("--- Aborting operation: NullPointerException ---" + System.lineSeparator() + ex);
@@ -396,6 +417,7 @@ public class StandardTierListController implements TierListController {
       System.err.println("--- Aborting operation: ---"
           + System.lineSeparator()
           + "\tIllegalArgumentException: unknown error."
+          + ex
           + System.lineSeparator());
   }
 }

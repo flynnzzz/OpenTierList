@@ -113,5 +113,9 @@ public interface TierListController {
 
   public String toString(TierStringFormat format);
 
-  public boolean exists(Telement telement);
+  public boolean telementExists(Telement telement);
+
+  public boolean telementExistsById(Long id);
+
+  public boolean tierExists(Tier tier);
 }

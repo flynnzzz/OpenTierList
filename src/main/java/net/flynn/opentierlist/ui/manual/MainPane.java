@@ -65,12 +65,6 @@ public class MainPane extends BorderPane {
         UISettings.DEFAULT_TITLE_PADDING_LEFT));
     titleBox.setAlignment(Pos.BASELINE_CENTER);
 
-    // ----- unranked -----//
-    unrankedPane = new ScrollPaneUnranked(this, controller);
-    HBox unrankedBox = new HBox(unrankedPane);
-    unrankedBox.setAlignment(Pos.BASELINE_CENTER);
-    setBottom(unrankedBox);
-
     // ----- buttons -----//
     addTierButton = new Button();
     addElementButton = new Button();
@@ -109,12 +103,15 @@ public class MainPane extends BorderPane {
 
     // ----- tiers -----//
     tiersPane = new ScrollPaneTiers(this, controller);
-    HBox tiersBox = new HBox(tiersPane);
-    setCenter(tiersBox);
-
     var centerBox = new VBox(tiersPane, buttonsHBox);
     centerBox.setAlignment(Pos.CENTER);
     setCenter(centerBox);
+
+    // ----- unranked -----//
+    unrankedPane = new ScrollPaneUnranked(this, controller);
+    HBox unrankedBox = new HBox(unrankedPane);
+    unrankedBox.setAlignment(Pos.BASELINE_CENTER);
+    setBottom(unrankedBox);
 
     setupEventHandlers();
   }
