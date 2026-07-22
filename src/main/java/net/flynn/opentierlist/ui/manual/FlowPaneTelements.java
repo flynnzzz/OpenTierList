@@ -126,6 +126,8 @@ public class FlowPaneTelements extends FlowPane {
         source.setStyle(UISettings.IMAGE_TARGET_EFFECT);
 
         imageViewer.setFitHeight(UISettings.DEFAULT_EXPANDED_IMAGE_SIZE);
+        this.setPadding(
+            new Insets(0, UISettings.DEFAULT_DRAG_ENTERED_PADDING, 0, UISettings.DEFAULT_DRAG_ENTERED_PADDING));
       }
       event.consume();
     });
@@ -160,8 +162,6 @@ public class FlowPaneTelements extends FlowPane {
         .removeIf(id -> !controller.telementExistsById(id));
 
     images = loadImages();
-
-    IO.println(imageCache);
 
     this.getChildren().clear();
     this.getChildren().addAll(images);
