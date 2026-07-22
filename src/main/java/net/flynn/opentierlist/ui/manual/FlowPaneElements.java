@@ -137,15 +137,15 @@ public class FlowPaneElements extends FlowPane {
       event.consume();
     });
 
-    // TODO: Implement timer to 'animate' dragEnter and dragExited events
+    // TODO: Eliminate 'shakyness' when moving element in and out of tiers
+    // TODO: Fix ui 'this.setPadding(Insets.EMPTY)' bug.
+    // Reminder: updateTargetPadding so create auxiliary function
     imageViewer.setOnDragExited(event -> {
       if (event.getTarget() instanceof ImageView target && event.getGestureSource() instanceof ImageView source) {
         source.setStyle("-fx-effect: null;");
         target.setStyle("-fx-effect: null;");
 
         imageViewer.setFitHeight(UISettings.DEFAULT_CELL_SIZE);
-
-        // buggy
         this.setPadding(new Insets(UISettings.DEFAULT_DRAG_ENTERED_PADDING));
       }
       event.consume();
@@ -154,8 +154,10 @@ public class FlowPaneElements extends FlowPane {
     imageViewer.setOnDragDropped(this::handleDragDroppedImage);
 
     imageViewer.setOnDragDone(event -> {
-      if (event.getTransferMode() == TransferMode.MOVE)
-        this.updateImages();
+      if (event.getTransferMode() == TransferMode.MOVE) {
+        updateImages();
+      }
+      this.setPadding(Insets.EMPTY);
       event.consume();
     });
   }
@@ -225,7 +227,6 @@ public class FlowPaneElements extends FlowPane {
       event.consume();
     });
 
-    // TODO: visuals could be improved
     this.setOnDragEntered(event -> {
       var sourceData = event.getGestureSource();
       if (sourceData instanceof ImageView && event.getDragboard().hasImage()) {
@@ -247,8 +248,10 @@ public class FlowPaneElements extends FlowPane {
     this.setOnDragDropped(this::handleDragDropped);
 
     this.setOnDragDone(event -> {
-      if (event.getTransferMode() == TransferMode.MOVE)
+      if (event.getTransferMode() == TransferMode.MOVE) {
+        this.setPadding(Insets.EMPTY);
         updateImages();
+      }
       event.consume();
     });
   }
@@ -303,6 +306,8 @@ public class FlowPaneElements extends FlowPane {
         && potentialSource.get() instanceof TierElement source
         && !source.equals(targetElement)) {
 
+      this.setPadding(Insets.EMPTY);
+
       onDragDropped.accept(potentialSource.get(), targetElement);
       updateImages();
       success = true;
@@ -326,6 +331,8 @@ public class FlowPaneElements extends FlowPane {
       }
 
       var source = potentialSource.get();
+
+      this.setPadding(Insets.EMPTY);
 
       updateModel(source, targetElementPane.getTier());
       updateImages();
