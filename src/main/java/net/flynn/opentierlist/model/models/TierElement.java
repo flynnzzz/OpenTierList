@@ -13,10 +13,10 @@ import net.flynn.opentierlist.model.enums.*;
  * Stands for 'Tier element'.
  * 
  * @author flynnz
- * @version 2.25
+ * @version 2.75
  * @since v0.0.0
  */
-public class Telement {
+public class TierElement {
   private TelementStatus status;
   private String name;
   private ImagePath imagePath;
@@ -26,9 +26,9 @@ public class Telement {
 
   public static final String DEFAULT_ELEMENT_NAME = "element";
 
-  // ---------------------------------- Ctors ----------------------------------//
+  // ----- Ctors -----//
 
-  private Telement(TelementStatus status, String name, ImagePath imagePath) throws IllegalArgumentException {
+  private TierElement(TelementStatus status, String name, ImagePath imagePath) throws IllegalArgumentException {
     Objects.requireNonNull(name);
     Objects.requireNonNull(imagePath);
     if (name.isBlank())
@@ -40,7 +40,7 @@ public class Telement {
     this.imagePath = imagePath;
   }
 
-  public Telement(String name, ImagePath imagePath) throws IllegalArgumentException {
+  public TierElement(String name, ImagePath imagePath) throws IllegalArgumentException {
     this(TelementStatus.UNRANKED, name, imagePath);
   }
 
@@ -53,7 +53,7 @@ public class Telement {
    * 
    * @throws IllegalArgumentException if either name or image path are blank
    */
-  public Telement(TelementStatus status, String name, String imagePath)
+  public TierElement(TelementStatus status, String name, String imagePath)
       throws IllegalArgumentException, FileNotFoundException {
     if (imagePath.isBlank())
       throw new IllegalArgumentException();
@@ -68,7 +68,7 @@ public class Telement {
    * 
    * @throws IllegalArgumentException if either name or path are blank
    */
-  public Telement(String name, String imagePath) throws IllegalArgumentException, FileNotFoundException {
+  public TierElement(String name, String imagePath) throws IllegalArgumentException, FileNotFoundException {
     this(TelementStatus.UNRANKED, name, imagePath);
   }
 
@@ -79,19 +79,18 @@ public class Telement {
    * 
    * @throws IllegalArgumentException if name is blank
    */
-  public Telement(String name) throws IllegalArgumentException, FileNotFoundException {
+  public TierElement(String name) throws IllegalArgumentException, FileNotFoundException {
     this(TelementStatus.UNRANKED, name, ImagePath.defaultResource());
   }
 
   /**
    * Constructs a 'default' {@link TierList} entry.
    */
-  public Telement() throws FileNotFoundException {
+  public TierElement() throws FileNotFoundException {
     this(DEFAULT_ELEMENT_NAME);
   }
 
-  // ---------------------------------- setters and getters
-  // ----------------------------------//
+  // ----- setters and getters -----//
 
   public TelementStatus status() {
     return status;
@@ -103,7 +102,7 @@ public class Telement {
   }
 
   /**
-   * Method to mutate this {@link Telement} instance's status
+   * Method to mutate this {@link TierElement} instance's status
    * 
    * @param status to change to
    */
@@ -139,7 +138,7 @@ public class Telement {
     this.imagePath = imagePath.exists() ? imagePath : ImagePath.defaultResource();
   }
 
-  // --- hashCode, equals and toString --- //
+  // ----- hashCode, equals and toString ----- //
 
   @Override
   public int hashCode() {
@@ -151,7 +150,7 @@ public class Telement {
     if (this == obj) {
       return true;
     }
-    if (!(obj instanceof Telement other)) {
+    if (!(obj instanceof TierElement other)) {
       return false;
     }
     return Objects.equals(imagePath, other.imagePath)
@@ -161,7 +160,7 @@ public class Telement {
   }
 
   /**
-   * Returns the {@link Telement} as a {@link String}
+   * Returns the {@link TierElement} as a {@link String}
    * 
    * Format:
    * "TierElementName".
@@ -174,7 +173,7 @@ public class Telement {
   }
 
   /**
-   * Returns the {@link Telement} as a {@link String}
+   * Returns the {@link TierElement} as a {@link String}
    * 
    * Format COMPACT:
    * "name".

@@ -32,7 +32,7 @@ import javafx.scene.layout.FlowPane;
 import javafx.scene.paint.Paint;
 import net.flynn.opentierlist.controller.TierListController;
 import net.flynn.opentierlist.model.enums.TelementStatus;
-import net.flynn.opentierlist.model.models.Telement;
+import net.flynn.opentierlist.model.models.TierElement;
 import net.flynn.opentierlist.model.models.Tier;
 
 /**
@@ -51,12 +51,12 @@ public class FlowPaneTelements extends FlowPane {
   private static Map<Long, Image> imageCache;
 
   private Optional<Tier> tier;
-  private List<Telement> elements;
+  private List<TierElement> elements;
   private ObservableList<ImageView> images;
-  private BiConsumer<Telement, Telement> onDragDropped;
+  private BiConsumer<TierElement, TierElement> onDragDropped;
 
-  public FlowPaneTelements(ScrollPaneTiers greatparent, TierListController controller, List<Telement> elements,
-      Optional<Tier> tier, BiConsumer<Telement, Telement> onDragDropped) {
+  public FlowPaneTelements(ScrollPaneTiers greatparent, TierListController controller, List<TierElement> elements,
+      Optional<Tier> tier, BiConsumer<TierElement, TierElement> onDragDropped) {
     this.controller = controller;
     this.tier = tier;
     this.elements = new ArrayList<>(elements);
@@ -70,8 +70,8 @@ public class FlowPaneTelements extends FlowPane {
     this.setupPane();
   }
 
-  public FlowPaneTelements(ScrollPaneTiers greatparent, TierListController controller, List<Telement> elements,
-      BiConsumer<Telement, Telement> onDragDropped) {
+  public FlowPaneTelements(ScrollPaneTiers greatparent, TierListController controller, List<TierElement> elements,
+      BiConsumer<TierElement, TierElement> onDragDropped) {
     this(greatparent, controller, elements, Optional.empty(), onDragDropped);
   }
 
@@ -92,14 +92,14 @@ public class FlowPaneTelements extends FlowPane {
       if (mouseEvent.getButton() == MouseButton.SECONDARY) {
 
         deleteImageMenu.setOnAction(_ -> {
-          if (imageViewer.getUserData() instanceof Telement telement) {
+          if (imageViewer.getUserData() instanceof TierElement telement) {
             controller.removeTelement(telement);
             this.getChildren().remove(imageViewer);
             updateImages();
           }
         });
 
-        if (imageViewer.getUserData() instanceof Telement telement && telement.isRanked()) {
+        if (imageViewer.getUserData() instanceof TierElement telement && telement.isRanked()) {
           imageContextMenu.getItems().add(unrankImageMenu);
           unrankImageMenu.setOnAction(_ -> {
             controller.unrank(telement);
@@ -263,7 +263,7 @@ public class FlowPaneTelements extends FlowPane {
     var content = new ClipboardContent();
 
     if (event.getSource() instanceof ImageView viewer
-        && viewer.getUserData() instanceof Telement sourceElement) {
+        && viewer.getUserData() instanceof TierElement sourceElement) {
 
       content.putImage(viewer.getImage());
       content.putString(Integer.valueOf(sourceElement.hashCode()).toString());
@@ -279,7 +279,7 @@ public class FlowPaneTelements extends FlowPane {
 
     boolean success = false;
 
-    Optional<Telement> sourceData = controller.getElementByHash(dragBoard.getString());
+    Optional<TierElement> sourceData = controller.getElementByHash(dragBoard.getString());
 
     if (sourceData.isEmpty())
       return;
@@ -291,7 +291,7 @@ public class FlowPaneTelements extends FlowPane {
         dragAndDropTarget instanceof ImageView targetImage &&
         !sourceData.equals(targetImage.getUserData())) {
 
-      onDragDropped.accept(sourceData.get(), (Telement) targetImage.getUserData());
+      onDragDropped.accept(sourceData.get(), (TierElement) targetImage.getUserData());
 
       success = true;
 
@@ -310,7 +310,7 @@ public class FlowPaneTelements extends FlowPane {
     if (dragBoard.hasImage() && dragBoard.hasString()
         && event.getTarget() instanceof FlowPaneTelements targetElementPane) {
 
-      Optional<Telement> sourceData = controller.getElementByHash(dragBoard.getString());
+      Optional<TierElement> sourceData = controller.getElementByHash(dragBoard.getString());
 
       if (sourceData.isEmpty())
         return;
@@ -324,7 +324,7 @@ public class FlowPaneTelements extends FlowPane {
     event.consume();
   }
 
-  private void updateModel(TelementStatus status, Telement sourceElement, FlowPaneTelements targetPane) {
+  private void updateModel(TelementStatus status, TierElement sourceElement, FlowPaneTelements targetPane) {
     Optional<Tier> targetTier = targetPane.getTier();
     switch (status) {
       case TelementStatus.RANKED: {

@@ -38,7 +38,7 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import net.flynn.opentierlist.controller.TierListController;
 import net.flynn.opentierlist.model.enums.TelementStatus;
-import net.flynn.opentierlist.model.models.Telement;
+import net.flynn.opentierlist.model.models.TierElement;
 import net.flynn.opentierlist.model.models.Tier;
 import net.flynn.opentierlist.persistence.ResourceHolder;
 
@@ -71,7 +71,7 @@ public class HBoxTier extends HBox {
   private TierListController controller;
   private Stage mainStage;
   private Tier tier;
-  private BiConsumer<Telement, Telement> onDragDropped;
+  private BiConsumer<TierElement, TierElement> onDragDropped;
 
   private String oldTextValue;
 
@@ -87,15 +87,17 @@ public class HBoxTier extends HBox {
     this.onDragDropped = (element, t) -> {
       switch (element.status()) {
         case TelementStatus.RANKED: {
-          Optional<Tier> targetTier = controller.getTierByElement(t);
-          if (targetTier.isPresent())
-            controller.moveTo(element, targetTier.get(), t);
+          Optional<Tier> potentialTargetTier = controller.getTierByElement(t);
+          if (potentialTargetTier.isPresent())
+            controller.moveTo(element, potentialTargetTier.get(), t);
           break;
         }
         case TelementStatus.UNRANKED: {
-          Optional<Tier> targetTier = controller.getTierByElement(t);
-          if (targetTier.isPresent())
-            controller.rank(targetTier.get().getElements().indexOf(t), element, targetTier.get());
+          Optional<Tier> potentialTargetTier = controller.getTierByElement(t);
+          if (potentialTargetTier.isPresent()) {
+            var targetTier = potentialTargetTier.get();
+            controller.rank(element, targetTier, targetTier.getElements().indexOf(t));
+          }
           break;
         }
         default: {

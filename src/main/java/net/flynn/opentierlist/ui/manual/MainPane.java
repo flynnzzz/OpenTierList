@@ -20,7 +20,7 @@ import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
 import net.flynn.opentierlist.controller.TierListController;
 import net.flynn.opentierlist.model.models.ImagePath;
-import net.flynn.opentierlist.model.models.Telement;
+import net.flynn.opentierlist.model.models.TierElement;
 import net.flynn.opentierlist.persistence.ResourceHolder;
 
 /**
@@ -148,7 +148,7 @@ public class MainPane extends BorderPane {
       files.forEach(selectedFile -> {
         if (selectedFile != null && selectedFile.exists()) {
           try {
-            controller.addToUnranked(new Telement(selectedFile.getName(), ImagePath.of(selectedFile)));
+            controller.addToUnranked(new TierElement(selectedFile.getName(), ImagePath.of(selectedFile)));
           } catch (FileNotFoundException e) {
             System.err.println("--- Resource not found, aborting ---");
             System.exit(-1);

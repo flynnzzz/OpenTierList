@@ -55,38 +55,38 @@ public class StandardTierListController implements TierListController {
   // ------------------------------ ranking ------------------------------//
 
   @Override
-  public void rank(Telement e, Tier toTier) {
+  public void rank(TierElement element, Tier toTier) {
     try {
-      tierList.rank(e, toTier);
+      tierList.rank(element, toTier);
     } catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) {
-      printStackTrace(ex);
+      ex.printStackTrace();
     }
   }
 
   @Override
-  public void rank(int toIndex, Telement e, Tier toTier) {
+  public void rank(TierElement element, Tier toTier, int toIndex) {
     try {
-      tierList.rankInsert(e, toTier, toIndex);
+      tierList.rankInsert(element, toTier, toIndex);
     } catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) {
-      printStackTrace(ex);
+      ex.printStackTrace();
     }
   }
 
   @Override
-  public void unrank(Telement e) {
+  public void unrank(TierElement element) {
     try {
-      tierList.unrank(e);
+      tierList.unrank(element);
     } catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) {
-      printStackTrace(ex);
+      ex.printStackTrace();
     }
   }
 
   @Override
-  public void unrank(int toIndex, Telement e) {
+  public void unrank(TierElement element, int toIndex) {
     try {
-      tierList.unrankInsert(e, toIndex);
+      tierList.unrankInsert(element, toIndex);
     } catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) {
-      printStackTrace(ex);
+      ex.printStackTrace();
     }
   }
 
@@ -97,7 +97,7 @@ public class StandardTierListController implements TierListController {
     try {
       tierList.setTierListName(name);
     } catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) {
-      printStackTrace(ex);
+      ex.printStackTrace();
     }
   }
 
@@ -106,16 +106,16 @@ public class StandardTierListController implements TierListController {
     try {
       tierList.setTierName(tierList.indexOf(tier), name);
     } catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) {
-      printStackTrace(ex);
+      ex.printStackTrace();
     }
   }
 
   @Override
-  public void addTier(Tier t) {
+  public void addTier(Tier tier) {
     try {
-      tierList.addTier(t);
+      tierList.addTier(tier);
     } catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) {
-      printStackTrace(ex);
+      ex.printStackTrace();
     }
   }
 
@@ -125,44 +125,44 @@ public class StandardTierListController implements TierListController {
   }
 
   @Override
-  public void addToUnranked(Telement e) {
+  public void addToUnranked(TierElement element) {
     try {
-      tierList.addToUnranked(e);
+      tierList.addToUnranked(element);
     } catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) {
-      printStackTrace(ex);
+      ex.printStackTrace();
     }
   }
 
   @Override
-  public void removeTier(Tier t) {
+  public void removeTier(Tier tier) {
     try {
-      tierList.removeTier(t);
+      tierList.removeTier(tier);
     } catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) {
-      printStackTrace(ex);
+      ex.printStackTrace();
     }
   }
 
   @Override
-  public void removeTelement(Telement e) {
+  public void removeTelement(TierElement element) {
     try {
-      var tier = getTierByElement(e);
-      if (e.isRanked() && tier.isPresent())
-        tierList.removeFromTier(tier.get(), e);
-      else if (!e.isRanked()) {
-        tierList.removeFromUnranked(e);
+      var tier = getTierByElement(element);
+      if (element.isRanked() && tier.isPresent())
+        tierList.removeFromTier(tier.get(), element);
+      else if (!element.isRanked()) {
+        tierList.removeFromUnranked(element);
       } else
-        throw new TierNotFoundException("could not remove Telement: " + e);
+        throw new TierNotFoundException("could not remove Telement: " + element);
     } catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) {
-      printStackTrace(ex);
+      ex.printStackTrace();
     }
   }
 
   @Override
-  public void removeFromUnranked(Telement e) {
+  public void removeFromUnranked(TierElement element) {
     try {
-      tierList.removeFromUnranked(e);
+      tierList.removeFromUnranked(element);
     } catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) {
-      printStackTrace(ex);
+      ex.printStackTrace();
     }
   }
 
@@ -173,74 +173,74 @@ public class StandardTierListController implements TierListController {
     try {
       tierList.swapTiers(a, b);
     } catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) {
-      printStackTrace(ex);
+      ex.printStackTrace();
     }
   }
 
   @Override
-  public void swapTelements(Tier tier, Telement a, Telement b) {
+  public void swapTelements(Tier tier, TierElement a, TierElement b) {
     try {
       tierList.swapElements(tier, a, b);
     } catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) {
-      printStackTrace(ex);
+      ex.printStackTrace();
     }
   }
 
   @Override
-  public void swapUnranked(Telement a, Telement b) {
+  public void swapUnranked(TierElement a, TierElement b) {
     try {
       tierList.swapUnranked(a, b);
     } catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) {
-      printStackTrace(ex);
+      ex.printStackTrace();
     }
   }
 
   // ------------------------------ moving ------------------------------//
 
   @Override
-  public void moveTo(Telement e, Tier toTier) {
+  public void moveTo(TierElement element, Tier toTier) {
     try {
-      tierList.moveToTier(toTier, e);
+      tierList.moveToTier(element, toTier);
     } catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) {
-      printStackTrace(ex);
+      ex.printStackTrace();
     }
   }
 
   @Override
-  public void moveTo(Telement e, Tier toTier, Telement toElement) {
+  public void moveTo(TierElement element, Tier toTier, TierElement toElement) {
     try {
       int toIndex = toTier.getElements().indexOf(toElement);
-      tierList.moveToTier(toTier, e, toIndex);
+      tierList.moveToTier(element, toTier, toIndex);
     } catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) {
-      printStackTrace(ex);
+      ex.printStackTrace();
     }
   }
 
   @Override
-  public void moveTo(Telement e, Tier toTier, int toIndex) {
+  public void moveTo(TierElement element, Tier toTier, int toIndex) {
     try {
-      tierList.moveToTier(toTier, e, toIndex);
+      tierList.moveToTier(element, toTier, toIndex);
     } catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) {
-      printStackTrace(ex);
+      ex.printStackTrace();
     }
   }
 
   @Override
-  public void moveUnranked(Telement e, Telement toElement) {
+  public void moveUnranked(TierElement element, TierElement toElement) {
     try {
       int toIndex = tierList.getUnranked().indexOf(toElement);
-      tierList.moveUnranked(e, toIndex);
+      tierList.moveUnranked(element, toIndex);
     } catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) {
-      printStackTrace(ex);
+      ex.printStackTrace();
     }
   }
 
   @Override
-  public void moveUnranked(Telement e, int toIndex) {
+  public void moveUnranked(TierElement element, int toIndex) {
     try {
-      tierList.moveUnranked(e, toIndex);
+      tierList.moveUnranked(element, toIndex);
     } catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) {
-      printStackTrace(ex);
+      ex.printStackTrace();
     }
   }
 
@@ -249,7 +249,7 @@ public class StandardTierListController implements TierListController {
     try {
       tierList.moveTierTo(from, to);
     } catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) {
-      printStackTrace(ex);
+      ex.printStackTrace();
     }
   }
 
@@ -258,12 +258,12 @@ public class StandardTierListController implements TierListController {
     try {
       tierList.moveTierTo(from, toIndex);
     } catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) {
-      printStackTrace(ex);
+      ex.printStackTrace();
     }
     try {
       tierList.moveTierTo(from, toIndex);
     } catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) {
-      printStackTrace(ex);
+      ex.printStackTrace();
     }
   }
 
@@ -274,7 +274,7 @@ public class StandardTierListController implements TierListController {
     try {
       dataHandler.save(savePath.toFile(), tierList);
     } catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) {
-      printStackTrace(ex);
+      ex.printStackTrace();
     }
   }
 
@@ -311,7 +311,7 @@ public class StandardTierListController implements TierListController {
   }
 
   @Override
-  public List<Telement> getUnranked() {
+  public List<TierElement> getUnranked() {
     return tierList.getUnranked();
   }
 
@@ -321,7 +321,7 @@ public class StandardTierListController implements TierListController {
   }
 
   @Override
-  public Optional<Tier> getTierByElement(Telement e) {
+  public Optional<Tier> getTierByElement(TierElement e) {
     Optional<Tier> element = Optional.empty();
 
     try {
@@ -330,15 +330,15 @@ public class StandardTierListController implements TierListController {
           .findFirst();
 
     } catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) {
-      printStackTrace(ex);
+      ex.printStackTrace();
     }
 
     return element;
   }
 
   @Override
-  public Optional<Telement> getElementByHash(String hashCode) {
-    Optional<Telement> telement = Optional.empty();
+  public Optional<TierElement> getElementByHash(String hashCode) {
+    Optional<TierElement> telement = Optional.empty();
 
     try {
 
@@ -350,7 +350,7 @@ public class StandardTierListController implements TierListController {
       if (telement.isEmpty())
         throw new TelementNotFoundException();
     } catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) {
-      printStackTrace(ex);
+      ex.printStackTrace();
     }
 
     return telement;
@@ -369,14 +369,14 @@ public class StandardTierListController implements TierListController {
       if (tier.isEmpty())
         throw new TierNotFoundException();
     } catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) {
-      printStackTrace(ex);
+      ex.printStackTrace();
     }
 
     return tier;
   }
 
   @Override
-  public boolean telementExists(Telement telement) {
+  public boolean telementExists(TierElement element) {
 
     return Stream
         .concat(
@@ -385,7 +385,7 @@ public class StandardTierListController implements TierListController {
                 .flatMap(t -> t.getElements().stream()),
             tierList.getUnranked()
                 .stream())
-        .anyMatch(e -> e.equals(telement));
+        .anyMatch(e -> e.equals(element));
 
   }
 
@@ -408,16 +408,5 @@ public class StandardTierListController implements TierListController {
 
     return getTiers().stream().anyMatch(t -> t.equals(tier));
 
-  }
-
-  private void printStackTrace(Exception ex) {
-    if (ex instanceof NullPointerException)
-      System.err.println("--- Aborting operation: NullPointerException ---" + System.lineSeparator() + ex);
-    else
-      System.err.println("--- Aborting operation: ---"
-          + System.lineSeparator()
-          + "\tIllegalArgumentException: unknown error."
-          + ex
-          + System.lineSeparator());
   }
 }

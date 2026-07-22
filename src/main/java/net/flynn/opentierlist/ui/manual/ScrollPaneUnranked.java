@@ -15,7 +15,7 @@ import javafx.scene.layout.CornerRadii;
 import javafx.scene.paint.Paint;
 import net.flynn.opentierlist.controller.TierListController;
 import net.flynn.opentierlist.model.enums.TelementStatus;
-import net.flynn.opentierlist.model.models.Telement;
+import net.flynn.opentierlist.model.models.TierElement;
 
 /**
  * 
@@ -29,21 +29,21 @@ public class ScrollPaneUnranked extends ScrollPane {
   @SuppressWarnings("unused")
   private MainPane parent;
   private TierListController controller;
-  private BiConsumer<Telement, Telement> onDragDropped;
+  private BiConsumer<TierElement, TierElement> onDragDropped;
 
   public ScrollPaneUnranked(MainPane parent, TierListController controller) {
     this.parent = parent;
     this.controller = controller;
 
     // ----- TierElementsPane's on 'drag dropped' behaviour -----//
-    this.onDragDropped = (Telement s, Telement t) -> {
+    this.onDragDropped = (TierElement s, TierElement t) -> {
       switch (s.status()) {
         case TelementStatus.UNRANKED: {
           this.controller.moveUnranked(s, t);
           break;
         }
         case TelementStatus.RANKED: {
-          this.controller.unrank(controller.getUnranked().indexOf(t), s);
+          this.controller.unrank(s, controller.getUnranked().indexOf(t));
           break;
         }
         default: {
