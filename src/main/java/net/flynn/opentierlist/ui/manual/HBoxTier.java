@@ -51,7 +51,7 @@ public class HBoxTier extends HBox {
 
   // ----- panels -----//
   private TextField tierNameLabel;
-  private FlowPaneTelements elementsPane;
+  private FlowPaneElements elementsPane;
   private Button editTierButton;
   private ScrollPaneTiers parent;
 
@@ -107,7 +107,7 @@ public class HBoxTier extends HBox {
       }
     };
 
-    this.elementsPane = new FlowPaneTelements(parent, controller, tier.getElements(), Optional.of(tier), onDragDropped);
+    this.elementsPane = new FlowPaneElements(parent, controller, tier.getElements(), Optional.of(tier), onDragDropped);
     this.setupPane();
   }
 

@@ -24,7 +24,7 @@ import net.flynn.opentierlist.model.models.TierElement;
  */
 public class ScrollPaneUnranked extends ScrollPane {
   // ----- panels -----//
-  private FlowPaneTelements unrankedPane;
+  private FlowPaneElements unrankedPane;
 
   @SuppressWarnings("unused")
   private MainPane parent;
@@ -53,7 +53,7 @@ public class ScrollPaneUnranked extends ScrollPane {
       }
     };
 
-    this.unrankedPane = new FlowPaneTelements(parent.getFirstChild(), controller, controller.getUnranked(),
+    this.unrankedPane = new FlowPaneElements(parent.getFirstChild(), controller, controller.getUnranked(),
         onDragDropped);
 
     this.setupPane();

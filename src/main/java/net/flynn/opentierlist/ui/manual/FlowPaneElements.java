@@ -40,9 +40,8 @@ import net.flynn.opentierlist.model.models.Tier;
  * @version 3.00
  * @since v1.2.5
  */
-public class FlowPaneTelements extends FlowPane {
+public class FlowPaneElements extends FlowPane {
   // ----- panels -----//
-  private TierListController controller;
   private ScrollPaneTiers greatparent;
   private ContextMenu imageContextMenu;
   private MenuItem deleteImageMenu, unrankImageMenu;
@@ -50,12 +49,13 @@ public class FlowPaneTelements extends FlowPane {
   // ---- cache -----//
   private static Map<Long, Image> imageCache;
 
+  private TierListController controller;
   private Optional<Tier> tier;
   private List<TierElement> elements;
   private ObservableList<ImageView> images;
   private BiConsumer<TierElement, TierElement> onDragDropped;
 
-  public FlowPaneTelements(ScrollPaneTiers greatparent, TierListController controller, List<TierElement> elements,
+  public FlowPaneElements(ScrollPaneTiers greatparent, TierListController controller, List<TierElement> elements,
       Optional<Tier> tier, BiConsumer<TierElement, TierElement> onDragDropped) {
     this.controller = controller;
     this.tier = tier;
@@ -70,7 +70,7 @@ public class FlowPaneTelements extends FlowPane {
     this.setupPane();
   }
 
-  public FlowPaneTelements(ScrollPaneTiers greatparent, TierListController controller, List<TierElement> elements,
+  public FlowPaneElements(ScrollPaneTiers greatparent, TierListController controller, List<TierElement> elements,
       BiConsumer<TierElement, TierElement> onDragDropped) {
     this(greatparent, controller, elements, Optional.empty(), onDragDropped);
   }
@@ -92,17 +92,17 @@ public class FlowPaneTelements extends FlowPane {
       if (mouseEvent.getButton() == MouseButton.SECONDARY) {
 
         deleteImageMenu.setOnAction(_ -> {
-          if (imageViewer.getUserData() instanceof TierElement telement) {
-            controller.removeTelement(telement);
+          if (imageViewer.getUserData() instanceof TierElement element) {
+            controller.removeTelement(element);
             this.getChildren().remove(imageViewer);
             updateImages();
           }
         });
 
-        if (imageViewer.getUserData() instanceof TierElement telement && telement.isRanked()) {
+        if (imageViewer.getUserData() instanceof TierElement element && element.isRanked()) {
           imageContextMenu.getItems().add(unrankImageMenu);
           unrankImageMenu.setOnAction(_ -> {
-            controller.unrank(telement);
+            controller.unrank(element);
             greatparent.updateTierList();
           });
         }
@@ -120,24 +120,33 @@ public class FlowPaneTelements extends FlowPane {
       event.consume();
     });
     imageViewer.setOnDragEntered(event -> {
-      if (event.getTarget() instanceof ImageView target && event.getGestureSource() instanceof ImageView source &&
-          event.getDragboard().hasImage()) {
+      if (event.getTarget() instanceof ImageView target
+          && event.getGestureSource() instanceof ImageView source
+          && event.getDragboard().hasImage()) {
         target.setStyle(UISettings.IMAGE_SOURCE_EFFECT);
         source.setStyle(UISettings.IMAGE_TARGET_EFFECT);
 
         imageViewer.setFitHeight(UISettings.DEFAULT_EXPANDED_IMAGE_SIZE);
         this.setPadding(
-            new Insets(0, UISettings.DEFAULT_DRAG_ENTERED_PADDING, 0, UISettings.DEFAULT_DRAG_ENTERED_PADDING));
+            new Insets(
+                0,
+                UISettings.DEFAULT_DRAG_ENTERED_PADDING,
+                0,
+                UISettings.DEFAULT_DRAG_ENTERED_PADDING));
       }
       event.consume();
     });
 
+    // TODO: Implement timer to 'animate' dragEnter and dragExited events
     imageViewer.setOnDragExited(event -> {
       if (event.getTarget() instanceof ImageView target && event.getGestureSource() instanceof ImageView source) {
         source.setStyle("-fx-effect: null;");
         target.setStyle("-fx-effect: null;");
 
         imageViewer.setFitHeight(UISettings.DEFAULT_CELL_SIZE);
+
+        // buggy
+        this.setPadding(new Insets(UISettings.DEFAULT_DRAG_ENTERED_PADDING));
       }
       event.consume();
     });
@@ -239,7 +248,7 @@ public class FlowPaneTelements extends FlowPane {
 
     this.setOnDragDone(event -> {
       if (event.getTransferMode() == TransferMode.MOVE)
-        this.updateImages();
+        updateImages();
       event.consume();
     });
   }
@@ -256,17 +265,17 @@ public class FlowPaneTelements extends FlowPane {
 
   private void handleDragDetectedImage(MouseEvent event) {
 
-    // ----- define transfer mode -----//
-    Dragboard dragBoard = ((ImageView) event.getSource()).startDragAndDrop(TransferMode.MOVE);
+    if (!(event.getSource() instanceof ImageView sourceImage))
+      return;
 
-    // ----- save image and TierElement hashcode on dragboard -----//
+    // ----- define transfer mode -----//
+    Dragboard dragBoard = sourceImage.startDragAndDrop(TransferMode.MOVE);
     var content = new ClipboardContent();
 
-    if (event.getSource() instanceof ImageView viewer
-        && viewer.getUserData() instanceof TierElement sourceElement) {
+    if (sourceImage.getUserData() instanceof TierElement sourceElement) {
 
-      content.putImage(viewer.getImage());
-      content.putString(Integer.valueOf(sourceElement.hashCode()).toString());
+      content.putImage(sourceImage.getImage());
+      content.putString(String.valueOf(sourceElement.hashCode()));
 
       dragBoard.setContent(content);
     }
@@ -274,69 +283,71 @@ public class FlowPaneTelements extends FlowPane {
   }
 
   private void handleDragDroppedImage(DragEvent event) {
-
-    Dragboard dragBoard = event.getDragboard();
-
     boolean success = false;
 
-    Optional<TierElement> sourceData = controller.getElementByHash(dragBoard.getString());
+    Dragboard dragBoard = event.getDragboard();
+    String elementHash = dragBoard.getString();
 
-    if (sourceData.isEmpty())
+    Optional<TierElement> potentialSource = controller.getElementByHash(elementHash);
+    if (potentialSource.isEmpty()) {
+      System.err.println("--- Element to be dropped was not found ---");
       return;
-
-    EventTarget dragAndDropTarget = event.getTarget();
-
-    // ----- update model -----//
-    if (dragBoard.hasImage() && dragBoard.hasString() &&
-        dragAndDropTarget instanceof ImageView targetImage &&
-        !sourceData.equals(targetImage.getUserData())) {
-
-      onDragDropped.accept(sourceData.get(), (TierElement) targetImage.getUserData());
-
-      success = true;
-
-      this.updateImages();
     }
-    event.setDropCompleted(success);
 
-    event.consume();
-  }
-
-  private void handleDragDropped(DragEvent event) {
-    Dragboard dragBoard = event.getDragboard();
-
-    boolean success = false;
-
+    EventTarget eventTarget = event.getTarget();
     if (dragBoard.hasImage() && dragBoard.hasString()
-        && event.getTarget() instanceof FlowPaneTelements targetElementPane) {
 
-      Optional<TierElement> sourceData = controller.getElementByHash(dragBoard.getString());
+        && eventTarget instanceof ImageView targetImage
+        && targetImage.getUserData() instanceof TierElement targetElement
 
-      if (sourceData.isEmpty())
-        return;
+        && potentialSource.get() instanceof TierElement source
+        && !source.equals(targetElement)) {
 
-      updateModel(sourceData.get().status(), sourceData.get(), targetElementPane);
+      onDragDropped.accept(potentialSource.get(), targetElement);
       updateImages();
       success = true;
     }
     event.setDropCompleted(success);
-
     event.consume();
   }
 
-  private void updateModel(TelementStatus status, TierElement sourceElement, FlowPaneTelements targetPane) {
-    Optional<Tier> targetTier = targetPane.getTier();
+  private void handleDragDropped(DragEvent event) {
+    boolean success = false;
+
+    Dragboard dragBoard = event.getDragboard();
+    if (dragBoard.hasImage() && dragBoard.hasString()
+        && event.getTarget() instanceof FlowPaneElements targetElementPane) {
+
+      String elementHash = dragBoard.getString();
+      Optional<TierElement> potentialSource = controller.getElementByHash(elementHash);
+      if (potentialSource.isEmpty()) {
+        System.err.println("--- Element to be dropped was not found ---");
+        return;
+      }
+
+      var source = potentialSource.get();
+
+      updateModel(source, targetElementPane.getTier());
+      updateImages();
+      success = true;
+    }
+    event.setDropCompleted(success);
+    event.consume();
+  }
+
+  private void updateModel(TierElement sourceElement, Optional<Tier> inTier) {
+    var status = sourceElement.status();
     switch (status) {
       case TelementStatus.RANKED: {
-        if (targetTier.isPresent())
-          controller.moveTo(sourceElement, targetTier.get());
+        if (inTier.isPresent())
+          controller.moveTo(sourceElement, inTier.get());
         else
           controller.unrank(sourceElement);
       }
         break;
       case TelementStatus.UNRANKED: {
-        if (targetTier.isPresent())
-          controller.rank(sourceElement, targetPane.getTier().get());
+        if (inTier.isPresent())
+          controller.rank(sourceElement, inTier.get());
         else
           controller.moveUnranked(sourceElement, controller.getUnranked().getLast());
       }
