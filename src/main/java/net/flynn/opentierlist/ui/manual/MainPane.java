@@ -31,13 +31,13 @@ import net.flynn.opentierlist.persistence.ResourceHolder;
 public class MainPane extends BorderPane {
   // ----- panels -----//
   private TextField titleLabel;
-  private ScrollPaneUnranked unrankedPane;
+  private ScrollPaneUnTiered unTieredPane;
   private ScrollPaneTiers tiersPane;
   private Button addTierButton, addElementButton;
   private FileChooser fileChooser;
 
-  private TierListController controller;
-  private Stage stage;
+  private final TierListController controller;
+  private final Stage stage;
   private String oldTitle;
 
   public MainPane(TierListController controller, Stage stage) {
@@ -98,7 +98,7 @@ public class MainPane extends BorderPane {
         UISettings.DEFAULT_DBUTTON_PADDING,
         UISettings.DEFAULT_DBUTTON_PADDING));
 
-    buttonsHBox.setSpacing(UISettings.DEFAULT_DBUTTON_PADDING / 3);
+    buttonsHBox.setSpacing((double) UISettings.DEFAULT_DBUTTON_PADDING / 3);
     buttonsHBox.setAlignment(Pos.BOTTOM_CENTER);
 
     // ----- tiers -----//
@@ -108,8 +108,8 @@ public class MainPane extends BorderPane {
     setCenter(centerBox);
 
     // ----- unranked -----//
-    unrankedPane = new ScrollPaneUnranked(this, controller);
-    HBox unrankedBox = new HBox(unrankedPane);
+    unTieredPane = new ScrollPaneUnTiered(this, controller);
+    HBox unrankedBox = new HBox(unTieredPane);
     unrankedBox.setAlignment(Pos.BASELINE_CENTER);
     setBottom(unrankedBox);
 
@@ -148,7 +148,7 @@ public class MainPane extends BorderPane {
       files.forEach(selectedFile -> {
         if (selectedFile != null && selectedFile.exists()) {
           try {
-            controller.addToUnranked(new TierElement(selectedFile.getName(), ImagePath.of(selectedFile)));
+            controller.addUnTiered(new TierElement(selectedFile.getName(), ImagePath.of(selectedFile)));
           } catch (FileNotFoundException e) {
             System.err.println("--- Resource not found, aborting ---");
             System.exit(-1);
@@ -161,7 +161,7 @@ public class MainPane extends BorderPane {
 
   public void updateTierList() {
     tiersPane.updateAllTiers();
-    unrankedPane.updatePane();
+    unTieredPane.updatePane();
   }
 
   public Stage getStage() {

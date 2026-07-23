@@ -18,7 +18,7 @@ public enum DefaultTier {
     E(Color.ALICEBLUE),
     F(Color.GRAY);
 
-    private Tier value;
+    private final Tier value;
 
     DefaultTier(Color color) {
         this.value = new Tier(name(), color);

@@ -14,7 +14,7 @@ import javafx.scene.layout.BorderWidths;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.paint.Paint;
 import net.flynn.opentierlist.controller.TierListController;
-import net.flynn.opentierlist.model.enums.TelementStatus;
+import net.flynn.opentierlist.model.enums.TieredStatus;
 import net.flynn.opentierlist.model.models.TierElement;
 
 /**
@@ -22,39 +22,35 @@ import net.flynn.opentierlist.model.models.TierElement;
  * @version 2.20
  * @since v1.2.5
  */
-public class ScrollPaneUnranked extends ScrollPane {
+public class ScrollPaneUnTiered extends ScrollPane {
   // ----- panels -----//
-  private FlowPaneElements unrankedPane;
+  private final FlowPaneElements unTieredPane;
 
-  @SuppressWarnings("unused")
-  private MainPane parent;
-  private TierListController controller;
-  private BiConsumer<TierElement, TierElement> onDragDropped;
+  private final TierListController controller;
 
-  public ScrollPaneUnranked(MainPane parent, TierListController controller) {
-    this.parent = parent;
-    this.controller = controller;
+    public ScrollPaneUnTiered(MainPane parent, TierListController controller) {
+      this.controller = controller;
 
     // ----- TierElementsPane's on 'drag dropped' behaviour -----//
-    this.onDragDropped = (TierElement s, TierElement t) -> {
-      switch (s.status()) {
-        case TelementStatus.UNRANKED: {
-          this.controller.moveUnranked(s, t);
-          break;
-        }
-        case TelementStatus.RANKED: {
-          this.controller.unrank(s, controller.getUnranked().indexOf(t));
-          break;
-        }
-        default: {
-          System.err.println("--- Unexpected error, exiting ---");
-          System.exit(-1);
-        }
-      }
-    };
+        BiConsumer<TierElement, TierElement> onDragDropped = (TierElement s, TierElement t) -> {
+            switch (s.status()) {
+                case TieredStatus.UNTIERED: {
+                    this.controller.moveUnTiered(s, t);
+                    break;
+                }
+                case TieredStatus.TIERED: {
+                    this.controller.unTier(s, controller.getUnTiered().indexOf(t));
+                    break;
+                }
+                default: {
+                    System.err.println("--- Unexpected error, exiting ---");
+                    System.exit(-1);
+                }
+            }
+        };
 
-    this.unrankedPane = new FlowPaneElements(parent.getFirstChild(), controller, controller.getUnranked(),
-        onDragDropped);
+    this.unTieredPane = new FlowPaneElements(parent.getFirstChild(), controller, controller.getUnTiered(),
+            onDragDropped);
 
     this.setupPane();
   }
@@ -65,9 +61,9 @@ public class ScrollPaneUnranked extends ScrollPane {
 
     this.setPrefWidth(UISettings.DEFAULT_BAR_WIDTH);
     this.setMaxHeight(UISettings.DEFAULT_UNRANKED_PANE_MAX_HEIGHT);
-    this.setMinHeight(UISettings.DEFAULT_UNRANKED_PANE_MAX_WIDHT);
+    this.setMinHeight(UISettings.DEFAULT_UNRANKED_PANE_MAX_WIDTH);
     this.setFitToWidth(true);
-    this.unrankedPane.setAlignment(Pos.CENTER_LEFT);
+    this.unTieredPane.setAlignment(Pos.CENTER_LEFT);
 
     this.setOnDragEntered(this::handleDragEntered);
     this.setOnDragExited(_ -> this.setTierElementsPaneBorder(UISettings.DEFAULT_BAR_BORDER_COLOR));
@@ -77,24 +73,24 @@ public class ScrollPaneUnranked extends ScrollPane {
         UISettings.DEFAULT_UNRANKED_PADDING_RIGHT,
         UISettings.DEFAULT_UNRANKED_PADDING_BOTTOM,
         UISettings.DEFAULT_UNRANKED_PADDING_LEFT));
-    this.setUnrankedBorder();
+    this.setUnTieredBorder();
 
-    this.setContent(unrankedPane);
+    this.setContent(unTieredPane);
   }
 
-  private void setUnrankedBorder() {
+  private void setUnTieredBorder() {
     var unrankedBorder = new Border(
         new BorderStroke(
             Paint.valueOf(UISettings.DEFAULT_BAR_BORDER_COLOR),
             BorderStrokeStyle.SOLID,
             CornerRadii.EMPTY,
             BorderWidths.DEFAULT));
-    unrankedPane.setBorder(unrankedBorder);
+    unTieredPane.setBorder(unrankedBorder);
   }
 
   private void handleDragEntered(DragEvent event) {
     if (event.getGestureSource() instanceof ImageView
-        && event.getTarget() instanceof ScrollPaneUnranked
+        && event.getTarget() instanceof ScrollPaneUnTiered
         && event.getDragboard().hasImage())
       setTierElementsPaneBorder(UISettings.DEFAULT_BAR_HIGHLIGHT_COLOR);
 
@@ -108,10 +104,10 @@ public class ScrollPaneUnranked extends ScrollPane {
             BorderStrokeStyle.SOLID,
             CornerRadii.EMPTY,
             BorderWidths.DEFAULT));
-    this.unrankedPane.setBorder(tierElementsPaneBorder);
+    this.unTieredPane.setBorder(tierElementsPaneBorder);
   }
 
   public void updatePane() {
-    unrankedPane.updateImages();
+    unTieredPane.updateImages();
   }
 }

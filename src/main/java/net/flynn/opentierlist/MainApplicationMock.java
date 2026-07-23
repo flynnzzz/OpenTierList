@@ -42,9 +42,9 @@ public class MainApplicationMock extends Application {
 
     TierListController controller = new StandardTierListController(defaultTierList);
 
-    controller.rank(m, DefaultTier.S.value());
-    controller.rank(p, DefaultTier.S.value());
-    controller.rank(s, DefaultTier.A.value());
+    controller.tier(m, DefaultTier.S.value());
+    controller.tier(p, DefaultTier.S.value());
+    controller.tier(s, DefaultTier.A.value());
 
     stage.setTitle("Open Tier Lists");
     BorderPane root = new MainPane(controller, stage);

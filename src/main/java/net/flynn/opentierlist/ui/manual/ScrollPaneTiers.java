@@ -15,11 +15,11 @@ import net.flynn.opentierlist.controller.TierListController;
  */
 public class ScrollPaneTiers extends ScrollPane {
   // ----- panels -----//
-  private VBox tiersVBox;
-  private MainPane parent;
+  private final VBox tiersVBox;
+  private final MainPane parent;
 
-  private TierListController controller;
-  private ObservableList<HBoxTier> tierBoxList;
+  private final TierListController controller;
+  private final ObservableList<HBoxTier> tierBoxList;
 
   public ScrollPaneTiers(MainPane parent, TierListController controller) {
     this.parent = parent;

@@ -1,6 +1,6 @@
 bin/
 *.class
-src/quicktest/
+.idea/
 .vscode
 .project
 .classpath

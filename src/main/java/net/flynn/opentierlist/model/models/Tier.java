@@ -1,7 +1,7 @@
 package net.flynn.opentierlist.model.models;
 
 import net.flynn.opentierlist.model.enums.TierStringFormat;
-import net.flynn.opentierlist.model.exceptions.TelementNotFoundException;
+import net.flynn.opentierlist.model.exceptions.TierElementNotFoundException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -22,21 +22,21 @@ public class Tier {
   public static final Color DEFAULT_TIER_COLOR = Color.GRAY;
 
   private TierHeader header;
-  private List<TierElement> elements;
+  private final List<TierElement> tiered;
 
   private static long NEXT_ID = 1;
   private final long id;
 
   // ----- Ctors -----//
 
-  private Tier(TierHeader header, List<TierElement> elements) {
+  private Tier(TierHeader header, List<TierElement> tiered) {
     Objects.requireNonNull(header);
-    Objects.requireNonNull(elements);
+    Objects.requireNonNull(tiered);
     if (header.name().isBlank())
       throw new IllegalArgumentException();
 
     this.header = header;
-    this.elements = elements;
+    this.tiered = tiered;
     this.id = NEXT_ID++;
   }
 
@@ -45,11 +45,11 @@ public class Tier {
    * 
    * @param name     tier name
    * @param color    tier {@link Color}
-   * @param elements list to associate to this tier
+   * @param tiered list to associate to this tier
    * @throws IllegalArgumentException if the header's name is blank
    */
-  public Tier(String name, Color color, List<TierElement> elements) {
-    this(new TierHeader(name, color), elements);
+  public Tier(String name, Color color, List<TierElement> tiered) {
+    this(new TierHeader(name, color), tiered);
   }
 
   /**
@@ -89,43 +89,43 @@ public class Tier {
    * @return true if successfull
    */
   public boolean add(TierElement element) {
-    return elements.add(element);
+    return tiered.add(element);
   }
 
-  public boolean remove(TierElement element) throws TelementNotFoundException {
-    if (!elements.remove(element))
-      throw new TelementNotFoundException();
+  public boolean remove(TierElement element) throws TierElementNotFoundException {
+    if (!tiered.remove(element))
+      throw new TierElementNotFoundException();
     else
       return true;
   }
 
-  public TierElement remove(int i) throws TelementNotFoundException {
+  public TierElement remove(int i) throws TierElementNotFoundException {
     try {
-      return elements.remove(i);
+      return tiered.remove(i);
     } catch (IndexOutOfBoundsException e) {
-      throw new TelementNotFoundException();
+      throw new TierElementNotFoundException();
     }
   }
 
-  public void swap(TierElement a, TierElement b) throws TelementNotFoundException {
+  public void swap(TierElement a, TierElement b) throws TierElementNotFoundException {
     try {
-      swap(elements.indexOf(a), elements.indexOf(b));
+      swap(tiered.indexOf(a), tiered.indexOf(b));
     } catch (IndexOutOfBoundsException e) {
-      throw new TelementNotFoundException();
+      throw new TierElementNotFoundException();
     }
 
   }
 
-  public void swap(int a, int b) throws TelementNotFoundException {
+  public void swap(int a, int b) throws TierElementNotFoundException {
     try {
-      Collections.swap(elements, a, b);
+      Collections.swap(tiered, a, b);
     } catch (IndexOutOfBoundsException e) {
-      throw new TelementNotFoundException();
+      throw new TierElementNotFoundException();
     }
   }
 
   public boolean contains(TierElement element) {
-    return elements.contains(element);
+    return tiered.contains(element);
   }
 
   /**
@@ -133,14 +133,14 @@ public class Tier {
    * 
    * @param toIndex destination index
    * @param element element to move
-   * @throws TelementNotFoundException
+   * @throws TierElementNotFoundException if element is not found
    */
-  public void moveTo(TierElement element, int toIndex) throws TelementNotFoundException {
-    if (!elements.contains(element) || toIndex > elements.size())
-      throw new TelementNotFoundException();
+  public void moveTo(TierElement element, int toIndex) throws TierElementNotFoundException {
+    if (!tiered.contains(element) || toIndex > tiered.size())
+      throw new TierElementNotFoundException();
 
-    elements.remove(elements.indexOf(element));
-    elements.add(toIndex, element);
+    tiered.remove(element);
+    tiered.add(toIndex, element);
   }
 
   public Tier copy() {
@@ -185,14 +185,14 @@ public class Tier {
    * 
    * @return this tier instance's elements
    */
-  public List<TierElement> getElements() {
-    return List.copyOf(elements);
+  public List<TierElement> getTiered() {
+    return List.copyOf(tiered);
   }
 
   // ----- hashCode, equals and toString -----//
   @Override
   public int hashCode() {
-    return Objects.hash(elements, header, id);
+    return Objects.hash(tiered, header, id);
   }
 
   @Override
@@ -200,11 +200,10 @@ public class Tier {
     if (this == obj) {
       return true;
     }
-    if (!(obj instanceof Tier)) {
+    if (!(obj instanceof Tier other)) {
       return false;
     }
-    Tier other = (Tier) obj;
-    return Objects.equals(elements, other.elements)
+      return Objects.equals(tiered, other.tiered)
         && Objects.equals(header, other.header)
         && Objects.equals(id, other.id);
   }
@@ -224,14 +223,6 @@ public class Tier {
   }
 
   @Override
-  /**
-   * Returns the {@link Tier} as {@link String}
-   * 
-   * Format:
-   * "header name: [ element1, element2, ... ]"
-   * 
-   * @return {@link String}
-   */
   public String toString() {
     return toStringCompact();
   }
@@ -247,35 +238,29 @@ public class Tier {
    * element2,
    * ...
    * ]"
-   * 
-   * Format {@link TierStringFormat#COMPACT}:
-   * "header name: [ element1, element2, ... ]"
-   * 
-   * @return {@link String}
    */
   public String toString(TierStringFormat format) {
     return switch (format) {
       case EXTENDED -> toStringExtended();
+      case COMPACT -> toStringCompact();
       default -> toString();
     };
   }
 
   private String toStringCompact() {
-    var sb = new StringBuilder();
-    sb.append(getHeader().name() + ":" + System.lineSeparator());
-    sb.append(toStringElements(getElements()));
-    return sb.toString();
+      return getHeader().name() + ":" + System.lineSeparator() +
+              toStringElements(getTiered());
   }
 
   private String toStringExtended() {
     var sb = new StringBuilder();
-    sb.append(getHeader().name() + ":" + System.lineSeparator());
+    sb.append(getHeader().name()).append(":").append(System.lineSeparator());
     sb.append("[");
     sb.append(System.lineSeparator());
-    for (TierElement e : elements) {
+    for (TierElement e : tiered) {
       sb.append("\t");
       sb.append(e);
-      if (!elements.getLast().equals(e))
+      if (!tiered.getLast().equals(e))
         sb.append(",");
       else
         sb.append(".");

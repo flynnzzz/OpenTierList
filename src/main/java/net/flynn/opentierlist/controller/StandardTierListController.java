@@ -2,6 +2,7 @@ package net.flynn.opentierlist.controller;
 
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -19,9 +20,9 @@ import net.flynn.opentierlist.persistence.DataHandler;
  */
 public class StandardTierListController implements TierListController {
 
-  private TierList tierList;
+  private final TierList tierList;
 
-  private DataHandler dataHandler;
+  private final DataHandler dataHandler;
   private String fileName;
   private Path savePath;
 
@@ -29,8 +30,8 @@ public class StandardTierListController implements TierListController {
 
   /**
    * Constructor that creates a controller for {@link TierList}.
-   * 
-   * Instanciates an {@link TierList} with the given parameter
+   * <p>
+   * Instantiates an {@link TierList} with the given parameter
    * 
    * @param tierList parameter to pass
    */
@@ -43,8 +44,8 @@ public class StandardTierListController implements TierListController {
 
   /**
    * Constructor that creates a controller for {@link TierList}.
-   * 
-   * Instanciates an empty {@link TierList}
+   * <p>
+   * Instantiates an empty {@link TierList}
    */
   public StandardTierListController() {
     this(new TierList());
@@ -55,36 +56,36 @@ public class StandardTierListController implements TierListController {
   // ------------------------------ ranking ------------------------------//
 
   @Override
-  public void rank(TierElement element, Tier toTier) {
+  public void tier(TierElement element, Tier toTier) {
     try {
-      tierList.rank(element, toTier);
+      tierList.tier(element, toTier);
     } catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) {
       ex.printStackTrace();
     }
   }
 
   @Override
-  public void rank(TierElement element, Tier toTier, int toIndex) {
+  public void tier(TierElement element, Tier toTier, int toIndex) {
     try {
-      tierList.rankInsert(element, toTier, toIndex);
+      tierList.tierInsert(element, toTier, toIndex);
     } catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) {
       ex.printStackTrace();
     }
   }
 
   @Override
-  public void unrank(TierElement element) {
+  public void unTier(TierElement element) {
     try {
-      tierList.unrank(element);
+      tierList.unTier(element);
     } catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) {
       ex.printStackTrace();
     }
   }
 
   @Override
-  public void unrank(TierElement element, int toIndex) {
+  public void unTier(TierElement element, int toIndex) {
     try {
-      tierList.unrankInsert(element, toIndex);
+      tierList.unTierInsert(element, toIndex);
     } catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) {
       ex.printStackTrace();
     }
@@ -125,9 +126,9 @@ public class StandardTierListController implements TierListController {
   }
 
   @Override
-  public void addToUnranked(TierElement element) {
+  public void addUnTiered(TierElement element) {
     try {
-      tierList.addToUnranked(element);
+      tierList.addUnTiered(element);
     } catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) {
       ex.printStackTrace();
     }
@@ -143,13 +144,13 @@ public class StandardTierListController implements TierListController {
   }
 
   @Override
-  public void removeTelement(TierElement element) {
+  public void removeTierElement(TierElement element) {
     try {
       var tier = getTierByElement(element);
-      if (element.isRanked() && tier.isPresent())
+      if (element.isTiered() && tier.isPresent())
         tierList.removeFromTier(tier.get(), element);
-      else if (!element.isRanked()) {
-        tierList.removeFromUnranked(element);
+      else if (!element.isTiered()) {
+        tierList.removeUnTiered(element);
       } else
         throw new TierNotFoundException("could not remove Telement: " + element);
     } catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) {
@@ -158,9 +159,9 @@ public class StandardTierListController implements TierListController {
   }
 
   @Override
-  public void removeFromUnranked(TierElement element) {
+  public void removeUnTiered(TierElement element) {
     try {
-      tierList.removeFromUnranked(element);
+      tierList.removeUnTiered(element);
     } catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) {
       ex.printStackTrace();
     }
@@ -178,18 +179,18 @@ public class StandardTierListController implements TierListController {
   }
 
   @Override
-  public void swapTelements(Tier tier, TierElement a, TierElement b) {
+  public void swapTiered(Tier tier, TierElement a, TierElement b) {
     try {
-      tierList.swapElements(tier, a, b);
+      tierList.swapTiered(tier, a, b);
     } catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) {
       ex.printStackTrace();
     }
   }
 
   @Override
-  public void swapUnranked(TierElement a, TierElement b) {
+  public void swapUnTiered(TierElement a, TierElement b) {
     try {
-      tierList.swapUnranked(a, b);
+      tierList.swapUnTiered(a, b);
     } catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) {
       ex.printStackTrace();
     }
@@ -209,7 +210,7 @@ public class StandardTierListController implements TierListController {
   @Override
   public void moveTo(TierElement element, Tier toTier, TierElement toElement) {
     try {
-      int toIndex = toTier.getElements().indexOf(toElement);
+      int toIndex = toTier.getTiered().indexOf(toElement);
       tierList.moveToTier(element, toTier, toIndex);
     } catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) {
       ex.printStackTrace();
@@ -226,19 +227,19 @@ public class StandardTierListController implements TierListController {
   }
 
   @Override
-  public void moveUnranked(TierElement element, TierElement toElement) {
+  public void moveUnTiered(TierElement element, TierElement toElement) {
     try {
-      int toIndex = tierList.getUnranked().indexOf(toElement);
-      tierList.moveUnranked(element, toIndex);
+      int toIndex = tierList.getUnTiered().indexOf(toElement);
+      tierList.moveUnTiered(element, toIndex);
     } catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) {
       ex.printStackTrace();
     }
   }
 
   @Override
-  public void moveUnranked(TierElement element, int toIndex) {
+  public void moveUnTiered(TierElement element, int toIndex) {
     try {
-      tierList.moveUnranked(element, toIndex);
+      tierList.moveUnTiered(element, toIndex);
     } catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) {
       ex.printStackTrace();
     }
@@ -311,8 +312,8 @@ public class StandardTierListController implements TierListController {
   }
 
   @Override
-  public List<TierElement> getUnranked() {
-    return tierList.getUnranked();
+  public List<TierElement> getUnTiered() {
+    return tierList.getUnTiered();
   }
 
   @Override
@@ -343,12 +344,12 @@ public class StandardTierListController implements TierListController {
     try {
 
       telement = Stream
-          .concat(tierList.getTiers().stream().flatMap(t -> t.getElements().stream()), tierList.getUnranked().stream())
+          .concat(tierList.getTiers().stream().flatMap(t -> t.getTiered().stream()), tierList.getUnTiered().stream())
           .filter(e -> String.valueOf(e.hashCode()).equals(hashCode))
           .findFirst();
 
       if (telement.isEmpty())
-        throw new TelementNotFoundException();
+        throw new TierElementNotFoundException();
     } catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) {
       ex.printStackTrace();
     }
@@ -376,30 +377,30 @@ public class StandardTierListController implements TierListController {
   }
 
   @Override
-  public boolean telementExists(TierElement element) {
+  public boolean tierElementExists(TierElement element) {
 
     return Stream
         .concat(
             tierList.getTiers()
                 .stream()
-                .flatMap(t -> t.getElements().stream()),
-            tierList.getUnranked()
+                .flatMap(t -> t.getTiered().stream()),
+            tierList.getUnTiered()
                 .stream())
         .anyMatch(e -> e.equals(element));
 
   }
 
   @Override
-  public boolean telementExistsById(Long id) {
+  public boolean tierElementExistsById(Long id) {
 
     return Stream
         .concat(
             tierList.getTiers()
                 .stream()
-                .flatMap(t -> t.getElements().stream()),
-            tierList.getUnranked()
+                .flatMap(t -> t.getTiered().stream()),
+            tierList.getUnTiered()
                 .stream())
-        .anyMatch(e -> e.getId() == id);
+        .anyMatch(e -> Objects.equals(e.getId(), id));
 
   }
 

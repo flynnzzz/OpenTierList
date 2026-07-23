@@ -35,13 +35,13 @@ public interface TierListController {
 
   // ----- ranking ------//
 
-  public void rank(TierElement element, Tier toTier);
+  public void tier(TierElement element, Tier toTier);
 
-  public void rank(TierElement element, Tier toTier, int toIndex);
+  public void tier(TierElement element, Tier toTier, int toIndex);
 
-  public void unrank(TierElement element);
+  public void unTier(TierElement element);
 
-  public void unrank(TierElement element, int toIndex);
+  public void unTier(TierElement element, int toIndex);
 
   // ----- adding and removing ------//
 
@@ -49,21 +49,21 @@ public interface TierListController {
 
   public void addDefaultTier();
 
-  public void addToUnranked(TierElement element);
+  public void addUnTiered(TierElement element);
 
   public void removeTier(Tier tier);
 
-  public void removeTelement(TierElement element);
+  public void removeTierElement(TierElement element);
 
-  public void removeFromUnranked(TierElement e);
+  public void removeUnTiered(TierElement e);
 
   // ----- swapping ------//
 
   public void swapTiers(Tier a, Tier b);
 
-  public void swapTelements(Tier tier, TierElement a, TierElement b);
+  public void swapTiered(Tier tier, TierElement a, TierElement b);
 
-  public void swapUnranked(TierElement a, TierElement b);
+  public void swapUnTiered(TierElement a, TierElement b);
 
   // ----- moving ------//
 
@@ -73,9 +73,9 @@ public interface TierListController {
 
   public void moveTo(TierElement element, Tier toTier, int toIndex);
 
-  public void moveUnranked(TierElement element, TierElement toElement);
+  public void moveUnTiered(TierElement element, TierElement toElement);
 
-  public void moveUnranked(TierElement element, int toIndex);
+  public void moveUnTiered(TierElement element, int toIndex);
 
   public void moveTierTo(Tier from, Tier to);
 
@@ -93,7 +93,7 @@ public interface TierListController {
 
   public Optional<Tier> getTierByHash(String hashCode);
 
-  public List<TierElement> getUnranked();
+  public List<TierElement> getUnTiered();
 
   public List<Tier> getTiers();
 
@@ -113,9 +113,9 @@ public interface TierListController {
 
   public String toString(TierStringFormat format);
 
-  public boolean telementExists(TierElement element);
+  public boolean tierElementExists(TierElement element);
 
-  public boolean telementExistsById(Long id);
+  public boolean tierElementExistsById(Long id);
 
   public boolean tierExists(Tier tier);
 }

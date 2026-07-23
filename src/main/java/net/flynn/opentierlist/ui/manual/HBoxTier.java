@@ -37,7 +37,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import net.flynn.opentierlist.controller.TierListController;
-import net.flynn.opentierlist.model.enums.TelementStatus;
+import net.flynn.opentierlist.model.enums.TieredStatus;
 import net.flynn.opentierlist.model.models.TierElement;
 import net.flynn.opentierlist.model.models.Tier;
 import net.flynn.opentierlist.persistence.ResourceHolder;
@@ -50,10 +50,10 @@ import net.flynn.opentierlist.persistence.ResourceHolder;
 public class HBoxTier extends HBox {
 
   // ----- panels -----//
-  private TextField tierNameLabel;
-  private FlowPaneElements elementsPane;
-  private Button editTierButton;
-  private ScrollPaneTiers parent;
+  private final TextField tierNameLabel;
+  private final FlowPaneElements tieredPane;
+  private final Button editTierButton;
+  private final ScrollPaneTiers parent;
 
   // ----- edit menu -----//
   ContextMenu contextMenu;
@@ -68,12 +68,11 @@ public class HBoxTier extends HBox {
   ColorPicker colorPicker;
   Button confirmColor;
 
-  private TierListController controller;
-  private Stage mainStage;
-  private Tier tier;
-  private BiConsumer<TierElement, TierElement> onDragDropped;
+  private final TierListController controller;
+  private final Stage mainStage;
+  private final Tier tier;
 
-  private String oldTextValue;
+    private String oldTextValue;
 
   public HBoxTier(ScrollPaneTiers parent, Stage mainStage, TierListController controller, Tier tier) {
     this.parent = parent;
@@ -84,35 +83,31 @@ public class HBoxTier extends HBox {
     this.editTierButton = new Button();
 
     // ----- TierElementsPane's on 'drag dropped' behaviour -----//
-    this.onDragDropped = (element, t) -> {
-      switch (element.status()) {
-        case TelementStatus.RANKED: {
-          Optional<Tier> potentialTargetTier = controller.getTierByElement(t);
-          if (potentialTargetTier.isPresent())
-            controller.moveTo(element, potentialTargetTier.get(), t);
-          break;
-        }
-        case TelementStatus.UNRANKED: {
-          Optional<Tier> potentialTargetTier = controller.getTierByElement(t);
-          if (potentialTargetTier.isPresent()) {
-            var targetTier = potentialTargetTier.get();
-            controller.rank(element, targetTier, targetTier.getElements().indexOf(t));
+    BiConsumer<TierElement, TierElement> onDragDropped = (element, t) -> {
+          switch (element.status()) {
+              case TieredStatus.TIERED: {
+                  Optional<Tier> potentialTargetTier = controller.getTierByElement(t);
+                  potentialTargetTier.ifPresent(value -> controller.moveTo(element, value, t));
+                  break;
+              }
+              case TieredStatus.UNTIERED: {
+                  Optional<Tier> potentialTargetTier = controller.getTierByElement(t);
+                  potentialTargetTier.ifPresent(targetTier -> controller.tier(element, targetTier, targetTier.getTiered().indexOf(t)));
+                  break;
+              }
+              default: {
+                  System.err.println("--- Unexpected error, aborting ---");
+                  System.exit(-1);
+              }
           }
-          break;
-        }
-        default: {
-          System.err.println("--- Unexpected error, aborting ---");
-          System.exit(-1);
-        }
-      }
-    };
+      };
 
-    this.elementsPane = new FlowPaneElements(parent, controller, tier.getElements(), Optional.of(tier), onDragDropped);
+    this.tieredPane = new FlowPaneElements(parent, controller, tier.getTiered(), Optional.of(tier), onDragDropped);
     this.setupPane();
   }
 
   private void setupPane() {
-    this.getChildren().addAll(tierNameLabel, elementsPane, editTierButton);
+    this.getChildren().addAll(tierNameLabel, tieredPane, editTierButton);
 
     // ----- settings -----//
     {
@@ -172,7 +167,7 @@ public class HBoxTier extends HBox {
     });
 
     delete.setOnAction(_ -> {
-      tier.getElements().forEach(controller::unrank);
+      tier.getTiered().forEach(controller::unTier);
 
       controller.removeTier(tier);
       parent.updateTierList();
@@ -199,7 +194,7 @@ public class HBoxTier extends HBox {
     });
 
     confirmColor.setOnAction(_ -> {
-      var chosenColor = Optional.of(colorPicker.getValue());
+      var chosenColor = Optional.ofNullable(colorPicker.getValue());
 
       if (chosenColor.isEmpty())
         return;
@@ -285,11 +280,11 @@ public class HBoxTier extends HBox {
     // ----- define transfer mode -----//
     Dragboard dragBoard = ((TextField) event.getSource()).startDragAndDrop(TransferMode.MOVE);
 
-    // ----- put Text on dragboard -----//
+    // ----- put Text on drag board -----//
     var content = new ClipboardContent();
     String sourceId = Integer.valueOf(tier.hashCode()).toString();
 
-    content.putString(sourceId.toString());
+    content.putString(sourceId);
     dragBoard.setContent(content);
     event.consume();
   }
@@ -329,7 +324,7 @@ public class HBoxTier extends HBox {
   }
 
   private void setTierNameLabelBackground() {
-    var backgroundColor = Paint.valueOf(tier.getColor().toString());
+    var backgroundColor = Paint.valueOf(tier.getColor());
     var nameLabelBackground = Background.fill(backgroundColor);
     tierNameLabel.setBackground(nameLabelBackground);
   }

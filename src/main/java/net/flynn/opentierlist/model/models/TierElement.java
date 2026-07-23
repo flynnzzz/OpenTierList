@@ -9,15 +9,14 @@ import net.flynn.opentierlist.model.enums.*;
 
 /**
  * Class representing a single {@link Tier} entry.
- * 
- * Stands for 'Tier element'.
- * 
+ * <p>
+ *
  * @author flynnz
  * @version 2.75
  * @since v0.0.0
  */
 public class TierElement {
-  private TelementStatus status;
+  private TieredStatus status;
   private String name;
   private ImagePath imagePath;
 
@@ -28,7 +27,7 @@ public class TierElement {
 
   // ----- Ctors -----//
 
-  private TierElement(TelementStatus status, String name, ImagePath imagePath) throws IllegalArgumentException {
+  private TierElement(TieredStatus status, String name, ImagePath imagePath) throws IllegalArgumentException {
     Objects.requireNonNull(name);
     Objects.requireNonNull(imagePath);
     if (name.isBlank())
@@ -41,7 +40,7 @@ public class TierElement {
   }
 
   public TierElement(String name, ImagePath imagePath) throws IllegalArgumentException {
-    this(TelementStatus.UNRANKED, name, imagePath);
+    this(TieredStatus.UNTIERED, name, imagePath);
   }
 
   /**
@@ -53,7 +52,7 @@ public class TierElement {
    * 
    * @throws IllegalArgumentException if either name or image path are blank
    */
-  public TierElement(TelementStatus status, String name, String imagePath)
+  public TierElement(TieredStatus status, String name, String imagePath)
       throws IllegalArgumentException, FileNotFoundException {
     if (imagePath.isBlank())
       throw new IllegalArgumentException();
@@ -69,7 +68,7 @@ public class TierElement {
    * @throws IllegalArgumentException if either name or path are blank
    */
   public TierElement(String name, String imagePath) throws IllegalArgumentException, FileNotFoundException {
-    this(TelementStatus.UNRANKED, name, imagePath);
+    this(TieredStatus.UNTIERED, name, imagePath);
   }
 
   /**
@@ -80,7 +79,7 @@ public class TierElement {
    * @throws IllegalArgumentException if name is blank
    */
   public TierElement(String name) throws IllegalArgumentException, FileNotFoundException {
-    this(TelementStatus.UNRANKED, name, ImagePath.defaultResource());
+    this(TieredStatus.UNTIERED, name, ImagePath.defaultResource());
   }
 
   /**
@@ -92,12 +91,12 @@ public class TierElement {
 
   // ----- setters and getters -----//
 
-  public TelementStatus status() {
+  public TieredStatus status() {
     return status;
   }
 
   @JsonIgnore
-  public boolean isRanked() {
+  public boolean isTiered() {
     return status.value();
   }
 
@@ -106,7 +105,7 @@ public class TierElement {
    * 
    * @param status to change to
    */
-  public void changeTo(TelementStatus status) {
+  public void changeTo(TieredStatus status) {
     Objects.requireNonNull(status);
     this.status = status;
   }
@@ -177,7 +176,7 @@ public class TierElement {
    * 
    * Format COMPACT:
    * "name".
-   * 
+   * <p>
    * Format EXTENDED:
    * "name\n
    * status\n
@@ -193,7 +192,6 @@ public class TierElement {
           + status + System.lineSeparator()
           + imagePath.getUri();
       case TierStringFormat.COMPACT -> res = getName();
-      default -> res = getName();
     }
     return res;
   }

@@ -10,8 +10,7 @@ public class UISettings {
 	public final static int DEFAULT_BAR_WIDTH = 9 * DEFAULT_CELL_SIZE;
 	public final static int DEFAULT_BAR_MAX_HEIGHT = 4 * DEFAULT_CELL_SIZE;
 	public final static int DEFAULT_BAR_MIN_HEIGHT = DEFAULT_CELL_SIZE + 2;
-	public final static int DEFAULT_MAINPANE_LEFT_PADDING = DEFAULT_CELL_SIZE;
-	public final static int DEFAULT_DRAG_ENTERED_PADDING = 8;
+    public final static int DEFAULT_DRAG_ENTERED_PADDING = 8;
 	public final static double DEFAULT_EXPANDED_IMAGE_SIZE = DEFAULT_CELL_SIZE * 1.2;
 	
 	// ----- colors -----//
@@ -24,7 +23,7 @@ public class UISettings {
 	// ----- unranked -----//
 
 	public final static int DEFAULT_UNRANKED_PANE_MAX_HEIGHT = 3 * DEFAULT_CELL_SIZE;
-	public final static int DEFAULT_UNRANKED_PANE_MAX_WIDHT = 2 * DEFAULT_CELL_SIZE;
+	public final static int DEFAULT_UNRANKED_PANE_MAX_WIDTH = 2 * DEFAULT_CELL_SIZE;
 	public final static int DEFAULT_UNRANKED_PADDING_TOP = 20;
 	public final static int DEFAULT_UNRANKED_PADDING_RIGHT = 20;
 	public final static int DEFAULT_UNRANKED_PADDING_BOTTOM = 20;

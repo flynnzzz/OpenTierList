@@ -18,7 +18,7 @@ import net.flynn.opentierlist.persistence.ResourceHolder;
  * @since v1.7.0
  */
 public class ImagePath {
-  private URI uri;
+  private final URI uri;
 
   private static final String DEFAULT_IMAGE_RESOURCE = ResourceHolder.getDefaultTelementIcon();
 
@@ -63,7 +63,7 @@ public class ImagePath {
 
     Path realPath = jarPath.resolve(tail).resolve(path).normalize();
 
-    if (path != null && Files.exists(realPath)) {
+    if (Files.exists(realPath)) {
       return new ImagePath(realPath.toUri());
     }
     return defaultResource();

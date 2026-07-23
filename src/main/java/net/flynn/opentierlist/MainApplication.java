@@ -6,18 +6,17 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import net.flynn.opentierlist.controller.*;
+import net.flynn.opentierlist.model.models.TierElement;
 import net.flynn.opentierlist.model.models.TierList;
 import net.flynn.opentierlist.persistence.ResourceHolder;
 import net.flynn.opentierlist.ui.manual.MainPane;
 
 public class MainApplication extends Application {
-  private final static String DEFAULT_TIERLIST_NAME = TierList.DEFAULT_TIERLIST_NAME;
-
   @Override
   public void start(Stage stage) throws Exception {
 
     var controller = TierListController.ofDefaultTiers();
-    stage.setTitle(DEFAULT_TIERLIST_NAME);
+    stage.setTitle(TierList.DEFAULT_TIERLIST_NAME);
 
     BorderPane root = new MainPane(controller, stage);
     Scene scene = new Scene(root);
@@ -25,10 +24,6 @@ public class MainApplication extends Application {
     stage.setWidth(1100);
 
     var imageResource = ResourceHolder.getEditButtonIcon();
-    if (imageResource == null) {
-      System.err.println("--- Icon resource not found, exiting ---");
-      System.exit(-1);
-    }
 
     stage.getIcons().add(new Image(imageResource));
     stage.setScene(scene);
