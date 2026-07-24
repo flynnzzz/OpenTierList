@@ -87,7 +87,7 @@ public class HBoxTier extends HBox {
           switch (element.status()) {
               case TieredStatus.TIERED: {
                   Optional<Tier> potentialTargetTier = controller.getTierByElement(t);
-                  potentialTargetTier.ifPresent(value -> controller.moveTo(element, value, t));
+                  potentialTargetTier.ifPresent(value -> controller.moveTiered(element, value, t));
                   break;
               }
               case TieredStatus.UNTIERED: {
@@ -102,7 +102,7 @@ public class HBoxTier extends HBox {
           }
       };
 
-    this.tieredPane = new FlowPaneElements(parent, controller, tier.getTiered(), Optional.of(tier), onDragDropped);
+    this.tieredPane = new FlowPaneElements(parent, controller, tier.getTiered(), tier, onDragDropped);
     this.setupPane();
   }
 
@@ -162,9 +162,7 @@ public class HBoxTier extends HBox {
     tierNameLabel.setTooltip(tooltip);
 
     // ----- edit button -----//
-    editTierButton.setOnAction(_ -> {
-      contextMenu.show(editTierButton, Side.BOTTOM, 0, 0);
-    });
+    editTierButton.setOnAction(_ -> contextMenu.show(editTierButton, Side.BOTTOM, 0, 0));
 
     delete.setOnAction(_ -> {
       tier.getTiered().forEach(controller::unTier);
@@ -272,6 +270,12 @@ public class HBoxTier extends HBox {
       event.consume();
     });
 
+    this.tierNameLabel.setOnDragDone(event -> {
+        if (event.getTransferMode() == TransferMode.MOVE)
+            parent.updateAllTiers();
+        event.consume();
+    });
+
     this.tierNameLabel.setOnDragDropped(this::handleDragDropped);
   }
 
@@ -305,7 +309,7 @@ public class HBoxTier extends HBox {
       }
 
       if (potentialTarget instanceof HBoxTier targetPane) {
-        Tier target = (Tier) targetPane.getTier();
+        Tier target = targetPane.getTier();
         controller.moveTierTo(source.get(), target);
       }
     }
@@ -331,9 +335,5 @@ public class HBoxTier extends HBox {
 
   private Tier getTier() {
     return this.tier;
-  }
-
-  public TextField getTextField() {
-    return this.tierNameLabel;
   }
 }

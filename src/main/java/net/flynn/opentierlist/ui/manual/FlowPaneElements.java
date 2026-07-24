@@ -36,8 +36,8 @@ import net.flynn.opentierlist.model.models.TierElement;
 import net.flynn.opentierlist.model.models.Tier;
 
 /**
- * 
- * @version 3.00
+ *
+ * @version 3.40
  * @since v1.2.5
  */
 public class FlowPaneElements extends FlowPane {
@@ -45,23 +45,25 @@ public class FlowPaneElements extends FlowPane {
   private final ScrollPaneTiers grandparent;
   private ContextMenu imageContextMenu;
   private MenuItem deleteImageMenu, unTierImageMenu;
+  private ObservableList<ImageView> images;
 
   // ---- cache -----//
   private static Map<Long, Image> imageCache;
 
   private final TierListController controller;
-  private final Optional<Tier> potentialTier;
-  private List<TierElement> elements;
-  private ObservableList<ImageView> images;
+  private final Tier tier;
   private final BiConsumer<TierElement, TierElement> onDragDropped;
+  private List<TierElement> elements;
 
-  public FlowPaneElements(ScrollPaneTiers grandparent, TierListController controller, List<TierElement> elements,
-      Optional<Tier> tier, BiConsumer<TierElement, TierElement> onDragDropped) {
+  public FlowPaneElements(ScrollPaneTiers grandparent, TierListController controller, List<TierElement> elements, Tier tier, BiConsumer<TierElement, TierElement> onDragDropped) {
     this.controller = controller;
-    this.potentialTier = tier;
     this.elements = new ArrayList<>(elements);
+
     this.grandparent = grandparent;
     this.onDragDropped = onDragDropped;
+
+    this.tier = tier;
+
     this.images = loadImages();
     if (imageCache == null) {
       System.err.println("--- Instantiating new image cache ---");
@@ -70,19 +72,15 @@ public class FlowPaneElements extends FlowPane {
     this.setupPane();
   }
 
-  public FlowPaneElements(ScrollPaneTiers grandparent, TierListController controller, List<TierElement> elements,
-      BiConsumer<TierElement, TierElement> onDragDropped) {
-    this(grandparent, controller, elements, Optional.empty(), onDragDropped);
-  }
-
-  public Optional<Tier> getPotentialTier() {
-    return this.potentialTier;
+  public FlowPaneElements(ScrollPaneTiers grandparent, TierListController controller, List<TierElement> elements, BiConsumer<TierElement, TierElement> onDragDropped) {
+      this(grandparent, controller, elements, null, onDragDropped);
   }
 
   private void setupImage(ImageView imageViewer) {
     // ----- settings -----//
     imageViewer.setFitHeight(UISettings.DEFAULT_CELL_SIZE);
     imageViewer.setFitWidth(UISettings.DEFAULT_CELL_SIZE);
+
 
     imageContextMenu = new ContextMenu();
     deleteImageMenu = new MenuItem("Delete");
@@ -123,6 +121,7 @@ public class FlowPaneElements extends FlowPane {
       if (event.getTarget() instanceof ImageView target
           && event.getGestureSource() instanceof ImageView source
           && event.getDragboard().hasImage()) {
+
         target.setStyle(UISettings.IMAGE_SOURCE_EFFECT);
         source.setStyle(UISettings.IMAGE_TARGET_EFFECT);
 
@@ -137,16 +136,15 @@ public class FlowPaneElements extends FlowPane {
       event.consume();
     });
 
-    // TODO: Eliminate 'shakiness' when moving element in and out of tiers
-    // TODO: Fix ui 'this.setPadding(Insets.EMPTY)' bug.
-    // Reminder: updateTargetPadding so create auxiliary function
     imageViewer.setOnDragExited(event -> {
-      if (event.getTarget() instanceof ImageView target && event.getGestureSource() instanceof ImageView source) {
+      if (event.getTarget() instanceof ImageView target && event.getSource() instanceof ImageView source) {
         source.setStyle("-fx-effect: null;");
         target.setStyle("-fx-effect: null;");
 
         imageViewer.setFitHeight(UISettings.DEFAULT_CELL_SIZE);
-        this.setPadding(new Insets(UISettings.DEFAULT_DRAG_ENTERED_PADDING));
+
+        if (!event.isDropCompleted())
+            this.setPadding(new Insets(UISettings.DEFAULT_DRAG_ENTERED_PADDING));
       }
       event.consume();
     });
@@ -163,9 +161,9 @@ public class FlowPaneElements extends FlowPane {
   }
 
   public void updateImages() {
-    elements = potentialTier
-            .map(tier -> new ArrayList<>(tier.getTiered()))
-            .orElseGet(() -> new ArrayList<>(controller.getUnTiered()));
+    elements = tier != null ?
+            new ArrayList<>(tier.getTiered()) :
+            new ArrayList<>(controller.getUnTiered());
 
     images.clear();
 
@@ -201,6 +199,7 @@ public class FlowPaneElements extends FlowPane {
 
       var imageViewer = new ImageView(img);
       imageViewer.setUserData(element);
+
       setupImage(imageViewer);
       images.add(imageViewer);
     });
@@ -309,6 +308,7 @@ public class FlowPaneElements extends FlowPane {
 
             onDragDropped.accept(potentialSource.get(), targetElement);
             updateImages();
+
             success = true;
         }
     }
@@ -321,7 +321,7 @@ public class FlowPaneElements extends FlowPane {
 
     Dragboard dragBoard = event.getDragboard();
     if (dragBoard.hasImage() && dragBoard.hasString()
-        && event.getTarget() instanceof FlowPaneElements targetElementPane) {
+        && event.getTarget() instanceof FlowPaneElements) {
 
       String elementHash = dragBoard.getString();
       Optional<TierElement> potentialSource = controller.getElementByHash(elementHash);
@@ -330,37 +330,32 @@ public class FlowPaneElements extends FlowPane {
         return;
       }
 
+      this.setPadding(Insets.EMPTY);
       var source = potentialSource.get();
 
-      this.setPadding(Insets.EMPTY);
-
-      if (targetElementPane.getPotentialTier().isPresent())
-          updateModel(source, targetElementPane.getPotentialTier().get());
-      else
-          updateModel(source, null);
+      updateModel(source);
 
       updateImages();
+
       success = true;
     }
     event.setDropCompleted(success);
     event.consume();
   }
 
-  // TODO: refactor -> Separate into two methods
-  private void updateModel(TierElement sourceElement, Tier inTier) {
-    var potentialTier = Optional.ofNullable(inTier);
+  private void updateModel(TierElement sourceElement) {
     var status = sourceElement.status();
     switch (status) {
       case TieredStatus.TIERED: {
-        if (potentialTier.isPresent())
-          controller.moveTo(sourceElement, potentialTier.get());
+        if (tier != null)
+          controller.moveTiered(sourceElement, tier);
         else
           controller.unTier(sourceElement);
       }
         break;
       case TieredStatus.UNTIERED: {
-        if (potentialTier.isPresent())
-          controller.tier(sourceElement, potentialTier.get());
+        if (tier != null)
+          controller.tier(sourceElement, tier);
         else
           controller.moveUnTiered(sourceElement, controller.getUnTiered().getLast());
       }
@@ -381,5 +376,4 @@ public class FlowPaneElements extends FlowPane {
             BorderWidths.DEFAULT));
     this.setBorder(tierElementsPaneBorder);
   }
-
 }

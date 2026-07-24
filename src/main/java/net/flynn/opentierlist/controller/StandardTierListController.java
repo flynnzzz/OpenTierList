@@ -199,7 +199,7 @@ public class StandardTierListController implements TierListController {
   // ------------------------------ moving ------------------------------//
 
   @Override
-  public void moveTo(TierElement element, Tier toTier) {
+  public void moveTiered(TierElement element, Tier toTier) {
     try {
       tierList.moveToTier(element, toTier);
     } catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) {
@@ -208,7 +208,7 @@ public class StandardTierListController implements TierListController {
   }
 
   @Override
-  public void moveTo(TierElement element, Tier toTier, TierElement toElement) {
+  public void moveTiered(TierElement element, Tier toTier, TierElement toElement) {
     try {
       int toIndex = toTier.getTiered().indexOf(toElement);
       tierList.moveToTier(element, toTier, toIndex);
@@ -218,7 +218,7 @@ public class StandardTierListController implements TierListController {
   }
 
   @Override
-  public void moveTo(TierElement element, Tier toTier, int toIndex) {
+  public void moveTiered(TierElement element, Tier toTier, int toIndex) {
     try {
       tierList.moveToTier(element, toTier, toIndex);
     } catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) {

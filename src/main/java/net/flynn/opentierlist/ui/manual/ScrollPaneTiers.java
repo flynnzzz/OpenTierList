@@ -2,9 +2,9 @@ package net.flynn.opentierlist.ui.manual;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.input.TransferMode;
 import javafx.scene.layout.VBox;
 import net.flynn.opentierlist.controller.TierListController;
 
@@ -30,17 +30,7 @@ public class ScrollPaneTiers extends ScrollPane {
   }
 
   private void loadTiers() {
-    controller.getTiers().forEach(tier -> {
-      var tierPane = new HBoxTier(this, parent.getStage(), controller, tier);
-
-      tierPane.getTextField().setOnDragDone(event -> {
-        if (event.getTransferMode() == TransferMode.MOVE)
-          updateAllTiers();
-        event.consume();
-      });
-
-      tierBoxList.add(tierPane);
-    });
+    controller.getTiers().forEach(tier -> tierBoxList.add(new HBoxTier(this, parent.getStage(), controller, tier)));
   }
 
   private void setupPane() {
@@ -50,23 +40,14 @@ public class ScrollPaneTiers extends ScrollPane {
     this.setContent(tiersVBox);
     this.setFitToWidth(true);
     tiersVBox.setAlignment(Pos.CENTER);
+    tiersVBox.setPadding(new Insets(UISettings.DEFAULT_TIERS_VBOX_PADDING));
   }
 
   public void updateAllTiers() {
     tiersVBox.getChildren().clear();
     tierBoxList.clear();
 
-    controller.getTiers().forEach(tier -> {
-
-      HBoxTier tierBox;
-      tierBox = new HBoxTier(this, parent.getStage(), controller, tier);
-      tierBox.getTextField().setOnDragDone(event -> {
-        if (event.getTransferMode() == TransferMode.MOVE)
-          updateAllTiers();
-        event.consume();
-      });
-      tierBoxList.addAll(tierBox);
-    });
+    loadTiers();
 
     tiersVBox.getChildren().addAll(tierBoxList);
   }

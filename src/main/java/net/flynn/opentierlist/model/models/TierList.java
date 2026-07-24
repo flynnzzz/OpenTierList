@@ -82,14 +82,14 @@ public class TierList {
    * @throws IllegalArgumentException if name is blank
    */
   public TierList(String name) throws IllegalArgumentException {
-    this(name, new ArrayList<TierElement>());
+    this(name, new ArrayList<>());
   }
 
   /**
    * Constructs an empty {@link TierList} instance.
    */
   public TierList() {
-    this(new ArrayList<TierElement>());
+    this(new ArrayList<>());
   }
 
   // ----- ranking -----//
@@ -168,7 +168,7 @@ public class TierList {
       throws TierNotFoundException, TierElementNotFoundException {
     removeUnTiered(element);
 
-    boolean added = addToTier(toTier, element);
+    addToTier(toTier, element);
 
     toTier.moveTo(element, insertIndex);
   }
@@ -510,11 +510,11 @@ public class TierList {
 
     var matching = tiers.stream()
         .filter(tier -> tier.contains(element))
-        .toList();
+        .findFirst();
 
-    if (matching.size() != 1)
+    if (matching.isEmpty())
       throw new TierElementNotFoundException();
-    return matching.getFirst();
+    return matching.get();
   }
 
   private int findTierIndexByElement(TierElement element) throws TierElementNotFoundException {
@@ -564,9 +564,9 @@ public class TierList {
 
   public List<TierElement> getUnTiered() {
     return List.copyOf(unTiered);
-  };
+  }
 
-  public List<Tier> getTiers() {
+    public List<Tier> getTiers() {
     return List.copyOf(tiers);
   }
 
