@@ -6,7 +6,6 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import net.flynn.opentierlist.controller.*;
-import net.flynn.opentierlist.model.models.TierElement;
 import net.flynn.opentierlist.model.models.TierList;
 import net.flynn.opentierlist.persistence.ResourceHolder;
 import net.flynn.opentierlist.ui.manual.MainPane;
