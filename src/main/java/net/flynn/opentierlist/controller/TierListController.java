@@ -1,5 +1,6 @@
 package net.flynn.opentierlist.controller;
 
+import java.io.File;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Objects;
@@ -7,8 +8,8 @@ import java.util.Optional;
 
 import net.flynn.opentierlist.model.enums.DefaultTier;
 import net.flynn.opentierlist.model.enums.TierStringFormat;
-import net.flynn.opentierlist.model.models.TierElement;
 import net.flynn.opentierlist.model.models.Tier;
+import net.flynn.opentierlist.model.models.TierElement;
 import net.flynn.opentierlist.model.models.TierList;
 
 /**
@@ -83,6 +84,8 @@ public interface TierListController {
 
   // ----- setters and getters ------//
 
+  void setTierList(TierList tierList);
+
   void setTierListName(String name);
 
   void setTierName(Tier tier, String name);
@@ -106,6 +109,8 @@ public interface TierListController {
   void saveTierListTo(Path path);
 
   void saveTierListAs(String name);
+
+  Optional<TierList> loadTierList(File file);
 
   // ----- misc ------//
 

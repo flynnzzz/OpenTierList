@@ -25,7 +25,7 @@ public class ScrollPaneUnTiered extends ScrollPane {
 
     // ----- TierElementsPane's on 'drag dropped' behaviour -----//
     BiConsumer<TierElement, TierElement> onDragDropped = (TierElement s, TierElement t) -> {
-      switch (s.status()) {
+      switch (s.getStatus()) {
         case TieredStatus.UNTIERED: {
           this.controller.moveUnTiered(s, t);
           break;

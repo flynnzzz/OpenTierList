@@ -3,9 +3,15 @@ package net.flynn.opentierlist.model.models;
 import java.io.FileNotFoundException;
 import java.util.Objects;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-import net.flynn.opentierlist.model.enums.*;
+import net.flynn.opentierlist.model.enums.TierStringFormat;
+import java.net.URI;
+import java.net.URISyntaxException;
+
+import net.flynn.opentierlist.model.enums.TieredStatus;
 
 /**
  * Class representing a single {@link Tier} entry.
@@ -21,7 +27,7 @@ public class TierElement {
   private ImagePath imagePath;
 
   private static long NEXT_ID = 1;
-  private final long id;
+  private long id;
 
   public static final String DEFAULT_ELEMENT_NAME = "element";
 
@@ -89,9 +95,25 @@ public class TierElement {
     this(DEFAULT_ELEMENT_NAME);
   }
 
+  @JsonCreator
+  public TierElement(
+      @JsonProperty("name") String name,
+      @JsonProperty("status") TieredStatus status,
+      @JsonProperty("id") long id,
+      @JsonProperty("imageUri") String imageUri) {
+    this.name = name;
+    this.status = status;
+    this.id = id;
+    try {
+      this.imagePath = ImagePath.of(new URI(imageUri));
+    } catch (FileNotFoundException | URISyntaxException e) {
+      this.imagePath = ImagePath.defaultResource();
+    }
+  }
+
   // ----- setters and getters -----//
 
-  public TieredStatus status() {
+  public TieredStatus getStatus() {
     return status;
   }
 
@@ -119,10 +141,6 @@ public class TierElement {
 
   public String getName() {
     return name;
-  }
-
-  public void setImageUrl(String imageUri) throws FileNotFoundException {
-    this.imagePath = ImagePath.of(imageUri);
   }
 
   public String getImageUri() {

@@ -65,6 +65,8 @@ public class HBoxTier extends HBox {
   Stage colorStage;
   BorderPane colorPane;
   Scene colorMenu;
+
+  // TODO: find out why cpu usage skyrockets when color changes (?)
   ColorPicker colorPicker;
   Button confirmColor;
 
@@ -72,7 +74,7 @@ public class HBoxTier extends HBox {
   private final Stage mainStage;
   private final Tier tier;
 
-    private String oldTextValue;
+  private String oldTextValue;
 
   public HBoxTier(ScrollPaneTiers parent, Stage mainStage, TierListController controller, Tier tier) {
     this.parent = parent;
@@ -84,23 +86,24 @@ public class HBoxTier extends HBox {
 
     // ----- TierElementsPane's on 'drag dropped' behaviour -----//
     BiConsumer<TierElement, TierElement> onDragDropped = (element, t) -> {
-          switch (element.status()) {
-              case TieredStatus.TIERED: {
-                  Optional<Tier> potentialTargetTier = controller.getTierByElement(t);
-                  potentialTargetTier.ifPresent(value -> controller.moveTiered(element, value, t));
-                  break;
-              }
-              case TieredStatus.UNTIERED: {
-                  Optional<Tier> potentialTargetTier = controller.getTierByElement(t);
-                  potentialTargetTier.ifPresent(targetTier -> controller.tier(element, targetTier, targetTier.getTiered().indexOf(t)));
-                  break;
-              }
-              default: {
-                  System.err.println("--- Unexpected error, aborting ---");
-                  System.exit(-1);
-              }
-          }
-      };
+      switch (element.getStatus()) {
+        case TieredStatus.TIERED: {
+          Optional<Tier> potentialTargetTier = controller.getTierByElement(t);
+          potentialTargetTier.ifPresent(value -> controller.moveTiered(element, value, t));
+          break;
+        }
+        case TieredStatus.UNTIERED: {
+          Optional<Tier> potentialTargetTier = controller.getTierByElement(t);
+          potentialTargetTier
+              .ifPresent(targetTier -> controller.tier(element, targetTier, targetTier.getTiered().indexOf(t)));
+          break;
+        }
+        default: {
+          System.err.println("--- Unexpected error, aborting ---");
+          System.exit(-1);
+        }
+      }
+    };
 
     this.tieredPane = new FlowPaneElements(parent, controller, tier.getTiered(), tier, onDragDropped);
     this.setupPane();
@@ -271,9 +274,9 @@ public class HBoxTier extends HBox {
     });
 
     this.tierNameLabel.setOnDragDone(event -> {
-        if (event.getTransferMode() == TransferMode.MOVE)
-            parent.updateAllTiers();
-        event.consume();
+      if (event.getTransferMode() == TransferMode.MOVE)
+        parent.updateAllTiers();
+      event.consume();
     });
 
     this.tierNameLabel.setOnDragDropped(this::handleDragDropped);

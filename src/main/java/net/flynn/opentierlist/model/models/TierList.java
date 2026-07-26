@@ -8,7 +8,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-import javafx.scene.paint.Color;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * A class representing the concept of a tier list
@@ -92,6 +93,14 @@ public class TierList {
     this(new ArrayList<>());
   }
 
+  @JsonCreator
+  public TierList(
+      @JsonProperty("tiers") List<Tier> tiers,
+      @JsonProperty("unTiered") List<TierElement> unTiered) {
+    this.tiers = tiers;
+    this.unTiered = unTiered;
+  }
+
   // ----- ranking -----//
 
   /**
@@ -99,7 +108,7 @@ public class TierList {
    * 
    * @param element     element to rank
    * @param toTierIndex tier to rank to
-   * @throws TierNotFoundException if tier doesn't exist
+   * @throws TierNotFoundException        if tier doesn't exist
    * @throws TierElementNotFoundException if tier element doesn't exist
    */
   public void tier(TierElement element, int toTierIndex) throws TierNotFoundException, TierElementNotFoundException {
@@ -117,7 +126,7 @@ public class TierList {
    */
   public void tier(TierElement element, Tier toTier) throws TierNotFoundException, TierElementNotFoundException {
     removeUnTiered(element);
-      addToTier(toTier, element);
+    addToTier(toTier, element);
   }
 
   /**
@@ -134,7 +143,7 @@ public class TierList {
 
     addUnTiered(element);
     element.changeTo(UNTIERED);
-      removeFromTier(fromTier, element);
+    removeFromTier(fromTier, element);
   }
 
   /**
@@ -194,7 +203,7 @@ public class TierList {
   // ----- editing -----//
 
   public void addTier(Tier tier) {
-      tiers.add(tier);
+    tiers.add(tier);
   }
 
   public void addUnTiered(TierElement element) {
@@ -212,7 +221,7 @@ public class TierList {
     verifyTierExistence(tierIndex);
 
     element.changeTo(TIERED);
-      tiers.get(tierIndex).add(element);
+    tiers.get(tierIndex).add(element);
   }
 
   public boolean addToTier(Tier tier, TierElement element) throws TierNotFoundException {
@@ -234,7 +243,7 @@ public class TierList {
 
     verifyTierExistence(tiers.indexOf(tier));
 
-      tiers.remove(tier);
+    tiers.remove(tier);
   }
 
   public void removeUnTiered(TierElement element) throws TierElementNotFoundException {
@@ -340,7 +349,7 @@ public class TierList {
    * 
    * @param tier tier to search the index for
    * @return the tier's index
-   * @throws TierNotFoundException        if tier doesn't exist
+   * @throws TierNotFoundException if tier doesn't exist
    */
   public int indexOf(Tier tier) throws TierNotFoundException {
     return verifyTierExistence(tiers.indexOf(tier));
@@ -383,7 +392,7 @@ public class TierList {
     verifyTierExistence(toTier);
 
     if (findTierByElement(element).remove(element)) {
-        toTier.add(element);
+      toTier.add(element);
     }
   }
 
@@ -482,8 +491,10 @@ public class TierList {
     }
   }
 
-  private int verifyElementExistence(TierElement element, List<TierElement> inList) throws TierElementNotFoundException {
-    var exception = new TierElementNotFoundException("Element \"" + element + "\" not found in list \"" + inList + "\"");
+  private int verifyElementExistence(TierElement element, List<TierElement> inList)
+      throws TierElementNotFoundException {
+    var exception = new TierElementNotFoundException(
+        "Element \"" + element + "\" not found in list \"" + inList + "\"");
     try {
       int elementIndex = inList.indexOf(element);
       if (elementIndex == -1)
@@ -532,10 +543,10 @@ public class TierList {
 
   public void setTierName(int tierIndex, String name) {
     var oldColor = tiers.get(tierIndex).getColor();
-    setTierHeader(tierIndex, new TierHeader(name, Color.valueOf(oldColor)));
+    setTierHeader(tierIndex, new TierHeader(name, oldColor));
   }
 
-  public void setTierColor(int tierIndex, Color color) {
+  public void setTierColor(int tierIndex, String color) {
     var oldName = tiers.get(tierIndex).getName();
     setTierHeader(tierIndex, new TierHeader(oldName, color));
   }
@@ -566,7 +577,7 @@ public class TierList {
     return List.copyOf(unTiered);
   }
 
-    public List<Tier> getTiers() {
+  public List<Tier> getTiers() {
     return List.copyOf(tiers);
   }
 
@@ -585,7 +596,7 @@ public class TierList {
     if (!(obj instanceof TierList other)) {
       return false;
     }
-      return Objects.equals(tiers, other.tiers) && Objects.equals(name, other.name)
+    return Objects.equals(tiers, other.tiers) && Objects.equals(name, other.name)
         && Objects.equals(unTiered, other.unTiered);
   }
 

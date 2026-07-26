@@ -1,14 +1,18 @@
 package net.flynn.opentierlist.controller;
 
+import java.io.File;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import net.flynn.opentierlist.model.enums.*;
-import net.flynn.opentierlist.model.exceptions.*;
-import net.flynn.opentierlist.model.models.*;
+import net.flynn.opentierlist.model.enums.TierStringFormat;
+import net.flynn.opentierlist.model.exceptions.TierElementNotFoundException;
+import net.flynn.opentierlist.model.exceptions.TierNotFoundException;
+import net.flynn.opentierlist.model.models.Tier;
+import net.flynn.opentierlist.model.models.TierElement;
+import net.flynn.opentierlist.model.models.TierList;
 import net.flynn.opentierlist.persistence.DataHandler;
 
 /**
@@ -20,7 +24,7 @@ import net.flynn.opentierlist.persistence.DataHandler;
  */
 public class StandardTierListController implements TierListController {
 
-  private final TierList tierList;
+  private TierList tierList;
 
   private final DataHandler dataHandler;
   private String fileName;
@@ -37,7 +41,7 @@ public class StandardTierListController implements TierListController {
    */
   public StandardTierListController(TierList tierList) {
     this.tierList = tierList;
-    this.fileName = getTierListName() + ".json";
+    this.fileName = getTierListName() + ".tson";
     this.savePath = Path.of(System.getProperty("user.home"), "Documents").resolve(fileName);
     this.dataHandler = new DataHandler();
   }
@@ -92,6 +96,15 @@ public class StandardTierListController implements TierListController {
   }
 
   // ------------------------------ editing ------------------------------//
+
+  @Override
+  public void setTierList(TierList tierList) {
+    try {
+      this.tierList = tierList;
+    } catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) {
+      ex.printStackTrace();
+    }
+  }
 
   @Override
   public void setTierListName(String name) {
@@ -273,6 +286,8 @@ public class StandardTierListController implements TierListController {
   @Override
   public void saveTierList() {
     try {
+      fileName = getTierListName() + ".tson";
+      savePath = Path.of(System.getProperty("user.home"), "Documents").resolve(fileName);
       dataHandler.save(savePath.toFile(), tierList);
     } catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) {
       ex.printStackTrace();
@@ -290,6 +305,11 @@ public class StandardTierListController implements TierListController {
     fileName = name;
     savePath = savePath.getParent().resolve(fileName);
     saveTierList();
+  }
+
+  @Override
+  public Optional<TierList> loadTierList(File file) {
+    return dataHandler.load(file);
   }
 
   // ------------------------------ misc ------------------------------//

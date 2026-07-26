@@ -7,6 +7,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import javafx.scene.paint.Color;
 
 /**
@@ -19,7 +22,7 @@ import javafx.scene.paint.Color;
 public class Tier {
 
   public static final String DEFAULT_TIER_NAME = "New Tier";
-  public static final Color DEFAULT_TIER_COLOR = Color.GRAY;
+  public static final String DEFAULT_TIER_COLOR = Color.GRAY.toString();
 
   private TierHeader header;
   private final List<TierElement> tiered;
@@ -43,12 +46,12 @@ public class Tier {
   /**
    * Constructs a new {@link Tier} object with the given parameters.
    * 
-   * @param name     tier name
-   * @param color    tier {@link Color}
+   * @param name   tier name
+   * @param color  tier {@link Color}
    * @param tiered list to associate to this tier
    * @throws IllegalArgumentException if the header's name is blank
    */
-  public Tier(String name, Color color, List<TierElement> tiered) {
+  public Tier(String name, String color, List<TierElement> tiered) {
     this(new TierHeader(name, color), tiered);
   }
 
@@ -59,7 +62,7 @@ public class Tier {
    * @param color tier {@link Color}
    * @throws IllegalArgumentException if name is blank
    */
-  public Tier(String name, Color color) {
+  public Tier(String name, String color) {
     this(new TierHeader(name, color), new ArrayList<TierElement>());
   }
 
@@ -78,6 +81,17 @@ public class Tier {
    */
   public Tier() {
     this(DEFAULT_TIER_NAME);
+  }
+
+  @JsonCreator
+  public Tier(
+      @JsonProperty("name") String name,
+      @JsonProperty("color") String color,
+      @JsonProperty("id") long id,
+      @JsonProperty("tiered") List<TierElement> tiered) {
+    setHeader(new TierHeader(name, color));
+    this.id = id;
+    this.tiered = tiered;
   }
 
   // ----- methods -----//
@@ -160,7 +174,7 @@ public class Tier {
     Objects.requireNonNull(color);
     if (color.isBlank())
       throw new IllegalArgumentException("--- Color string must not me blank ---");
-    setHeader(new TierHeader(getName(), Color.valueOf(color)));
+    setHeader(new TierHeader(getName(), color));
   }
 
   private void setHeader(TierHeader header) {
@@ -203,7 +217,7 @@ public class Tier {
     if (!(obj instanceof Tier other)) {
       return false;
     }
-      return Objects.equals(tiered, other.tiered)
+    return Objects.equals(tiered, other.tiered)
         && Objects.equals(header, other.header)
         && Objects.equals(id, other.id);
   }
@@ -248,8 +262,8 @@ public class Tier {
   }
 
   private String toStringCompact() {
-      return getHeader().name() + ":" + System.lineSeparator() +
-              toStringElements(getTiered());
+    return getHeader().name() + ":" + System.lineSeparator() +
+        toStringElements(getTiered());
   }
 
   private String toStringExtended() {

@@ -33,15 +33,22 @@ public class ImagePath {
     return defaultResource();
   }
 
-  public static ImagePath defaultResource() throws FileNotFoundException {
+  public static ImagePath of(URI uri) throws FileNotFoundException {
+
+    return ImagePath.of(new File(uri));
+
+  }
+
+  public static ImagePath defaultResource() {
     URL url = ImagePath.class.getResource(DEFAULT_IMAGE_RESOURCE);
     if (url == null)
       throw new IllegalStateException("Resource missing: " + DEFAULT_IMAGE_RESOURCE);
-
     try {
       return new ImagePath(url.toURI());
     } catch (URISyntaxException e) {
-      throw new FileNotFoundException();
+      System.err.println("--- Default resource not found, aborting ---");
+      System.exit(-1);
+      return null;
     }
   }
 
@@ -53,7 +60,6 @@ public class ImagePath {
     return Files.exists(Path.of(uri));
   }
 
-  // for testing only
   public static ImagePath of(String path) throws FileNotFoundException {
     Path jarPath = basePath();
     // to make it work in the IDE

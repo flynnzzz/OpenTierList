@@ -5,6 +5,9 @@ import java.io.FileNotFoundException;
 import java.net.URISyntaxException;
 import java.util.List;
 
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -29,35 +32,76 @@ import net.flynn.opentierlist.persistence.ResourceHolder;
  * @since v1.2.5
  */
 public class MainPane extends BorderPane {
-  // ----- panels -----//
-  private TextField titleLabel;
-  private ScrollPaneUnTiered unTieredPane;
-  private ScrollPaneTiers tiersPane;
-  private Button addTierButton, addElementButton;
-  private FileChooser fileChooser;
 
-  private final TierListController controller;
+  // ----- panels ----- //
+
+  private final TextField titleLabel;
+  private final ScrollPaneUnTiered unTieredPane;
+  private final ScrollPaneTiers tiersPane;
+  private final Button addTierButton, addElementButton;
+  private final FileChooser imageFileChooser, tierListFileChooser;
   private final Stage stage;
+
+  // ----- menu bar ----- //
+  private final MenuBar menuBar;
+  private final Menu fileMenu;
+  private final TierListController controller;
+
   private String oldTitle;
 
   public MainPane(TierListController controller, Stage stage) {
     this.controller = controller;
     this.stage = stage;
-    this.initPane();
+    this.titleLabel = new TextField(controller.getTierListName());
+    this.unTieredPane = new ScrollPaneUnTiered(this, controller);
+    this.tiersPane = new ScrollPaneTiers(this, controller);
+    this.addTierButton = new Button();
+    this.addElementButton = new Button();
+    this.menuBar = new MenuBar();
+    this.fileMenu = new Menu("File");
+    this.imageFileChooser = new FileChooser();
+    this.tierListFileChooser = new FileChooser();
+
+    initPane();
   }
 
   public void initPane() {
-    // ----- title -----//
-    titleLabel = new TextField(controller.getTierListName());
+    // ----- title ----- //
     titleLabel.setFocusTraversable(false);
 
-    // ----- file chooser -----//
-    fileChooser = new FileChooser();
-    fileChooser.setTitle("Select file");
-    fileChooser.getExtensionFilters().add(new ExtensionFilter("Image Files", "*.png", "*.jpg", "*.jpeg", "*.gif"));
+    // ----- file chooser ----- //
+    imageFileChooser.setTitle("Select file");
+    imageFileChooser.getExtensionFilters().add(new ExtensionFilter("Image Files", "*.png", "*.jpg", "*.jpeg", "*.gif"));
+
+    tierListFileChooser.setTitle("Load tier list");
+    tierListFileChooser.getExtensionFilters().add(new ExtensionFilter("Tier List json files", "*.tson"));
+
+    MenuItem menuSaveItem = new MenuItem("Save"), menuLoadItem = new MenuItem("Load");
+
+    menuSaveItem.setOnAction(_ -> controller.saveTierList());
+
+    menuLoadItem.setOnAction(_ -> {
+
+      File toParse = tierListFileChooser.showOpenDialog(stage);
+
+      if (toParse == null) {
+        System.err.println("--- No file selected ---");
+        return;
+      }
+
+      var parsedTier = controller.loadTierList(toParse);
+
+      if (parsedTier.isPresent()) {
+        controller.setTierList(parsedTier.get());
+        updateTierList();
+      }
+    });
+
+    fileMenu.getItems().addAll(menuSaveItem, menuLoadItem);
+    menuBar.getMenus().add(fileMenu);
+    setTop(menuBar);
 
     HBox titleBox = new HBox(titleLabel);
-    setTop(titleBox);
     titleBox.setPadding(new Insets(
         UISettings.DEFAULT_TITLE_PADDING_TOP,
         UISettings.DEFAULT_TITLE_PADDING_RIGHT,
@@ -66,9 +110,6 @@ public class MainPane extends BorderPane {
     titleBox.setAlignment(Pos.BASELINE_CENTER);
 
     // ----- buttons -----//
-    addTierButton = new Button();
-    addElementButton = new Button();
-
     addTierButton.setTooltip(new Tooltip("Add new Tier"));
     addElementButton.setTooltip(new Tooltip("Add new Element"));
 
@@ -102,13 +143,11 @@ public class MainPane extends BorderPane {
     buttonsHBox.setAlignment(Pos.BOTTOM_CENTER);
 
     // ----- tiers -----//
-    tiersPane = new ScrollPaneTiers(this, controller);
-    var centerBox = new VBox(tiersPane, buttonsHBox);
+    var centerBox = new VBox(titleBox, tiersPane, buttonsHBox);
     centerBox.setAlignment(Pos.CENTER);
     setCenter(centerBox);
 
     // ----- unranked -----//
-    unTieredPane = new ScrollPaneUnTiered(this, controller);
     HBox unrankedBox = new HBox(unTieredPane);
     unrankedBox.setAlignment(Pos.BASELINE_CENTER);
     setBottom(unrankedBox);
@@ -139,7 +178,7 @@ public class MainPane extends BorderPane {
     });
 
     addElementButton.setOnAction(_ -> {
-      List<File> files = fileChooser.showOpenMultipleDialog(stage);
+      List<File> files = imageFileChooser.showOpenMultipleDialog(stage);
       if (files == null || files.isEmpty()) {
         System.err.println("--- No file selected ---");
         return;

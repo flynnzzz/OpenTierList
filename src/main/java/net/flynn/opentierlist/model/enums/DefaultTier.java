@@ -9,20 +9,22 @@ import net.flynn.opentierlist.model.models.Tier;
  * @since v1.2.5
  */
 public enum DefaultTier {
-	// temporary colors
-    S(Color.ORANGERED),
-    A(Color.ORANGE),
-    B(Color.YELLOW),
-    C(Color.GREENYELLOW),
-    D(Color.LIGHTBLUE),
-    E(Color.ALICEBLUE),
-    F(Color.GRAY);
+  // temporary colors
+  S(Color.ORANGERED.toString()),
+  A(Color.ORANGE.toString()),
+  B(Color.YELLOW.toString()),
+  C(Color.GREENYELLOW.toString()),
+  D(Color.LIGHTBLUE.toString()),
+  E(Color.ALICEBLUE.toString()),
+  F(Color.GRAY.toString());
 
-    private final Tier value;
+  private final Tier value;
 
-    DefaultTier(Color color) {
-        this.value = new Tier(name(), color);
-    }
+  DefaultTier(String color) {
+    this.value = new Tier(name(), color);
+  }
 
-    public Tier value() { return value; }
+  public Tier value() {
+    return value;
+  }
 }

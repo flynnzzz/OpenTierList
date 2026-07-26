@@ -55,7 +55,8 @@ public class FlowPaneElements extends FlowPane {
   private final BiConsumer<TierElement, TierElement> onDragDropped;
   private List<TierElement> elements;
 
-  public FlowPaneElements(ScrollPaneTiers grandparent, TierListController controller, List<TierElement> elements, Tier tier, BiConsumer<TierElement, TierElement> onDragDropped) {
+  public FlowPaneElements(ScrollPaneTiers grandparent, TierListController controller, List<TierElement> elements,
+      Tier tier, BiConsumer<TierElement, TierElement> onDragDropped) {
     this.controller = controller;
     this.elements = new ArrayList<>(elements);
 
@@ -72,15 +73,15 @@ public class FlowPaneElements extends FlowPane {
     this.setupPane();
   }
 
-  public FlowPaneElements(ScrollPaneTiers grandparent, TierListController controller, List<TierElement> elements, BiConsumer<TierElement, TierElement> onDragDropped) {
-      this(grandparent, controller, elements, null, onDragDropped);
+  public FlowPaneElements(ScrollPaneTiers grandparent, TierListController controller, List<TierElement> elements,
+      BiConsumer<TierElement, TierElement> onDragDropped) {
+    this(grandparent, controller, elements, null, onDragDropped);
   }
 
   private void setupImage(ImageView imageViewer) {
     // ----- settings -----//
     imageViewer.setFitHeight(UISettings.DEFAULT_CELL_SIZE);
     imageViewer.setFitWidth(UISettings.DEFAULT_CELL_SIZE);
-
 
     imageContextMenu = new ContextMenu();
     deleteImageMenu = new MenuItem("Delete");
@@ -144,7 +145,7 @@ public class FlowPaneElements extends FlowPane {
         imageViewer.setFitHeight(UISettings.DEFAULT_CELL_SIZE);
 
         if (!event.isDropCompleted())
-            this.setPadding(new Insets(UISettings.DEFAULT_DRAG_ENTERED_PADDING));
+          this.setPadding(new Insets(UISettings.DEFAULT_DRAG_ENTERED_PADDING));
       }
       event.consume();
     });
@@ -161,9 +162,7 @@ public class FlowPaneElements extends FlowPane {
   }
 
   public void updateImages() {
-    elements = tier != null ?
-            new ArrayList<>(tier.getTiered()) :
-            new ArrayList<>(controller.getUnTiered());
+    elements = tier != null ? new ArrayList<>(tier.getTiered()) : new ArrayList<>(controller.getUnTiered());
 
     images.clear();
 
@@ -298,19 +297,19 @@ public class FlowPaneElements extends FlowPane {
 
     EventTarget eventTarget = event.getTarget();
     if (dragBoard.hasImage() && dragBoard.hasString()
-            && eventTarget instanceof ImageView targetImage
-            && targetImage.getUserData() instanceof TierElement targetElement) {
+        && eventTarget instanceof ImageView targetImage
+        && targetImage.getUserData() instanceof TierElement targetElement) {
 
-        TierElement source = potentialSource.get();
-        if (!source.equals(targetElement)) {
+      TierElement source = potentialSource.get();
+      if (!source.equals(targetElement)) {
 
-            this.setPadding(Insets.EMPTY);
+        this.setPadding(Insets.EMPTY);
 
-            onDragDropped.accept(potentialSource.get(), targetElement);
-            updateImages();
+        onDragDropped.accept(potentialSource.get(), targetElement);
+        updateImages();
 
-            success = true;
-        }
+        success = true;
+      }
     }
     event.setDropCompleted(success);
     event.consume();
@@ -344,7 +343,7 @@ public class FlowPaneElements extends FlowPane {
   }
 
   private void updateModel(TierElement sourceElement) {
-    var status = sourceElement.status();
+    var status = sourceElement.getStatus();
     switch (status) {
       case TieredStatus.TIERED: {
         if (tier != null)
