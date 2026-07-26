@@ -161,6 +161,11 @@ public class FlowPaneElements extends FlowPane {
     });
   }
 
+  public static void reloadImageCache() {
+    System.err.println("--- Reloading image cache ---");
+    imageCache.clear();
+  }
+
   public void updateImages() {
     elements = tier != null ? new ArrayList<>(tier.getTiered()) : new ArrayList<>(controller.getUnTiered());
 

@@ -91,6 +91,8 @@ public class MainPane extends BorderPane {
 
       var parsedTier = controller.loadTierList(toParse);
 
+      FlowPaneElements.reloadImageCache();
+
       if (parsedTier.isPresent()) {
         controller.setTierList(parsedTier.get());
         updateTierList();
