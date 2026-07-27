@@ -97,16 +97,15 @@ public class MainPane extends BorderPane {
 
       if (parsedTier.isPresent()) {
         controller.setTierList(parsedTier.get());
+        titleLabel.setText(controller.getTierListName());
+        stage.setTitle(titleLabel.getText());
+        oldTitle = titleLabel.getText();
+
+        titleLabel.getScene().getRoot().requestFocus();
+
+        FlowPaneElements.reloadImageCache();
         updateTierList();
       }
-
-      titleLabel.setText(controller.getTierListName());
-      stage.setTitle(titleLabel.getText());
-      oldTitle = titleLabel.getText();
-
-      titleLabel.getScene().getRoot().requestFocus();
-
-      FlowPaneElements.reloadImageCache();
     });
 
     fileMenu.getItems().addAll(menuSaveItem, menuLoadItem);
