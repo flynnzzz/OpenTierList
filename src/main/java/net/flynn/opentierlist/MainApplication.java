@@ -31,7 +31,7 @@ public class MainApplication extends Application {
     stage.setY(1080 - stage.getHeight() / 2);
   }
 
-  public static void main(String[] args) {
+  static void main(String[] args) {
     launch(args);
   }
 }

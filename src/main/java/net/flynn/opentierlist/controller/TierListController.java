@@ -36,13 +36,13 @@ public interface TierListController {
 
   // ----- ranking ------//
 
-  void tier(TierElement element, Tier toTier);
+  void tier(TierElement unTiered, Tier toTier);
 
-  void tier(TierElement element, Tier toTier, int toIndex);
+  void tier(TierElement unTiered, Tier toTier, int toIndex);
 
-  void unTier(TierElement element);
+  void unTier(TierElement tiered);
 
-  void unTier(TierElement element, int toIndex);
+  void unTier(TierElement tiered, int toIndex);
 
   // ----- adding and removing ------//
 
@@ -52,11 +52,11 @@ public interface TierListController {
 
   void addUnTiered(TierElement element);
 
-  void removeTier(Tier tier);
+  void deleteTier(Tier tier);
 
-  void removeTierElement(TierElement element);
+  void deleteTierElement(TierElement element);
 
-  void removeUnTiered(TierElement e);
+  void deleteUnTiered(TierElement unTiered);
 
   // ----- swapping ------//
 
@@ -68,19 +68,19 @@ public interface TierListController {
 
   // ----- moving ------//
 
-  void moveTiered(TierElement element, Tier toTier);
+  void appendTiered(TierElement tiered, Tier toTier);
 
-  void moveTiered(TierElement element, Tier toTier, TierElement toElement);
+  void moveTiered(TierElement tiered, Tier toTier, TierElement toElement);
 
-  void moveTiered(TierElement element, Tier toTier, int toIndex);
+  void moveTiered(TierElement tiered, Tier toTier, int toIndex);
 
-  void moveUnTiered(TierElement element, TierElement toElement);
+  void moveUnTiered(TierElement unTiered, TierElement toElement);
 
-  void moveUnTiered(TierElement element, int toIndex);
+  void moveUnTiered(TierElement unTiered, int toIndex);
 
-  void moveTierTo(Tier from, Tier to);
+  void moveTier(Tier from, Tier to);
 
-  void moveTierTo(Tier from, int toIndex);
+  void moveTier(Tier from, int toIndex);
 
   // ----- setters and getters ------//
 
@@ -106,7 +106,7 @@ public interface TierListController {
 
   void saveTierList();
 
-  void saveTierListTo(Path path);
+  void saveTierList(Path path);
 
   void saveTierListAs(String name);
 

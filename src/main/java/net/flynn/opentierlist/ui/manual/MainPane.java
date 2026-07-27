@@ -34,17 +34,20 @@ import net.flynn.opentierlist.persistence.ResourceHolder;
 public class MainPane extends BorderPane {
 
   // ----- panels ----- //
-
   private final TextField titleLabel;
+
+  private final ScrollPaneTiers tieredPane;
   private final ScrollPaneUnTiered unTieredPane;
-  private final ScrollPaneTiers tiersPane;
+
   private final Button addTierButton, addElementButton;
+
   private final FileChooser imageFileChooser, tierListFileChooser;
   private final Stage stage;
 
   // ----- menu bar ----- //
   private final MenuBar menuBar;
   private final Menu fileMenu;
+
   private final TierListController controller;
 
   private String oldTitle;
@@ -54,7 +57,7 @@ public class MainPane extends BorderPane {
     this.stage = stage;
     this.titleLabel = new TextField(controller.getTierListName());
     this.unTieredPane = new ScrollPaneUnTiered(this, controller);
-    this.tiersPane = new ScrollPaneTiers(this, controller);
+    this.tieredPane = new ScrollPaneTiers(this, controller);
     this.addTierButton = new Button();
     this.addElementButton = new Button();
     this.menuBar = new MenuBar();
@@ -152,7 +155,7 @@ public class MainPane extends BorderPane {
     buttonsHBox.setAlignment(Pos.BOTTOM_CENTER);
 
     // ----- tiers -----//
-    var centerBox = new VBox(titleBox, tiersPane, buttonsHBox);
+    var centerBox = new VBox(titleBox, tieredPane, buttonsHBox);
     centerBox.setAlignment(Pos.CENTER);
     setCenter(centerBox);
 
@@ -183,7 +186,7 @@ public class MainPane extends BorderPane {
 
     addTierButton.setOnAction(_ -> {
       controller.addDefaultTier();
-      tiersPane.updateAllTiers();
+      tieredPane.updateAllTiers();
     });
 
     addElementButton.setOnAction(_ -> {
@@ -208,7 +211,7 @@ public class MainPane extends BorderPane {
   }
 
   public void updateTierList() {
-    tiersPane.updateAllTiers();
+    tieredPane.updateAllTiers();
     unTieredPane.updatePane();
   }
 
@@ -217,6 +220,6 @@ public class MainPane extends BorderPane {
   }
 
   public ScrollPaneTiers getFirstChild() {
-    return this.tiersPane;
+    return this.tieredPane;
   }
 }

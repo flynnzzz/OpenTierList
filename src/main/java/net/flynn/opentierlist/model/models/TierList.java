@@ -20,7 +20,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 public class TierList {
 
-  private String name;
+  private String tierListName;
   private final List<Tier> tiers;
   private final List<TierElement> unTiered;
 
@@ -33,19 +33,19 @@ public class TierList {
    * <p>
    * The tier list instance will be constructed with the given lists parameters.
    * 
-   * @param name     the tier list's name
+   * @param tierListName     the tier list's name
    * @param unTiered elements to rank
    * @param tiers    preset tiers
    * @throws IllegalArgumentException if name is blank
    */
-  public TierList(String name, List<TierElement> unTiered, List<Tier> tiers) throws IllegalArgumentException {
-    Objects.requireNonNull(name);
+  public TierList(String tierListName, List<TierElement> unTiered, List<Tier> tiers) throws IllegalArgumentException {
+    Objects.requireNonNull(tierListName);
     Objects.requireNonNull(unTiered);
     Objects.requireNonNull(tiers);
-    if (name.isBlank())
+    if (tierListName.isBlank())
       throw new IllegalArgumentException("--- TierList name cannot be blank ---");
 
-    this.name = name;
+    this.tierListName = tierListName;
     this.unTiered = unTiered;
     this.tiers = tiers;
   }
@@ -55,12 +55,12 @@ public class TierList {
    * <p>
    * The tier list instance will be constructed with the given lists parameters.
    * 
-   * @param name     the tier list's name
+   * @param tierListName     the tier list's name
    * @param unTiered elements to rank
    * @throws IllegalArgumentException if name is blank
    */
-  public TierList(String name, List<TierElement> unTiered) throws IllegalArgumentException {
-    this(name, unTiered, new ArrayList<>());
+  public TierList(String tierListName, List<TierElement> unTiered) throws IllegalArgumentException {
+    this(tierListName, unTiered, new ArrayList<>());
   }
 
   /**
@@ -79,11 +79,11 @@ public class TierList {
    * <p>
    * The tier list instance will be constructed with the given name.
    * 
-   * @param name name of the tier list
+   * @param tierListName name of the tier list
    * @throws IllegalArgumentException if name is blank
    */
-  public TierList(String name) throws IllegalArgumentException {
-    this(name, new ArrayList<>());
+  public TierList(String tierListName) throws IllegalArgumentException {
+    this(tierListName, new ArrayList<>());
   }
 
   /**
@@ -224,12 +224,12 @@ public class TierList {
     tiers.get(tierIndex).add(element);
   }
 
-  public boolean addToTier(Tier tier, TierElement element) throws TierNotFoundException {
+  public void addToTier(Tier tier, TierElement element) throws TierNotFoundException {
 
     verifyTierExistence(tier);
 
     element.changeTo(TIERED);
-    return tier.add(element);
+    tier.add(element);
   }
 
   public Tier removeTier(int tierIndex) throws TierNotFoundException {
@@ -538,7 +538,7 @@ public class TierList {
     Objects.requireNonNull(name);
     if (name.isBlank())
       throw new IllegalArgumentException("Tier list's name must not be blank");
-    this.name = name;
+    this.tierListName = name;
   }
 
   public void setTierName(int tierIndex, String name) {
@@ -562,7 +562,7 @@ public class TierList {
   }
 
   public String getTierListName() {
-    return name;
+    return tierListName;
   }
 
   public String getTierName(int tierIndex) {
@@ -585,7 +585,7 @@ public class TierList {
 
   @Override
   public int hashCode() {
-    return Objects.hash(tiers, name, unTiered);
+    return Objects.hash(tiers, tierListName, unTiered);
   }
 
   @Override
@@ -596,7 +596,7 @@ public class TierList {
     if (!(obj instanceof TierList other)) {
       return false;
     }
-    return Objects.equals(tiers, other.tiers) && Objects.equals(name, other.name)
+    return Objects.equals(tiers, other.tiers) && Objects.equals(tierListName, other.tierListName)
         && Objects.equals(unTiered, other.unTiered);
   }
 
@@ -607,7 +607,7 @@ public class TierList {
 
   public String toString(TierStringFormat format) {
     var sb = new StringBuilder();
-    sb.append(this.name).append(System.lineSeparator());
+    sb.append(this.tierListName).append(System.lineSeparator());
     sb.append(System.lineSeparator());
 
     tiers.stream()

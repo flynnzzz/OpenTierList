@@ -24,9 +24,9 @@ public class DataHandler {
     Optional<TierList> res = Optional.empty();
     try {
       res = Optional.of(TierListReader.read(file));
-    } catch (DatabindException e1) {
-      e1.printStackTrace();
-    } catch (IOException e2) {
+    } catch (DatabindException _) {
+      System.err.println("--- Failed to parse tier list from file '" + file.getAbsolutePath() + "', aborting ---");
+    } catch (IOException _) {
       System.err.println("--- Could not load tierlist from path '" + file.getAbsolutePath() + "', aborting ---");
     }
     return res;

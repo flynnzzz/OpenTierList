@@ -1,5 +1,6 @@
 package net.flynn.opentierlist.model.models;
 
+import java.awt.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.net.URI;
@@ -11,7 +12,7 @@ import java.nio.file.Path;
 import net.flynn.opentierlist.persistence.ResourceHolder;
 
 /**
- * Self-explanatory
+ * Custom class to handle image resources
  * 
  * @author flynnz
  * @version 0.10
@@ -31,6 +32,16 @@ public class ImagePath {
       return new ImagePath(file.toURI());
     }
     return defaultResource();
+  }
+
+  public static ImagePath of(String uri) throws FileNotFoundException {
+
+    try {
+      return ImagePath.of(new URI(uri));
+    }
+    catch (FileNotFoundException | URISyntaxException _) {
+      return defaultResource();
+    }
   }
 
   public static ImagePath of(URI uri) throws FileNotFoundException {
@@ -58,37 +69,5 @@ public class ImagePath {
 
   public boolean exists() {
     return Files.exists(Path.of(uri));
-  }
-
-  public static ImagePath of(String path) throws FileNotFoundException {
-    Path jarPath = basePath();
-    // to make it work in the IDE
-    String tail = jarPath.toString().contains("bin")
-        ? ".." + ResourceHolder.getDefaultImagesFolder()
-        : ResourceHolder.getDefaultImagesFolder();
-
-    Path realPath = jarPath.resolve(tail).resolve(path).normalize();
-
-    if (Files.exists(realPath)) {
-      return new ImagePath(realPath.toUri());
-    }
-    return defaultResource();
-  }
-
-  // for testing only
-  private static Path basePath() {
-    try {
-      URI jarUri = ImagePath.class
-          .getProtectionDomain()
-          .getCodeSource()
-          .getLocation()
-          .toURI();
-
-      Path jarPath = Path.of(jarUri);
-      return Files.isDirectory(jarPath) ? jarPath : jarPath.getParent();
-
-    } catch (URISyntaxException e) {
-      throw new IllegalStateException("Could not determine application directory", e);
-    }
   }
 }

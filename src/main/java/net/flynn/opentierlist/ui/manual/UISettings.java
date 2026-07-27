@@ -18,8 +18,9 @@ public class UISettings {
 
   public final static String DEFAULT_BAR_BORDER_COLOR = Color.DIMGRAY.toString();
   public final static String DEFAULT_BAR_HIGHLIGHT_COLOR = Color.DEEPSKYBLUE.toString();
-  public final static String IMAGE_SOURCE_EFFECT = "-fx-effect: dropshadow(gaussian, rgba(235,0,0,0.95), 6, 0.7, 0, 0);";
-  public final static String IMAGE_TARGET_EFFECT = "-fx-effect: dropshadow(gaussian, rgba(0,191,255,0.95), 6, 0.7, 0, 0);";
+
+  @Deprecated public final static String IMAGE_SOURCE_EFFECT = "-fx-effect: dropshadow(gaussian, rgba(235,0,0,0.95), 6, 0.7, 0, 0);";
+  @Deprecated public final static String IMAGE_TARGET_EFFECT = "-fx-effect: dropshadow(gaussian, rgba(0,191,255,0.95), 6, 0.7, 0, 0);";
 
   // ----- unranked -----//
 

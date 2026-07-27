@@ -92,7 +92,7 @@ public class FlowPaneElements extends FlowPane {
 
         deleteImageMenu.setOnAction(_ -> {
           if (imageViewer.getUserData() instanceof TierElement element) {
-            controller.removeTierElement(element);
+            controller.deleteTierElement(element);
             this.getChildren().remove(imageViewer);
             updateImages();
           }
@@ -123,9 +123,6 @@ public class FlowPaneElements extends FlowPane {
           && event.getGestureSource() instanceof ImageView source
           && event.getDragboard().hasImage()) {
 
-        target.setStyle(UISettings.IMAGE_SOURCE_EFFECT);
-        source.setStyle(UISettings.IMAGE_TARGET_EFFECT);
-
         imageViewer.setFitHeight(UISettings.DEFAULT_EXPANDED_IMAGE_SIZE);
         this.setPadding(
             new Insets(
@@ -139,8 +136,6 @@ public class FlowPaneElements extends FlowPane {
 
     imageViewer.setOnDragExited(event -> {
       if (event.getTarget() instanceof ImageView target && event.getSource() instanceof ImageView source) {
-        source.setStyle("-fx-effect: null;");
-        target.setStyle("-fx-effect: null;");
 
         imageViewer.setFitHeight(UISettings.DEFAULT_CELL_SIZE);
 
@@ -352,7 +347,7 @@ public class FlowPaneElements extends FlowPane {
     switch (status) {
       case TieredStatus.TIERED: {
         if (tier != null)
-          controller.moveTiered(sourceElement, tier);
+          controller.appendTiered(sourceElement, tier);
         else
           controller.unTier(sourceElement);
       }

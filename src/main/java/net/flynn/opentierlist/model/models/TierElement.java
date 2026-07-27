@@ -23,69 +23,69 @@ import net.flynn.opentierlist.model.enums.TieredStatus;
  */
 public class TierElement {
   private TieredStatus status;
-  private String name;
+  private String elementName;
   private ImagePath imagePath;
 
   private static long NEXT_ID = 1;
-  private long id;
+  private final long id;
 
   public static final String DEFAULT_ELEMENT_NAME = "element";
 
   // ----- Ctors -----//
 
-  private TierElement(TieredStatus status, String name, ImagePath imagePath) throws IllegalArgumentException {
-    Objects.requireNonNull(name);
+  private TierElement(TieredStatus status, String elementName, ImagePath imagePath) throws IllegalArgumentException {
+    Objects.requireNonNull(elementName);
     Objects.requireNonNull(imagePath);
-    if (name.isBlank())
+    if (elementName.isBlank())
       throw new IllegalArgumentException();
 
     this.status = status;
-    this.name = name;
+    this.elementName = elementName;
     this.id = NEXT_ID++;
     this.imagePath = imagePath;
   }
 
-  public TierElement(String name, ImagePath imagePath) throws IllegalArgumentException {
-    this(TieredStatus.UNTIERED, name, imagePath);
+  public TierElement(String elementName, ImagePath imagePath) throws IllegalArgumentException {
+    this(TieredStatus.UNTIERED, elementName, imagePath);
   }
 
   /**
    * Constructs a {@link TierList} entry given the following parameters.
    * 
    * @param status    enum representing state
-   * @param name      the entry's name
-   * @param imagePath path to the entry image
+   * @param elementName      the entry's name
+   * @param uri path to the entry image
    * 
    * @throws IllegalArgumentException if either name or image path are blank
    */
-  public TierElement(TieredStatus status, String name, String imagePath)
+  public TierElement(TieredStatus status, String elementName, String uri)
       throws IllegalArgumentException, FileNotFoundException {
-    if (imagePath.isBlank())
+    if (uri.isBlank())
       throw new IllegalArgumentException();
-    this(status, name, ImagePath.of(imagePath));
+    this(status, elementName, ImagePath.of(uri));
   }
 
   /**
    * Constructs a {@link TierList} entry given the following parameters.
    * 
-   * @param name      the entry's name
-   * @param imagePath the entry's image path
+   * @param elementName      the entry's name
+   * @param uri the entry's image path
    * 
    * @throws IllegalArgumentException if either name or path are blank
    */
-  public TierElement(String name, String imagePath) throws IllegalArgumentException, FileNotFoundException {
-    this(TieredStatus.UNTIERED, name, imagePath);
+  public TierElement(String elementName, String uri) throws IllegalArgumentException, FileNotFoundException {
+    this(TieredStatus.UNTIERED, elementName, uri);
   }
 
   /**
    * Constructs a {@link TierList} entry given only the name.
    * 
-   * @param name the entry's name
+   * @param elementName the entry's name
    * 
    * @throws IllegalArgumentException if name is blank
    */
-  public TierElement(String name) throws IllegalArgumentException, FileNotFoundException {
-    this(TieredStatus.UNTIERED, name, ImagePath.defaultResource());
+  public TierElement(String elementName) throws IllegalArgumentException, FileNotFoundException {
+    this(TieredStatus.UNTIERED, elementName, ImagePath.defaultResource());
   }
 
   /**
@@ -97,11 +97,11 @@ public class TierElement {
 
   @JsonCreator
   public TierElement(
-      @JsonProperty("name") String name,
+      @JsonProperty("name") String elementName,
       @JsonProperty("status") TieredStatus status,
       @JsonProperty("id") long id,
       @JsonProperty("imageUri") String imageUri) {
-    this.name = name;
+    this.elementName = elementName;
     this.status = status;
     this.id = id;
     try {
@@ -132,15 +132,15 @@ public class TierElement {
     this.status = status;
   }
 
-  public void setName(String name) throws IllegalArgumentException {
-    Objects.requireNonNull(name);
-    if (name.isBlank())
+  public void setElementName(String elementName) throws IllegalArgumentException {
+    Objects.requireNonNull(elementName);
+    if (elementName.isBlank())
       throw new IllegalArgumentException();
-    this.name = name;
+    this.elementName = elementName;
   }
 
-  public String getName() {
-    return name;
+  public String getElementName() {
+    return elementName;
   }
 
   public String getImageUri() {
@@ -159,7 +159,7 @@ public class TierElement {
 
   @Override
   public int hashCode() {
-    return Objects.hash(imagePath, name, status, id);
+    return Objects.hash(imagePath, elementName, status, id);
   }
 
   @Override
@@ -171,7 +171,7 @@ public class TierElement {
       return false;
     }
     return Objects.equals(imagePath, other.imagePath)
-        && Objects.equals(name, other.name)
+        && Objects.equals(elementName, other.elementName)
         && Objects.equals(id, other.id)
         && status == other.status;
   }
@@ -206,10 +206,10 @@ public class TierElement {
     String res = null;
 
     switch (format) {
-      case TierStringFormat.EXTENDED -> res = getName() + System.lineSeparator()
+      case TierStringFormat.EXTENDED -> res = getElementName() + System.lineSeparator()
           + status + System.lineSeparator()
           + imagePath.getUri();
-      case TierStringFormat.COMPACT -> res = getName();
+      case TierStringFormat.COMPACT -> res = getElementName();
     }
     return res;
   }

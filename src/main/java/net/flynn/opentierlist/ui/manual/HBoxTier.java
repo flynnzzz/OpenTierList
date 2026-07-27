@@ -170,14 +170,14 @@ public class HBoxTier extends HBox {
     delete.setOnAction(_ -> {
       tier.getTiered().forEach(controller::unTier);
 
-      controller.removeTier(tier);
+      controller.deleteTier(tier);
       parent.updateTierList();
     });
 
     duplicate.setOnAction(_ -> {
       var clone = tier.copy();
       controller.addTier(clone);
-      controller.moveTierTo(clone, controller.getTiers().indexOf(tier) + 1);
+      controller.moveTier(clone, controller.getTiers().indexOf(tier) + 1);
 
       parent.updateTierList();
     });
@@ -313,7 +313,7 @@ public class HBoxTier extends HBox {
 
       if (potentialTarget instanceof HBoxTier targetPane) {
         Tier target = targetPane.getTier();
-        controller.moveTierTo(source.get(), target);
+        controller.moveTier(source.get(), target);
       }
     }
     event.setDropCompleted(true);
