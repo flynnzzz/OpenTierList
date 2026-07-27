@@ -5,12 +5,12 @@ import java.io.FileNotFoundException;
 import java.net.URISyntaxException;
 import java.util.List;
 
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuBar;
-import javafx.scene.control.MenuItem;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
@@ -76,6 +76,7 @@ public class MainPane extends BorderPane {
     tierListFileChooser.setTitle("Load tier list");
     tierListFileChooser.getExtensionFilters().add(new ExtensionFilter("Tier List json files", "*.tson"));
 
+    // ----- menu bar ----- //
     MenuItem menuSaveItem = new MenuItem("Save"), menuLoadItem = new MenuItem("Load");
 
     menuSaveItem.setOnAction(_ -> controller.saveTierList());
@@ -88,6 +89,13 @@ public class MainPane extends BorderPane {
         System.err.println("--- No file selected ---");
         return;
       }
+
+      titleLabel.setText(controller.getTierListName());
+      stage.setTitle(titleLabel.getText());
+
+      oldTitle = titleLabel.getText();
+
+      titleLabel.getScene().getRoot().requestFocus();
 
       var parsedTier = controller.loadTierList(toParse);
 
