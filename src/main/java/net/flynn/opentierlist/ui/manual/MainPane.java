@@ -90,21 +90,20 @@ public class MainPane extends BorderPane {
         return;
       }
 
-      titleLabel.setText(controller.getTierListName());
-      stage.setTitle(titleLabel.getText());
-
-      oldTitle = titleLabel.getText();
-
-      titleLabel.getScene().getRoot().requestFocus();
-
       var parsedTier = controller.loadTierList(toParse);
-
-      FlowPaneElements.reloadImageCache();
 
       if (parsedTier.isPresent()) {
         controller.setTierList(parsedTier.get());
         updateTierList();
       }
+
+      titleLabel.setText(controller.getTierListName());
+      stage.setTitle(titleLabel.getText());
+      oldTitle = titleLabel.getText();
+
+      titleLabel.getScene().getRoot().requestFocus();
+
+      FlowPaneElements.reloadImageCache();
     });
 
     fileMenu.getItems().addAll(menuSaveItem, menuLoadItem);
