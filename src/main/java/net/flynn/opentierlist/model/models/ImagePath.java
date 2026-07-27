@@ -1,6 +1,5 @@
 package net.flynn.opentierlist.model.models;
 
-import java.awt.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.net.URI;
@@ -13,40 +12,39 @@ import net.flynn.opentierlist.persistence.ResourceHolder;
 
 /**
  * Custom class to handle image resources
- * 
+ *
  * @author flynnz
  * @version 0.10
  * @since v1.7.0
  */
-public class ImagePath {
-  private final URI uri;
+public record ImagePath(URI uri) {
+  private static final String DEFAULT_IMAGE_RESOURCE = ResourceHolder.getDefaultElementIcon();
 
-  private static final String DEFAULT_IMAGE_RESOURCE = ResourceHolder.getDefaultTelementIcon();
-
-  private ImagePath(URI uri) {
-    this.uri = uri;
-  }
-
-  public static ImagePath of(File file) throws FileNotFoundException {
+  public static ImagePath of(File file) throws IllegalArgumentException {
     if (file != null && file.exists()) {
       return new ImagePath(file.toURI());
     }
     return defaultResource();
   }
 
-  public static ImagePath of(String uri) throws FileNotFoundException {
+  public static ImagePath of(String uri) {
 
     try {
       return ImagePath.of(new URI(uri));
-    }
-    catch (FileNotFoundException | URISyntaxException _) {
+    } catch (URISyntaxException _) {
+      System.err.println("--- Invalid url ---");
       return defaultResource();
     }
   }
 
-  public static ImagePath of(URI uri) throws FileNotFoundException {
+  public static ImagePath of(URI uri) {
 
-    return ImagePath.of(new File(uri));
+    try {
+      return ImagePath.of(new File(uri));
+    } catch (IllegalArgumentException  _) {
+      System.err.println("--- Invalid url ---");
+      return ImagePath.defaultResource();
+    }
 
   }
 

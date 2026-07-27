@@ -134,7 +134,7 @@ public class MainPane extends BorderPane {
         throw new URISyntaxException("imageURI", "--- addtier button resource not found, exiting ---");
       addTierButton.setGraphic(new ImageView(new Image(imageURI.toURI().toString())));
 
-      imageURI = getClass().getResource(ResourceHolder.getAddelementbuttonicon());
+      imageURI = getClass().getResource(ResourceHolder.getAddElementButtonIcon());
       if (imageURI == null)
         throw new URISyntaxException("imageURI", "--- addelement button resource not found, exiting ---");
       addElementButton.setGraphic(new ImageView(new Image(imageURI.toURI().toString())));
@@ -199,8 +199,8 @@ public class MainPane extends BorderPane {
       files.forEach(selectedFile -> {
         if (selectedFile != null && selectedFile.exists()) {
           try {
-            controller.addUnTiered(new TierElement(selectedFile.getName(), ImagePath.of(selectedFile)));
-          } catch (FileNotFoundException e) {
+            controller.addUnTiered(new TierElement(selectedFile.getName(), selectedFile.toURI().toString()));
+          } catch (IllegalArgumentException | FileNotFoundException _) {
             System.err.println("--- Resource not found, aborting ---");
             System.exit(-1);
           }

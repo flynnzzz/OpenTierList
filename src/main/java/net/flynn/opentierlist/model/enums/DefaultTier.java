@@ -9,7 +9,6 @@ import net.flynn.opentierlist.model.models.Tier;
  * @since v1.2.5
  */
 public enum DefaultTier {
-  // temporary colors
   S(Color.ORANGERED.toString()),
   A(Color.ORANGE.toString()),
   B(Color.YELLOW.toString()),

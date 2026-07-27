@@ -222,6 +222,23 @@ public class Tier {
         && Objects.equals(id, other.id);
   }
 
+  /**
+   * Equals but ignoring instance difference
+   *
+   * @param tier tier to compare to
+   * @return true if names and colors match
+   */
+  public boolean equalsTier(Tier tier) {
+    if (this == tier) {
+      return true;
+    }
+    if (!(tier instanceof Tier other)) {
+      return false;
+    }
+    return Objects.equals(tiered, other.tiered)
+            && Objects.equals(header, other.header);
+  }
+
   private String toStringElements(List<TierElement> elements) {
     var sb = new StringBuilder();
     sb.append("[ ");

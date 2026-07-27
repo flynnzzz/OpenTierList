@@ -45,7 +45,7 @@ public class TierElement {
     this.imagePath = imagePath;
   }
 
-  public TierElement(String elementName, ImagePath imagePath) throws IllegalArgumentException {
+  private TierElement(String elementName, ImagePath imagePath) throws IllegalArgumentException {
     this(TieredStatus.UNTIERED, elementName, imagePath);
   }
 
@@ -106,7 +106,7 @@ public class TierElement {
     this.id = id;
     try {
       this.imagePath = ImagePath.of(new URI(imageUri));
-    } catch (FileNotFoundException | URISyntaxException e) {
+    } catch (URISyntaxException e) {
       this.imagePath = ImagePath.defaultResource();
     }
   }
@@ -174,6 +174,24 @@ public class TierElement {
         && Objects.equals(elementName, other.elementName)
         && Objects.equals(id, other.id)
         && status == other.status;
+  }
+
+  /**
+   * Equals but ignoring instance difference
+   *
+   * @param tierElement tier element to compare to
+   * @return true if names, resource paths and statuses match
+   */
+  public boolean equalsTier(TierElement tierElement) {
+    if (this == tierElement) {
+      return true;
+    }
+    if (!(tierElement instanceof TierElement other)) {
+      return false;
+    }
+    return Objects.equals(imagePath, other.imagePath)
+            && Objects.equals(elementName, other.elementName)
+            && status == other.status;
   }
 
   /**
