@@ -1,12 +1,10 @@
 package net.flynn.opentierlist.ui.manual;
 
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.Flow;
 import java.util.function.BiConsumer;
 
 import javafx.collections.FXCollections;
@@ -33,8 +31,8 @@ import javafx.scene.layout.FlowPane;
 import javafx.scene.paint.Paint;
 import net.flynn.opentierlist.controller.TierListController;
 import net.flynn.opentierlist.model.enums.TieredStatus;
-import net.flynn.opentierlist.model.models.TierElement;
 import net.flynn.opentierlist.model.models.Tier;
+import net.flynn.opentierlist.model.models.TierElement;
 
 /**
  *
@@ -120,9 +118,7 @@ public class FlowPaneElements extends FlowPane {
       event.consume();
     });
     imageViewer.setOnDragEntered(event -> {
-      if (event.getTarget() instanceof ImageView target
-          && event.getGestureSource() instanceof ImageView source
-          && event.getDragboard().hasImage()) {
+      if (event.getDragboard().hasImage()) {
 
         imageViewer.setFitHeight(UISettings.DEFAULT_EXPANDED_IMAGE_SIZE);
         this.setPadding(
@@ -136,7 +132,7 @@ public class FlowPaneElements extends FlowPane {
     });
 
     imageViewer.setOnDragExited(event -> {
-      if (event.getTarget() instanceof ImageView target && event.getSource() instanceof ImageView source) {
+      if (event.getTarget() instanceof ImageView && event.getSource() instanceof ImageView) {
 
         imageViewer.setFitHeight(UISettings.DEFAULT_CELL_SIZE);
 
@@ -181,12 +177,7 @@ public class FlowPaneElements extends FlowPane {
 
     elements.forEach(element -> {
 
-      try {
-        element.updateImagePath();
-      } catch (FileNotFoundException e) {
-        System.err.println("--- Default resource not found, aborting ---");
-        System.exit(-1);
-      }
+      element.updateImagePath();
       Image img = imageCache.get(element.getId());
       if (img == null) {
         img = new Image(element.getImageUri(),

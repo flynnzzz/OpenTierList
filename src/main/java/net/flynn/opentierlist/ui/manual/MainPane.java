@@ -22,7 +22,6 @@ import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
 import net.flynn.opentierlist.controller.TierListController;
-import net.flynn.opentierlist.model.models.ImagePath;
 import net.flynn.opentierlist.model.models.TierElement;
 import net.flynn.opentierlist.persistence.ResourceHolder;
 

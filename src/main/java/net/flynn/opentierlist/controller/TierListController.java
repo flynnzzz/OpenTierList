@@ -16,17 +16,27 @@ import net.flynn.opentierlist.model.models.TierList;
  * Controller interface for creating and modifying tier lists.
  * 
  * @author flynnz
- * @version 2.0.0
+ * @version 2.7.2
  * @since v0.0.0
  */
 public interface TierListController {
 
-  // TODO: update controller docs
+  /**
+   * Controller factory for a tier list
+   *
+   * @param tl tier list to control
+   * @return {@link TierListController}
+   */
   static TierListController of(TierList tl) {
     Objects.requireNonNull(tl);
     return new StandardTierListController(tl);
   }
 
+  /**
+   * Controller factory for a default tier list
+   * 
+   * @return {@link TierListController}
+   */
   static TierListController ofDefaultTiers() {
     var tierList = new TierList();
     for (var tier : DefaultTier.values())
@@ -34,52 +44,176 @@ public interface TierListController {
     return new StandardTierListController(tierList);
   }
 
-  // ----- ranking ------//
+  // ----- ranking ------ //
 
+  /**
+   * Rank an untiered element
+   *
+   * @param unTiered element to rank
+   * @param toTier   destination
+   */
   void tier(TierElement unTiered, Tier toTier);
 
+  /**
+   * Rank an untiered element to a specified position
+   *
+   * @param unTiered element to rank
+   * @param toTier   destination
+   * @param toIndex  position
+   */
   void tier(TierElement unTiered, Tier toTier, int toIndex);
 
+  /**
+   * Unrank an tiered element
+   *
+   * @param tiered element to unrank
+   */
   void unTier(TierElement tiered);
 
+  /**
+   * Unrank an tiered element to a speficied position
+   *
+   * @param tiered  element to unrank
+   * @param toIndex position
+   */
   void unTier(TierElement tiered, int toIndex);
 
   // ----- adding and removing ------//
 
+  /**
+   * Add a tier to the tier list
+   *
+   * @param tier tier to add
+   */
   void addTier(Tier tier);
 
+  /**
+   * Add a default tier to the tier list
+   */
   void addDefaultTier();
 
-  void addUnTiered(TierElement element);
+  /**
+   * Add an unranked element to the tier list
+   *
+   * @param unTiered element to add
+   */
+  void addUnTiered(TierElement unTiered);
 
+  /**
+   * Remove a tier from the tier list
+   *
+   * @param tier tier to delete
+   */
   void deleteTier(Tier tier);
 
+  /**
+   * Remove an element from the tier list
+   *
+   * @param element to delete
+   */
   void deleteTierElement(TierElement element);
 
+  /**
+   * Remove an unranked element from the tier list
+   *
+   * @param unTiered element to delete
+   */
+  @Deprecated
   void deleteUnTiered(TierElement unTiered);
 
   // ----- swapping ------//
 
+  /**
+   * Swaps the positions of two tiers
+   *
+   * @param a first tier
+   * @param b second tier
+   */
+  @Deprecated
   void swapTiers(Tier a, Tier b);
 
+  /**
+   * Swaps the positions of two elements from a tier
+   *
+   * @param tier source of the elements to swap
+   * @param a    first element
+   * @param b    second element
+   */
+  @Deprecated
   void swapTiered(Tier tier, TierElement a, TierElement b);
 
+  /**
+   * Swaps the positions of two unranked elements
+   *
+   * @param a first element
+   * @param b second element
+   */
+  @Deprecated
   void swapUnTiered(TierElement a, TierElement b);
 
   // ----- moving ------//
 
+  /**
+   * Move and append a ranked element to a specified tier
+   *
+   * @param tiered element to append
+   * @param toTier destination
+   */
+  @Deprecated
   void appendTiered(TierElement tiered, Tier toTier);
 
+  /**
+   * Move a ranked element to a specified tier and position
+   *
+   * @param tiered    element to append
+   * @param toTier    destination
+   * @param toElement position
+   */
+  @Deprecated
   void moveTiered(TierElement tiered, Tier toTier, TierElement toElement);
 
+  /**
+   * Move a ranked element to a specified tier and position
+   *
+   * @param tiered  element to append
+   * @param toTier  destination
+   * @param toIndex position
+   */
+  @Deprecated
   void moveTiered(TierElement tiered, Tier toTier, int toIndex);
 
+  /**
+   * Move an unranked element to a specified position
+   *
+   * @param unTiered  element to append
+   * @param toElement position
+   */
+  @Deprecated
   void moveUnTiered(TierElement unTiered, TierElement toElement);
 
+  /**
+   * Move an unranked element to a specified position
+   *
+   * @param unTiered element to append
+   * @param toIndex  position
+   */
+  @Deprecated
   void moveUnTiered(TierElement unTiered, int toIndex);
 
+  /**
+   * Move a tier to a destination
+   *
+   * @param from source
+   * @param to   destination
+   */
   void moveTier(Tier from, Tier to);
 
+  /**
+   * Move a tier to a destination
+   *
+   * @param from    source
+   * @param toIndex destination
+   */
   void moveTier(Tier from, int toIndex);
 
   // ----- setters and getters ------//

@@ -23,6 +23,7 @@ public class Tier {
 
   public static final String DEFAULT_TIER_NAME = "New Tier";
   public static final String DEFAULT_TIER_COLOR = Color.GRAY.toString();
+  public static final Tier UNTIERED = new Tier("__UNTIERED__");
 
   private TierHeader header;
   private final List<TierElement> tiered;
@@ -236,7 +237,7 @@ public class Tier {
       return false;
     }
     return Objects.equals(tiered, other.tiered)
-            && Objects.equals(header, other.header);
+        && Objects.equals(header, other.header);
   }
 
   private String toStringElements(List<TierElement> elements) {

@@ -1,7 +1,6 @@
 package net.flynn.opentierlist.model.models;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -32,7 +31,7 @@ public record ImagePath(URI uri) {
     try {
       return ImagePath.of(new URI(uri));
     } catch (URISyntaxException _) {
-      System.err.println("--- Invalid url ---");
+      System.err.println("--- Invalid url: " + uri + " ---");
       return defaultResource();
     }
   }
@@ -41,8 +40,8 @@ public record ImagePath(URI uri) {
 
     try {
       return ImagePath.of(new File(uri));
-    } catch (IllegalArgumentException  _) {
-      System.err.println("--- Invalid url ---");
+    } catch (IllegalArgumentException _) {
+      System.err.println("--- Invalid url: " + uri + " ---");
       return ImagePath.defaultResource();
     }
 

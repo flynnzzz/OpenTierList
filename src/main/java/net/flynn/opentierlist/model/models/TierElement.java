@@ -1,6 +1,8 @@
 package net.flynn.opentierlist.model.models;
 
 import java.io.FileNotFoundException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -8,9 +10,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import net.flynn.opentierlist.model.enums.TierStringFormat;
-import java.net.URI;
-import java.net.URISyntaxException;
-
 import net.flynn.opentierlist.model.enums.TieredStatus;
 
 /**
@@ -45,16 +44,12 @@ public class TierElement {
     this.imagePath = imagePath;
   }
 
-  private TierElement(String elementName, ImagePath imagePath) throws IllegalArgumentException {
-    this(TieredStatus.UNTIERED, elementName, imagePath);
-  }
-
   /**
    * Constructs a {@link TierList} entry given the following parameters.
    * 
-   * @param status    enum representing state
-   * @param elementName      the entry's name
-   * @param uri path to the entry image
+   * @param status      enum representing state
+   * @param elementName the entry's name
+   * @param uri         path to the entry image
    * 
    * @throws IllegalArgumentException if either name or image path are blank
    */
@@ -68,8 +63,8 @@ public class TierElement {
   /**
    * Constructs a {@link TierList} entry given the following parameters.
    * 
-   * @param elementName      the entry's name
-   * @param uri the entry's image path
+   * @param elementName the entry's name
+   * @param uri         the entry's image path
    * 
    * @throws IllegalArgumentException if either name or path are blank
    */
@@ -151,7 +146,7 @@ public class TierElement {
     return this.id;
   }
 
-  public void updateImagePath() throws FileNotFoundException {
+  public void updateImagePath() {
     this.imagePath = imagePath.exists() ? imagePath : ImagePath.defaultResource();
   }
 
@@ -190,8 +185,8 @@ public class TierElement {
       return false;
     }
     return Objects.equals(imagePath, other.imagePath)
-            && Objects.equals(elementName, other.elementName)
-            && status == other.status;
+        && Objects.equals(elementName, other.elementName)
+        && status == other.status;
   }
 
   /**
