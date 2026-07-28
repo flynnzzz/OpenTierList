@@ -1,6 +1,7 @@
 package net.flynn.opentierlist.model.models;
 
 import net.flynn.opentierlist.model.enums.TierStringFormat;
+import net.flynn.opentierlist.model.enums.TieredStatus;
 import net.flynn.opentierlist.model.exceptions.TierElementNotFoundException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -64,7 +65,7 @@ public class Tier {
    * @throws IllegalArgumentException if name is blank
    */
   public Tier(String name, String color) {
-    this(new TierHeader(name, color), new ArrayList<TierElement>());
+    this(new TierHeader(name, color), new ArrayList<>());
   }
 
   /**
@@ -74,7 +75,7 @@ public class Tier {
    * @throws IllegalArgumentException if name is blank
    */
   public Tier(String name) {
-    this(new TierHeader(name, DEFAULT_TIER_COLOR), new ArrayList<TierElement>());
+    this(new TierHeader(name, DEFAULT_TIER_COLOR), new ArrayList<>());
   }
 
   /**
@@ -99,12 +100,15 @@ public class Tier {
 
   /**
    * Adds an element to the tier instance
-   * 
+   *
    * @param element element to add
-   * @return true if successfull
+   * @return true if successful
    */
   public boolean add(TierElement element) {
-    return tiered.add(element);
+    var added = tiered.add(element);
+    if (added)
+      element.changeTo(TieredStatus.TIERED);
+    return added;
   }
 
   public boolean remove(TierElement element) throws TierElementNotFoundException {
@@ -159,9 +163,9 @@ public class Tier {
       throw new TierElementNotFoundException("--- Element to move not found: " + src + " ---");
     if (!tiered.contains(dest))
       throw new TierElementNotFoundException("--- Element to move not found: " + src + " ---");
-
+    final var destIndex = indexOf(dest);
     tiered.remove(src);
-    tiered.add(indexOf(dest), src);
+    tiered.add(destIndex, src);
   }
 
   /**
@@ -172,7 +176,7 @@ public class Tier {
    * @throws TierElementNotFoundException if element is not found
    */
   public void move(TierElement element, int toIndex) throws TierElementNotFoundException {
-    if (!tiered.contains(element) || toIndex > tiered.size())
+    if (!tiered.contains(element) || toIndex >= tiered.size())
       throw new TierElementNotFoundException("--- Element to move not found: " + element + " ---");
 
     tiered.remove(element);
@@ -180,7 +184,7 @@ public class Tier {
   }
 
   public Tier copy() {
-    return new Tier(header.name(), header.color());
+    return new Tier(header.name(), header.color(), tiered);
   }
 
   public int indexOf(TierElement element) {
@@ -217,7 +221,7 @@ public class Tier {
   }
 
   public String getColor() {
-    return getHeader().color().toString();
+    return getHeader().color();
   }
 
   /**
@@ -290,17 +294,17 @@ public class Tier {
    * 
    * Format {@link TierStringFormat#EXTENDED}:
    * "header name:
-   * [
+   * \[
    * element1,
    * element2,
    * ...
-   * ]"
+   * \]
+   * "
    */
   public String toString(TierStringFormat format) {
     return switch (format) {
       case EXTENDED -> toStringExtended();
       case COMPACT -> toStringCompact();
-      default -> toString();
     };
   }
 

@@ -31,7 +31,7 @@ public class TierList {
   private final List<Tier> tiers;
   private final List<TierElement> unTiered;
 
-  public static final String DEFAULT_TIERLIST_NAME = "New Tierlist";
+  public static final String DEFAULT_TIER_LIST_NAME = "New Tier List";
 
   // ----- Ctors -----//
 
@@ -74,7 +74,7 @@ public class TierList {
    * @param unTiered elements to rank
    */
   public TierList(List<TierElement> unTiered) {
-    this(DEFAULT_TIERLIST_NAME, unTiered);
+    this(DEFAULT_TIER_LIST_NAME, unTiered);
   }
 
   /**
@@ -241,7 +241,7 @@ public class TierList {
       return;
     }
 
-    if (tiers.indexOf(toTier) == -1)
+    if (!tiers.contains(toTier))
       throw new TierNotFoundException(
           "--- Could not add " + element + " to tier: " + toTier + " as it doesn't exists ---");
 
@@ -297,8 +297,7 @@ public class TierList {
         .filter(t -> t.contains(element))
         .findFirst();
 
-    if (potentialTier.isPresent())
-      potentialTier.get().remove(element);
+      potentialTier.ifPresent(tier -> tier.remove(element));
   }
 
   public void removeAllElements(Set<TierElement> elements) {
@@ -480,7 +479,7 @@ public class TierList {
     Objects.requireNonNull(tierHeader);
     var tier = tiers.get(tierIndex);
     tier.setName(tierHeader.name());
-    tier.setColor(tierHeader.color().toString());
+    tier.setColor(tierHeader.color());
   }
 
   public String getTierListName() {

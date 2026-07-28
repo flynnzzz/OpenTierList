@@ -29,7 +29,7 @@ public class TierElementTest {
   }
 
   @After
-  public void tearDown() throws Exception {
+  public void tearDown() {
     defaultTierElement = null;
     el1 = null;
     el2 = null;

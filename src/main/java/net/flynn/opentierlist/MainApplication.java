@@ -15,7 +15,7 @@ public class MainApplication extends Application {
   public void start(Stage stage) throws Exception {
 
     var controller = TierListController.ofDefaultTiers();
-    stage.setTitle(TierList.DEFAULT_TIERLIST_NAME);
+    stage.setTitle(TierList.DEFAULT_TIER_LIST_NAME);
 
     BorderPane root = new MainPane(controller, stage);
     Scene scene = new Scene(root);
