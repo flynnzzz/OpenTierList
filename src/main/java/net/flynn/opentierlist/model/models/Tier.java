@@ -105,10 +105,8 @@ public class Tier {
    * @return true if successful
    */
   public boolean add(TierElement element) {
-    var added = tiered.add(element);
-    if (added)
-      element.changeTo(TieredStatus.TIERED);
-    return added;
+    element.changeTo(TieredStatus.TIERED);
+    return tiered.add(element);
   }
 
   public boolean remove(TierElement element) throws TierElementNotFoundException {

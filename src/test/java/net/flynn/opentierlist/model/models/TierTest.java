@@ -20,18 +20,20 @@ public class TierTest {
 
     @Before
     public void setUp() throws Exception {
+
         elm1 = new TierElement();
         el0 = new TierElement();
         el1 = new TierElement("elementName1");
         el2 = new TierElement("elementName2");
-        el3 = new TierElement("elementName3", "uri2");
-        el4 = new TierElement(TieredStatus.TIERED, "elementName4", "uri3");
+        el3 = new TierElement("elementName3");
+        el4 = new TierElement("elementName4");
 
         defaultTier = new Tier();
         a = new Tier("a");
         b = new Tier("b", Color.GREEN.toString());
         c = new Tier("c", Color.RED.toString(), new ArrayList<>(List.of(el1,el2,el3,el4)));
         d = new Tier("d", Color.BLUE.toString());
+
     }
 
     @After
@@ -45,6 +47,7 @@ public class TierTest {
 
     @Test
     public void add() {
+
         assertEquals(0, a.elementsCount());
         assertEquals(TieredStatus.UNTIERED, elm1.getStatus());
 
@@ -59,10 +62,12 @@ public class TierTest {
 
         assertEquals(TieredStatus.TIERED, a.getTiered().getFirst().getStatus());
         assertEquals(TieredStatus.TIERED, a.getTiered().get(1).getStatus());
+
     }
 
     @Test
     public void remove() {
+
         assertThrows(TierElementNotFoundException.class, () -> b.remove(el1));
         assertThrows(TierElementNotFoundException.class, () -> b.remove(100));
 
@@ -78,6 +83,7 @@ public class TierTest {
         for (var element : a.getTiered()) assertTrue(a.remove(element));
 
         assertEquals(0, a.elementsCount());
+
     }
 
     @Test
@@ -203,6 +209,7 @@ public class TierTest {
 
     @Test
     public void moveIndex() {
+
         final int secondLastIndex = c.elementsCount() - 2, lastIndex = c.elementsCount() - 1;
 
         var first = c.getTiered().getFirst();
@@ -262,33 +269,72 @@ public class TierTest {
 
     @Test
     public void testSetName() {
+
+        assertEquals("New Tier", defaultTier.getName());
+        defaultTier.setName("setTest1");
+        assertEquals("setTest1", defaultTier.getName());
+        defaultTier.setName("setTest2");
+        assertEquals("setTest2", defaultTier.getName());
+
+        assertThrows(IllegalArgumentException.class, () -> defaultTier.setName(""));
+        assertThrows(IllegalArgumentException.class, () -> defaultTier.setName(" "));
+        assertThrows(IllegalArgumentException.class, () -> defaultTier.setName(System.lineSeparator()));
+
     }
 
     @Test
     public void setColor() {
-    }
 
-    @Test
-    public void testGetName() {
-    }
+        assertEquals(Color.GRAY.toString(), defaultTier.getColor());
+        defaultTier.setColor(Color.RED.toString());
+        assertEquals(Color.RED.toString(), defaultTier.getColor());
+        defaultTier.setColor(Color.rgb(3, 2, 1).toString());
+        assertEquals(Color.rgb(3, 2, 1).toString(), defaultTier.getColor());
 
-    @Test
-    public void getColor() {
+        assertThrows(IllegalArgumentException.class, () -> defaultTier.setColor(""));
+        assertThrows(IllegalArgumentException.class, () -> defaultTier.setColor("invalid color"));
+        assertThrows(IllegalArgumentException.class, () -> defaultTier.setColor(System.lineSeparator()));
+
     }
 
     @Test
     public void getTiered() {
+
+        assertEquals(a.getTiered(), List.of());
+        assertEquals(b.getTiered(), List.of());
+        assertEquals(c.getTiered(), List.of(el1, el2, el3, el4));
+        assertEquals(d.getTiered(), List.of());
+        assertThrows(UnsupportedOperationException.class, () -> c.getTiered().removeFirst());
+
     }
 
     @Test
     public void testHashCode() {
+
+        assertNotEquals(a.hashCode(), a.copy().hashCode());
+        assertNotEquals(b.hashCode(), b.copy().hashCode());
+        assertNotEquals(c.hashCode(), c.copy().hashCode());
+        assertNotEquals(d.hashCode(), d.copy().hashCode());
+
     }
 
     @Test
     public void testEquals() {
+
+        assertNotEquals(a, a.copy());
+        assertNotEquals(b, b.copy());
+        assertNotEquals(c, c.copy());
+        assertNotEquals(d, d.copy());
+
     }
 
     @Test
     public void equalsTier() {
+
+        assertTrue(a.equalsTier(a.copy()));
+        assertTrue(b.equalsTier(b.copy()));
+        assertTrue(c.equalsTier(c.copy()));
+        assertTrue(d.equalsTier(d.copy()));
+
     }
 }

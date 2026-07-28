@@ -108,26 +108,6 @@ public class TierList {
 
   /**
    * Ranks a {@link TierElement}
-   * 
-   * @param unTiered  element to rank
-   * @param tierIndex tier to rank to
-   * @throws TierNotFoundException        if tier doesn't exist
-   * @throws TierElementNotFoundException if tier element doesn't exist
-   * @throws IllegalArgumentException     if the element is already tiered
-   */
-  public void tier(TierElement unTiered, int tierIndex) throws TierNotFoundException, TierElementNotFoundException {
-
-    if (unTiered.getStatus() != TieredStatus.UNTIERED)
-      throw new IllegalArgumentException("--- Cannot tier: " + unTiered + " as it's already tiered ---");
-
-    removeElement(unTiered);
-    addElement(unTiered, tiers.get(tierIndex));
-
-    unTiered.changeTo(TieredStatus.TIERED);
-  }
-
-  /**
-   * Ranks a {@link TierElement}
    *
    * @param unTiered element to rank
    * @param tier     tier to rank to
@@ -162,6 +142,27 @@ public class TierList {
       throws TierNotFoundException, TierElementNotFoundException {
     tier(unTiered, tier);
     tier.move(unTiered, position);
+  }
+
+  /**
+   * Ranks a {@link TierElement}
+   *
+   * @param unTiered  element to rank
+   * @param tierIndex tier to rank to
+   * @throws TierNotFoundException        if tier doesn't exist
+   * @throws TierElementNotFoundException if tier element doesn't exist
+   * @throws IllegalArgumentException     if the element is already tiered
+   */
+  @Deprecated
+  public void tier(TierElement unTiered, int tierIndex) throws TierNotFoundException, TierElementNotFoundException {
+
+    if (unTiered.getStatus() != TieredStatus.UNTIERED)
+      throw new IllegalArgumentException("--- Cannot tier: " + unTiered + " as it's already tiered ---");
+
+    removeElement(unTiered);
+    addElement(unTiered, tiers.get(tierIndex));
+
+    unTiered.changeTo(TieredStatus.TIERED);
   }
 
   /**
@@ -297,7 +298,11 @@ public class TierList {
         .filter(t -> t.contains(element))
         .findFirst();
 
-      potentialTier.ifPresent(tier -> tier.remove(element));
+    potentialTier.ifPresentOrElse(
+            tier -> tier.remove(element),
+            () -> {
+              throw new TierElementNotFoundException("--- No element: " + element + " to remove ---");
+            });
   }
 
   public void removeAllElements(Set<TierElement> elements) {
