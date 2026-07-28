@@ -59,6 +59,15 @@ public interface TierListController {
    *
    * @param unTiered element to rank
    * @param toTier   destination
+   * @param position destination position
+   */
+  void tier(TierElement unTiered, Tier toTier, TierElement position);
+
+  /**
+   * Rank an untiered element to a specified position
+   *
+   * @param unTiered element to rank
+   * @param toTier   destination
    * @param toIndex  position
    */
   void tier(TierElement unTiered, Tier toTier, int toIndex);
@@ -69,6 +78,14 @@ public interface TierListController {
    * @param tiered element to unrank
    */
   void unTier(TierElement tiered);
+
+  /**
+   * Unrank an tiered element to a speficied position
+   *
+   * @param tiered   element to unrank
+   * @param position destination position
+   */
+  void unTier(TierElement tiered, TierElement position);
 
   /**
    * Unrank an tiered element to a speficied position
@@ -104,14 +121,14 @@ public interface TierListController {
    *
    * @param tier tier to delete
    */
-  void deleteTier(Tier tier);
+  void removeTier(Tier tier);
 
   /**
    * Remove an element from the tier list
    *
    * @param element to delete
    */
-  void deleteTierElement(TierElement element);
+  void removeElement(TierElement element);
 
   /**
    * Remove an unranked element from the tier list
@@ -161,6 +178,32 @@ public interface TierListController {
    */
   @Deprecated
   void appendTiered(TierElement tiered, Tier toTier);
+
+  /**
+   * Move and append a ranked element to a specified tier
+   *
+   * @param tiered element to append
+   * @param toTier destination
+   */
+  void moveElement(TierElement tiered, Tier toTier);
+
+  /**
+   * Move and a ranked element to a specified tier
+   *
+   * @param element  to move
+   * @param toTier   destination
+   * @param position to move to
+   */
+  void moveElement(TierElement element, Tier toTier, TierElement position);
+
+  /**
+   * Move and a ranked element to a specified tier
+   *
+   * @param element to move
+   * @param toTier  destination
+   * @param index   to move to
+   */
+  void moveElement(TierElement element, Tier toTier, int index);
 
   /**
    * Move a ranked element to a specified tier and position

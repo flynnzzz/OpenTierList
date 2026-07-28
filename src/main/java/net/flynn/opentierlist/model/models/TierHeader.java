@@ -10,6 +10,13 @@ import javafx.scene.paint.Color;
  */
 public record TierHeader(String name, String color) implements Comparable<TierHeader> {
 
+  public TierHeader {
+    if (name.isBlank())
+      throw new IllegalArgumentException("--- Tier name cannot be blank ---");
+    if (color.isBlank())
+      throw new IllegalArgumentException("--- Tier color string cannot be blank ---");
+  }
+
   @Override
   public int compareTo(TierHeader o) {
     return name.compareTo(o.name());

@@ -7,6 +7,7 @@ import javafx.geometry.Pos;
 import javafx.scene.control.ScrollPane;
 import net.flynn.opentierlist.controller.TierListController;
 import net.flynn.opentierlist.model.enums.TieredStatus;
+import net.flynn.opentierlist.model.models.Tier;
 import net.flynn.opentierlist.model.models.TierElement;
 
 /**
@@ -18,20 +19,17 @@ public class ScrollPaneUnTiered extends ScrollPane {
   // ----- panels -----//
   private final FlowPaneElements unTieredPane;
 
-  private final TierListController controller;
-
   public ScrollPaneUnTiered(MainPane parent, TierListController controller) {
-    this.controller = controller;
 
     // ----- TierElementsPane's on 'drag dropped' behaviour -----//
-    BiConsumer<TierElement, TierElement> onDragDropped = (TierElement s, TierElement t) -> {
-      switch (s.getStatus()) {
+    BiConsumer<TierElement, TierElement> onDragDropped = (src, dest) -> {
+      switch (src.getStatus()) {
         case TieredStatus.UNTIERED: {
-          this.controller.moveUnTiered(s, t);
+          controller.moveElement(src, Tier.UNTIERED, dest);
           break;
         }
         case TieredStatus.TIERED: {
-          this.controller.unTier(s, controller.getUnTiered().indexOf(t));
+          controller.unTier(src, dest);
           break;
         }
         default: {

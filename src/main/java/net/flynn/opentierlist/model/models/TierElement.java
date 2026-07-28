@@ -177,7 +177,7 @@ public class TierElement {
    * @param tierElement tier element to compare to
    * @return true if names, resource paths and statuses match
    */
-  public boolean equalsTier(TierElement tierElement) {
+  public boolean equalsElement(TierElement tierElement) {
     if (this == tierElement) {
       return true;
     }

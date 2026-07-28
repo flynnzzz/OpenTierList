@@ -85,17 +85,17 @@ public class HBoxTier extends HBox {
     this.editTierButton = new Button();
 
     // ----- TierElementsPane's on 'drag dropped' behaviour -----//
-    BiConsumer<TierElement, TierElement> onDragDropped = (element, t) -> {
-      switch (element.getStatus()) {
+    BiConsumer<TierElement, TierElement> onDragDropped = (src, dest) -> {
+      switch (src.getStatus()) {
         case TieredStatus.TIERED: {
-          Optional<Tier> potentialTargetTier = controller.getTierByElement(t);
-          potentialTargetTier.ifPresent(value -> controller.moveTiered(element, value, t));
+          Optional<Tier> potentialTargetTier = controller.getTierByElement(dest);
+          potentialTargetTier.ifPresent(value -> controller.moveElement(src, value, dest));
           break;
         }
         case TieredStatus.UNTIERED: {
-          Optional<Tier> potentialTargetTier = controller.getTierByElement(t);
+          Optional<Tier> potentialTargetTier = controller.getTierByElement(dest);
           potentialTargetTier
-              .ifPresent(targetTier -> controller.tier(element, targetTier, targetTier.getTiered().indexOf(t)));
+              .ifPresent(targetTier -> controller.tier(src, targetTier, dest));
           break;
         }
         default: {
@@ -170,7 +170,7 @@ public class HBoxTier extends HBox {
     delete.setOnAction(_ -> {
       tier.getTiered().forEach(controller::unTier);
 
-      controller.deleteTier(tier);
+      controller.removeTier(tier);
       parent.updateTierList();
     });
 

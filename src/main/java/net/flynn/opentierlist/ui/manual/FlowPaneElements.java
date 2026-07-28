@@ -30,7 +30,6 @@ import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.paint.Paint;
 import net.flynn.opentierlist.controller.TierListController;
-import net.flynn.opentierlist.model.enums.TieredStatus;
 import net.flynn.opentierlist.model.models.Tier;
 import net.flynn.opentierlist.model.models.TierElement;
 
@@ -74,7 +73,7 @@ public class FlowPaneElements extends FlowPane {
 
   public FlowPaneElements(ScrollPaneTiers grandparent, TierListController controller, List<TierElement> elements,
       BiConsumer<TierElement, TierElement> onDragDropped) {
-    this(grandparent, controller, elements, null, onDragDropped);
+    this(grandparent, controller, elements, Tier.UNTIERED, onDragDropped);
   }
 
   private void setupImage(ImageView imageViewer) {
@@ -91,7 +90,7 @@ public class FlowPaneElements extends FlowPane {
 
         deleteImageMenu.setOnAction(_ -> {
           if (imageViewer.getUserData() instanceof TierElement element) {
-            controller.deleteTierElement(element);
+            controller.removeElement(element);
             this.getChildren().remove(imageViewer);
             updateImages();
           }
@@ -324,7 +323,7 @@ public class FlowPaneElements extends FlowPane {
       this.setPadding(Insets.EMPTY);
       var source = potentialSource.get();
 
-      updateModel(source);
+      controller.moveElement(source, this.tier);
 
       updateImages();
 
@@ -332,30 +331,6 @@ public class FlowPaneElements extends FlowPane {
     }
     event.setDropCompleted(success);
     event.consume();
-  }
-
-  private void updateModel(TierElement sourceElement) {
-    var status = sourceElement.getStatus();
-    switch (status) {
-      case TieredStatus.TIERED: {
-        if (tier != null)
-          controller.appendTiered(sourceElement, tier);
-        else
-          controller.unTier(sourceElement);
-      }
-        break;
-      case TieredStatus.UNTIERED: {
-        if (tier != null)
-          controller.tier(sourceElement, tier);
-        else
-          controller.moveUnTiered(sourceElement, controller.getUnTiered().getLast());
-      }
-        break;
-      default: {
-        System.err.println("--- Unexpected error, exiting ---");
-        System.exit(-1);
-      }
-    }
   }
 
   private void setTierElementsPaneBorder(String color) {

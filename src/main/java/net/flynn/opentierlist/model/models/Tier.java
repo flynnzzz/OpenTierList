@@ -122,18 +122,18 @@ public class Tier {
     }
   }
 
-  public void swap(TierElement a, TierElement b) throws TierElementNotFoundException {
+  public void swap(TierElement src, TierElement dest) throws TierElementNotFoundException {
     try {
-      swap(tiered.indexOf(a), tiered.indexOf(b));
+      swap(tiered.indexOf(src), tiered.indexOf(dest));
     } catch (IndexOutOfBoundsException e) {
       throw new TierElementNotFoundException();
     }
 
   }
 
-  public void swap(int a, int b) throws TierElementNotFoundException {
+  public void swap(int src, int dest) throws TierElementNotFoundException {
     try {
-      Collections.swap(tiered, a, b);
+      Collections.swap(tiered, src, dest);
     } catch (IndexOutOfBoundsException e) {
       throw new TierElementNotFoundException();
     }
@@ -143,16 +143,37 @@ public class Tier {
     return tiered.contains(element);
   }
 
+  public int elementsCount() {
+    return tiered.size();
+  }
+
+  /**
+   * Moves an element to a certain position, automatically shifting all the others
+   * 
+   * @param src  element to move
+   * @param dest destination
+   * @throws TierElementNotFoundException if element is not found
+   */
+  public void move(TierElement src, TierElement dest) throws TierElementNotFoundException {
+    if (!tiered.contains(src))
+      throw new TierElementNotFoundException("--- Element to move not found: " + src + " ---");
+    if (!tiered.contains(dest))
+      throw new TierElementNotFoundException("--- Element to move not found: " + src + " ---");
+
+    tiered.remove(src);
+    tiered.add(indexOf(dest), src);
+  }
+
   /**
    * Moves an element to a certain index, automatically shifting all the others
    * 
-   * @param toIndex destination index
    * @param element element to move
+   * @param toIndex destination index
    * @throws TierElementNotFoundException if element is not found
    */
-  public void moveTo(TierElement element, int toIndex) throws TierElementNotFoundException {
+  public void move(TierElement element, int toIndex) throws TierElementNotFoundException {
     if (!tiered.contains(element) || toIndex > tiered.size())
-      throw new TierElementNotFoundException();
+      throw new TierElementNotFoundException("--- Element to move not found: " + element + " ---");
 
     tiered.remove(element);
     tiered.add(toIndex, element);
@@ -160,6 +181,10 @@ public class Tier {
 
   public Tier copy() {
     return new Tier(header.name(), header.color());
+  }
+
+  public int indexOf(TierElement element) {
+    return tiered.indexOf(element);
   }
 
   // ----- setters and getters -----//
