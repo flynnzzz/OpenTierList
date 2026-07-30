@@ -140,6 +140,16 @@ public class TierList {
    */
   public void tierInsert(TierElement unTiered, Tier tier, TierElement position)
       throws TierNotFoundException, TierElementNotFoundException {
+    if (!tiers.contains(tier))
+      throw new TierNotFoundException(
+              "--- Tier not found: " + tier + " ---"
+      );
+
+    if (!tier.contains(position))
+      throw new TierElementNotFoundException(
+              "--- Position to move to: " + position + " doesn't exist ---"
+      );
+
     tier(unTiered, tier);
     tier.move(unTiered, position);
   }
@@ -177,8 +187,18 @@ public class TierList {
    */
   public void tierInsert(TierElement unTiered, Tier tier, int index)
       throws TierNotFoundException, TierElementNotFoundException {
-    tier(unTiered, tier);
-    tier.move(unTiered, index);
+
+    if (!this.contains(tier))
+      throw new TierNotFoundException(
+              "--- Tier not found: " + tier + " ---"
+      );
+
+    try {
+      tierInsert(unTiered, tier, tier.getTiered().get(index));
+    }
+    catch (IndexOutOfBoundsException _) {
+      throw new TierElementNotFoundException("--- Index to move to: " + index + " ---");
+    }
   }
 
   /**
@@ -226,6 +246,13 @@ public class TierList {
    */
   public void unTierInsert(TierElement tiered, int index)
       throws TierNotFoundException, TierElementNotFoundException {
+
+    if (index > unTiered.size()) {
+      throw new TierElementNotFoundException(
+              "--- Destination index out of bounds: " + index + " ---"
+      );
+    }
+
     unTier(tiered);
     moveElement(tiered, Tier.UNTIERED, index);
   }
@@ -249,10 +276,6 @@ public class TierList {
     toTier.add(element);
   }
 
-  public void addAllElements(Set<TierElement> elements, Tier toTier) {
-    elements.forEach(e -> addElement(e, toTier));
-  }
-
   public void addElement(TierElement element, Tier toTier, TierElement position) {
     addElement(element, toTier);
     toTier.move(element, toTier.getTiered().indexOf(position));
@@ -261,6 +284,10 @@ public class TierList {
   public void addElement(TierElement element, Tier toTier, int index) {
     addElement(element, toTier);
     toTier.move(element, index);
+  }
+
+  public void addAllElements(List<TierElement> elements, Tier toTier) {
+    elements.forEach(e -> addElement(e, toTier));
   }
 
   public void removeTier(int index) throws TierNotFoundException {
@@ -287,7 +314,7 @@ public class TierList {
     }
   }
 
-  public void removeElement(TierElement element) {
+  public void removeElement(TierElement element) throws TierElementNotFoundException {
 
     if (unTiered.contains(element)) {
       unTiered.remove(element);
@@ -439,7 +466,7 @@ public class TierList {
     if (!this.contains(element))
       throw new TierElementNotFoundException("--- Element to move: " + element + " not found ---");
 
-    if (!this.contains(toTier))
+    if (!this.contains(toTier) && !toTier.equalsTier(Tier.UNTIERED))
       throw new TierNotFoundException("--- Tier to move to: " + toTier + " not found ---");
 
     removeElement(element);
@@ -451,15 +478,33 @@ public class TierList {
       throw new TierElementNotFoundException("--- Position to move to: " + position + " not found ---");
 
     moveElement(element, toTier);
-    toTier.move(element, toTier.indexOf(position));
+
+    final int index = toTier.equalsTier(Tier.UNTIERED) ?
+            getUnTiered().indexOf(position) : toTier.indexOf(position);
+
+    if (!toTier.equalsTier(Tier.UNTIERED))
+      toTier.move(element, index);
+    else {
+      unTiered.remove(element);
+      unTiered.add(index, element);
+    }
   }
 
   public void moveElement(TierElement element, Tier toTier, int index) {
-    if (toTier.elementsCount() <= index)
+    final var destination = toTier.equalsTier(Tier.UNTIERED) ?
+            unTiered : toTier.getTiered();
+
+    if (destination.size() < index)
       throw new TierElementNotFoundException("--- Index to move to: " + index + " not found ---");
 
-    moveElement(element, toTier);
-    toTier.move(element, index);
+    if (index == destination.size()) {
+      addElement(element, toTier);
+      return;
+    }
+
+    final TierElement position = destination.get(index);
+
+    moveElement(element, toTier, position);
   }
 
   // ----- setters and getters -----//
@@ -505,6 +550,10 @@ public class TierList {
 
   public List<Tier> getTiers() {
     return List.copyOf(tiers);
+  }
+
+  public Tier getTier(int index) {
+    return tiers.get(index);
   }
 
   // ----- hashCode, equals and toString -----//

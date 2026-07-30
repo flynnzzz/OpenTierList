@@ -158,7 +158,7 @@ public class FlowPaneElements extends FlowPane {
   }
 
   public void updateImages() {
-    elements = tier != null ? new ArrayList<>(tier.getTiered()) : new ArrayList<>(controller.getUnTiered());
+    elements = !tier.equalsTier(Tier.UNTIERED) ? new ArrayList<>(tier.getTiered()) : new ArrayList<>(controller.getUnTiered());
 
     images.clear();
 

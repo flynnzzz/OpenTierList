@@ -105,7 +105,6 @@ public class Tier {
    * @return true if successful
    */
   public boolean add(TierElement element) {
-    element.changeTo(TieredStatus.TIERED);
     return tiered.add(element);
   }
 
@@ -307,8 +306,7 @@ public class Tier {
   }
 
   private String toStringCompact() {
-    return getHeader().name() + ":" + System.lineSeparator() +
-        toStringElements(getTiered());
+    return getHeader().name() + ": " + toStringElements(getTiered());
   }
 
   private String toStringExtended() {

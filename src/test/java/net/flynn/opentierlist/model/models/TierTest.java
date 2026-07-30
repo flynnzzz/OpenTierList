@@ -60,8 +60,8 @@ public class TierTest {
         a.add(el0);
         assertEquals(3, a.elementsCount());
 
-        assertEquals(TieredStatus.TIERED, a.getTiered().getFirst().getStatus());
-        assertEquals(TieredStatus.TIERED, a.getTiered().get(1).getStatus());
+        assertEquals(TieredStatus.UNTIERED, a.getTiered().getFirst().getStatus());
+        assertEquals(TieredStatus.UNTIERED, a.getTiered().get(1).getStatus());
 
     }
 

@@ -7,8 +7,10 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import static org.junit.Assert.*;
 
@@ -16,7 +18,7 @@ public class TierListTest {
 
     TierList tierList;
     Tier t1, t2, t3, t4;
-    TierElement el1, el2, el3, el4, el0, elm1;
+    TierElement el1, el2, el3, el4;
     List<TierElement> ut;
 
     @Before
@@ -48,17 +50,24 @@ public class TierListTest {
     @Test
     public void tier() {
 
+        // after tiering an element its status should be changed to 'TIERED'
         assertFalse(el1.isTiered());
         tierList.tier(el1, t1);
         assertTrue(el1.isTiered());
+        assertEquals(List.of(el1), t1.getTiered());
+        assertEquals(List.of(el2, el3, el4), tierList.getUnTiered());
 
         assertFalse(el2.isTiered());
         tierList.tier(el2, t1);
         assertTrue(el2.isTiered());
+        assertEquals(List.of(el1, el2), t1.getTiered());
+        assertEquals(List.of(el3, el4), tierList.getUnTiered());
 
         assertFalse(el3.isTiered());
         tierList.tier(el3, t3);
         assertTrue(el3.isTiered());
+        assertEquals(List.of(el3), t3.getTiered());
+        assertEquals(List.of(el4), tierList.getUnTiered());
 
         assertThrows(IllegalArgumentException.class, () -> tierList.tier(el1, t1)) ;
         assertThrows(IllegalArgumentException.class, () -> tierList.tier(el2, t1)) ;
@@ -72,51 +81,340 @@ public class TierListTest {
     }
 
     @Test
-    public void tierInsert() {
+    public void tierInsertPointer() {
+
+        assertThrows(TierElementNotFoundException.class, () -> tierList.tierInsert(el1, t1, el1));
+
+        tierList.removeElement(el1);
+        tierList.removeElement(el2);
+
+        tierList.addElement(el1, t1);
+        tierList.addElement(el2, t1);
+        el1.changeTo(TieredStatus.TIERED);
+        el2.changeTo(TieredStatus.TIERED);
+
+        // t1: el1, el2
+        assertEquals(List.of(el1, el2), t1.getTiered());
+        assertEquals(List.of(el3, el4), tierList.getUnTiered());
+
+        tierList.tierInsert(el3, t1, el1);
+        // t1: el3, el1, el2
+        assertEquals(List.of(el3, el1, el2), t1.getTiered());
+        assertEquals(List.of(el4), tierList.getUnTiered());
+
+        assertThrows(TierNotFoundException.class, () -> tierList.tierInsert(el4, new Tier(), el1));
+
+        tierList.tierInsert(el4, t1, el1);
+        // t1: el3, el4, el1, el2
+        assertEquals(List.of(el3, el4, el1, el2), t1.getTiered());
+        assertEquals(List.of(), tierList.getUnTiered());
+
+        assertThrows(IllegalArgumentException.class, () -> tierList.tierInsert(el1, t1, 0));
+        assertThrows(IllegalArgumentException.class, () -> tierList.tierInsert(el2, t1, 0));
+        assertThrows(IllegalArgumentException.class, () -> tierList.tierInsert(el3, t1, 0));
+        assertThrows(IllegalArgumentException.class, () -> tierList.tierInsert(el4, t1, 0));
+
     }
 
     @Test
-    public void testTierInsert() {
+    public void tierInsertIndex() {
+
+        assertThrows(TierElementNotFoundException.class, () -> tierList.tierInsert(el1, t1, 0));
+        assertThrows(TierElementNotFoundException.class, () -> tierList.tierInsert(el1, t1, 1));
+        assertThrows(TierElementNotFoundException.class, () -> tierList.tierInsert(el1, t1, -1));
+
+        tierList.removeElement(el1);
+        tierList.removeElement(el2);
+
+        tierList.addElement(el1, t1);
+        tierList.addElement(el2, t1);
+
+        el1.changeTo(TieredStatus.TIERED);
+        el2.changeTo(TieredStatus.TIERED);
+
+        // t1: el1, el2
+        assertEquals(List.of(el1, el2), t1.getTiered());
+        assertEquals(List.of(el3, el4), tierList.getUnTiered());
+
+        tierList.tierInsert(el3, t1, 1);
+        // t1: el1, el3, el2
+        assertEquals(List.of(el1, el3, el2), t1.getTiered());
+        assertEquals(List.of(el4), tierList.getUnTiered());
+
+        assertThrows(TierNotFoundException.class, () -> tierList.tierInsert(el4, new Tier(), 0));
+        assertThrows(TierNotFoundException.class, () -> tierList.tierInsert(el4, new Tier(), -1));
+
+        tierList.tierInsert(el4, t1, 0);
+        // t1: el4, el1, el3, el2
+        assertEquals(List.of(el4, el1, el3, el2), t1.getTiered());
+        assertEquals(List.of(), tierList.getUnTiered());
+
+        assertTrue(
+                tierList.getTiers()
+                        .stream()
+                        .map(Tier::getTiered)
+                        .flatMap(List::stream)
+                        .map(TierElement::getStatus)
+                        .allMatch(
+                                e -> e.equals(TieredStatus.TIERED)
+                        )
+        );
+
+        assertThrows(IllegalArgumentException.class, () -> tierList.tierInsert(el1, t1, 0));
+        assertThrows(IllegalArgumentException.class, () -> tierList.tierInsert(el2, t1, 0));
+
     }
 
     @Test
-    public void unTier() {
+    public void unTier() throws FileNotFoundException {
+
+        final var nonExistent = new TierElement();
+        nonExistent.changeTo(TieredStatus.TIERED);
+
+        assertThrows(TierElementNotFoundException.class, () -> tierList.unTier(nonExistent));
+        assertThrows(IllegalArgumentException.class, () -> tierList.unTier(el1));
+
+        tierList.tier(el1, t1);
+        tierList.tier(el2, t1);
+        tierList.tier(el3, t2);
+        tierList.tier(el4, t3);
+
+        assertTrue(
+                tierList.getTiers()
+                .stream()
+                .map(Tier::getTiered)
+                .flatMap(List::stream)
+                .map(TierElement::getStatus)
+                .allMatch(
+                        e -> e.equals(TieredStatus.TIERED)
+                )
+        );
+
+        assertEquals(List.of(el1, el2), t1.getTiered());
+        assertEquals(List.of(el3), t2.getTiered());
+        assertEquals(List.of(el4), t3.getTiered());
+        assertEquals(List.of(), tierList.getUnTiered());
+
+        tierList.unTier(el1);
+        assertEquals(List.of(el2), t1.getTiered());
+        assertEquals(List.of(el1), tierList.getUnTiered());
+
+        tierList.unTier(el2);
+        assertEquals(List.of(), t1.getTiered());
+        assertEquals(List.of(el1, el2), tierList.getUnTiered());
+
+        tierList.unTier(el3);
+        assertEquals(List.of(), t2.getTiered());
+        assertEquals(List.of(el1, el2, el3), tierList.getUnTiered());
+
+        tierList.unTier(el4);
+        assertEquals(List.of(), t3.getTiered());
+        assertEquals(List.of(el1, el2, el3, el4), tierList.getUnTiered());
+
+        assertTrue(
+                tierList.getTiers()
+                        .stream()
+                        .map(Tier::getTiered)
+                        .flatMap(List::stream)
+                        .map(TierElement::getStatus)
+                        .allMatch(
+                                e -> e.equals(TieredStatus.UNTIERED)
+                        )
+        );
+
     }
 
     @Test
-    public void unTierInsert() {
+    public void unTierInsertPointer() throws FileNotFoundException {
+
+        final var nonExistent = new TierElement();
+        nonExistent.changeTo(TieredStatus.TIERED);
+
+        assertThrows(TierElementNotFoundException.class, () -> tierList.unTierInsert(nonExistent, el1));
+        assertThrows(IllegalArgumentException.class, () -> tierList.unTierInsert(el1, el2));
+
+        tierList.tier(el1, t1);
+        tierList.tier(el2, t1);
+        tierList.tier(el3, t2);
+        tierList.tier(el4, t3);
+
+        assertTrue(
+                tierList.getTiers()
+                        .stream()
+                        .map(Tier::getTiered)
+                        .flatMap(List::stream)
+                        .map(TierElement::getStatus)
+                        .allMatch(
+                                e -> e.equals(TieredStatus.TIERED)
+                        )
+        );
+
+        assertEquals(List.of(el1, el2), t1.getTiered());
+        assertEquals(List.of(el3), t2.getTiered());
+        assertEquals(List.of(el4), t3.getTiered());
+        assertEquals(List.of(), tierList.getUnTiered());
+
+        tierList.unTier(el1);
+        assertEquals(List.of(el2), t1.getTiered());
+        assertEquals(List.of(el1), tierList.getUnTiered());
+
+        tierList.unTierInsert(el2, el1);
+        assertEquals(List.of(), t1.getTiered());
+        assertEquals(List.of(el2, el1), tierList.getUnTiered());
+
+        tierList.unTierInsert(el3, el1);
+        assertEquals(List.of(), t2.getTiered());
+        assertEquals(List.of(el2, el3, el1), tierList.getUnTiered());
+
+        tierList.unTierInsert(el4, el2);
+        assertEquals(List.of(), t3.getTiered());
+        assertEquals(List.of(el4, el2, el3, el1), tierList.getUnTiered());
+
+        assertTrue(
+                tierList.getTiers()
+                        .stream()
+                        .map(Tier::getTiered)
+                        .flatMap(List::stream)
+                        .map(TierElement::getStatus)
+                        .allMatch(
+                                e -> e.equals(TieredStatus.UNTIERED)
+                        )
+        );
+
     }
 
     @Test
-    public void testUnTierInsert() {
+    public void unTierInsertIndex() throws FileNotFoundException {
+
+        final var nonExistent = new TierElement();
+        nonExistent.changeTo(TieredStatus.TIERED);
+
+        assertThrows(TierElementNotFoundException.class, () -> tierList.unTierInsert(nonExistent, 0));
+        assertThrows(IllegalArgumentException.class, () -> tierList.unTierInsert(el1, -1));
+
+        tierList.tier(el1, t1);
+        tierList.tier(el2, t1);
+        tierList.tier(el3, t2);
+        tierList.tier(el4, t3);
+
+        assertTrue(
+                tierList.getTiers()
+                        .stream()
+                        .map(Tier::getTiered)
+                        .flatMap(List::stream)
+                        .map(TierElement::getStatus)
+                        .allMatch(
+                                e -> e.equals(TieredStatus.TIERED)
+                        )
+        );
+
+        assertEquals(List.of(el1, el2), t1.getTiered());
+        assertEquals(List.of(el3), t2.getTiered());
+        assertEquals(List.of(el4), t3.getTiered());
+        assertEquals(List.of(), tierList.getUnTiered());
+
+        tierList.unTier(el1);
+        assertEquals(List.of(el2), t1.getTiered());
+        assertEquals(List.of(el1), tierList.getUnTiered());
+
+        assertThrows(TierElementNotFoundException.class, () -> tierList.unTierInsert(el2, 999));
+
+        tierList.unTierInsert(el2, 0);
+        assertEquals(List.of(), t1.getTiered());
+        assertEquals(List.of(el2, el1), tierList.getUnTiered());
+
+        tierList.unTierInsert(el3, 2);
+        assertEquals(List.of(), t2.getTiered());
+        assertEquals(List.of(el2, el1, el3), tierList.getUnTiered());
+
+        tierList.unTierInsert(el4, 1);
+        assertEquals(List.of(), t3.getTiered());
+        assertEquals(List.of(el2, el4, el1, el3), tierList.getUnTiered());
+
+        assertTrue(
+                tierList.getTiers()
+                        .stream()
+                        .map(Tier::getTiered)
+                        .flatMap(List::stream)
+                        .map(TierElement::getStatus)
+                        .allMatch(
+                                e -> e.equals(TieredStatus.UNTIERED)
+                        )
+        );
+
     }
 
     @Test
     public void addTier() {
+
+        tierList.addTier(t1);
+        assertEquals(List.of(t1, t2, t3, t4, t1), tierList.getTiers());
+        tierList.addTier(t2);
+        assertEquals(List.of(t1, t2, t3, t4, t1, t2), tierList.getTiers());
+
     }
 
     @Test
     public void addElement() {
+
+        tierList.removeAllElements(Set.of(el1, el2, el3, el4));
+
+        assertTrue(
+                tierList.getTiers()
+                        .stream()
+                        .map(Tier::getTiered)
+                        .flatMap(List::stream)
+                        .map(TierElement::getStatus)
+                        .allMatch(
+                                e -> e.equals(TieredStatus.UNTIERED)
+                        )
+        );
+
+        tierList.addElement(el1, Tier.UNTIERED);
+        assertEquals(List.of(el1), tierList.getUnTiered());
+        tierList.addElement(el2, Tier.UNTIERED);
+        assertEquals(List.of(el1, el2), tierList.getUnTiered());
+
+        tierList.addElement(el3, t1);
+        assertEquals(List.of(el3), t1.getTiered());
+        tierList.addElement(el4, t1);
+        assertEquals(List.of(el3, el4), t1.getTiered());
+
+        assertTrue(
+                tierList.getTiers()
+                        .stream()
+                        .map(Tier::getTiered)
+                        .flatMap(List::stream)
+                        .map(TierElement::getStatus)
+                        .allMatch(
+                                e -> e.equals(TieredStatus.UNTIERED)
+                        )
+        );
+
     }
 
     @Test
     public void addAllElements() {
+
+        tierList.addAllElements(List.of(el1, el2, el3, el4), t4);
+        assertEquals(List.of(el1, el2, el3, el4), t4.getTiered());
+
     }
 
     @Test
-    public void testAddElement() {
+    public void addElementPointer() {
     }
 
     @Test
-    public void testAddElement1() {
+    public void addElementIndex() {
     }
 
     @Test
-    public void removeTier() {
+    public void removeTierPointer() {
     }
 
     @Test
-    public void testRemoveTier() {
+    public void removeTierIndex() {
     }
 
     @Test
@@ -128,11 +426,11 @@ public class TierListTest {
     }
 
     @Test
-    public void swapTiers() {
+    public void swapTiersPointer() {
     }
 
     @Test
-    public void testSwapTiers() {
+    public void swapTiersIndex() {
     }
 
     @Test
@@ -152,11 +450,11 @@ public class TierListTest {
     }
 
     @Test
-    public void contains() {
+    public void containsPointer() {
     }
 
     @Test
-    public void testContains() {
+    public void containsIndex() {
     }
 
     @Test
@@ -172,11 +470,11 @@ public class TierListTest {
     }
 
     @Test
-    public void testMoveElement() {
+    public void moveElementPointer() {
     }
 
     @Test
-    public void testMoveElement1() {
+    public void moveElementIndex() {
     }
 
     @Test
