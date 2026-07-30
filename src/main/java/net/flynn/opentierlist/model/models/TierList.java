@@ -471,6 +471,9 @@ public class TierList {
 
     removeElement(element);
     addElement(element, toTier);
+
+    final var updatedStatus = toTier.equalsTier(Tier.UNTIERED) ? UNTIERED : TIERED;
+    element.changeTo(updatedStatus);
   }
 
   public void moveElement(TierElement element, Tier toTier, TierElement position) {
