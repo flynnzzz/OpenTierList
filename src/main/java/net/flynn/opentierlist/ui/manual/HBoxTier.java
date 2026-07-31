@@ -89,13 +89,14 @@ public class HBoxTier extends HBox {
       switch (src.getStatus()) {
         case TieredStatus.TIERED: {
           Optional<Tier> potentialTargetTier = controller.getTierByElement(dest);
-          potentialTargetTier.ifPresent(value -> controller.moveElement(src, value, dest));
+
+          potentialTargetTier.ifPresent(targetTier -> controller.moveElement(src, targetTier, dest));
           break;
         }
         case TieredStatus.UNTIERED: {
           Optional<Tier> potentialTargetTier = controller.getTierByElement(dest);
-          potentialTargetTier
-              .ifPresent(targetTier -> controller.tier(src, targetTier, dest));
+
+          potentialTargetTier.ifPresent(targetTier -> controller.tier(src, targetTier, dest));
           break;
         }
         default: {

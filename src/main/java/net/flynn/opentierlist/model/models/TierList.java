@@ -3,11 +3,7 @@ package net.flynn.opentierlist.model.models;
 import static net.flynn.opentierlist.model.enums.TieredStatus.TIERED;
 import static net.flynn.opentierlist.model.enums.TieredStatus.UNTIERED;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Stream;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -122,10 +118,8 @@ public class TierList {
     if (tier.equalsTier(Tier.UNTIERED))
       return;
 
-    removeElement(unTiered);
-    addElement(unTiered, tier);
+    moveElement(unTiered, tier);
 
-    unTiered.changeTo(TieredStatus.TIERED);
   }
 
   /**
@@ -150,8 +144,10 @@ public class TierList {
               "--- Position to move to: " + position + " doesn't exist ---"
       );
 
-    tier(unTiered, tier);
-    tier.move(unTiered, position);
+    if (unTiered.getStatus() != TieredStatus.UNTIERED)
+      throw new IllegalArgumentException("--- Cannot tier: " + unTiered + " as it's already tiered ---");
+
+    moveElement(unTiered, tier, position);
   }
 
   /**
@@ -169,10 +165,7 @@ public class TierList {
     if (unTiered.getStatus() != TieredStatus.UNTIERED)
       throw new IllegalArgumentException("--- Cannot tier: " + unTiered + " as it's already tiered ---");
 
-    removeElement(unTiered);
-    addElement(unTiered, tiers.get(tierIndex));
-
-    unTiered.changeTo(TieredStatus.TIERED);
+    moveElement(unTiered, tiers.get(tierIndex));
   }
 
   /**
@@ -214,10 +207,7 @@ public class TierList {
     if (tiered.getStatus() != TieredStatus.TIERED)
       throw new IllegalArgumentException("--- Cannot untier: " + tiered + " as it's already untiered ---");
 
-    removeElement(tiered);
-    addElement(tiered, Tier.UNTIERED);
-
-    tiered.changeTo(UNTIERED);
+    moveElement(tiered, Tier.UNTIERED);
   }
 
   /**
@@ -231,7 +221,10 @@ public class TierList {
    */
   public void unTierInsert(TierElement tiered, TierElement position)
       throws TierNotFoundException, TierElementNotFoundException {
-    unTier(tiered);
+
+    if (tiered.getStatus() != TieredStatus.TIERED)
+      throw new IllegalArgumentException("--- Cannot untier: " + tiered + " as it's already untiered ---");
+
     moveElement(tiered, Tier.UNTIERED, position);
   }
 
@@ -247,14 +240,16 @@ public class TierList {
   public void unTierInsert(TierElement tiered, int index)
       throws TierNotFoundException, TierElementNotFoundException {
 
-    if (index > unTiered.size()) {
+    if (index < 0 || index > unTiered.size()) {
       throw new TierElementNotFoundException(
               "--- Destination index out of bounds: " + index + " ---"
       );
     }
 
-    unTier(tiered);
-    moveElement(tiered, Tier.UNTIERED, index);
+    if (index == unTiered.size())
+      unTier(tiered);
+    else
+      unTierInsert(tiered, unTiered.get(index));
   }
 
   // ----- editing -----//
@@ -263,7 +258,8 @@ public class TierList {
     tiers.add(tier);
   }
 
-  public void addElement(TierElement element, Tier toTier) {
+  public void addElement(TierElement element, Tier toTier) throws TierNotFoundException {
+
     if (toTier.equalsTier(Tier.UNTIERED)) {
       unTiered.add(element);
       return;
@@ -271,22 +267,54 @@ public class TierList {
 
     if (!tiers.contains(toTier))
       throw new TierNotFoundException(
-          "--- Could not add " + element + " to tier: " + toTier + " as it doesn't exists ---");
+          "--- Could not add " + element + " to tier: " + toTier + " as it doesn't exists ---"
+      );
 
     toTier.add(element);
+
   }
 
-  public void addElement(TierElement element, Tier toTier, TierElement position) {
+  public void addElement(TierElement element, Tier toTier, TierElement position) throws TierNotFoundException, TierElementNotFoundException {
+
+    final var destination = toTier.equalsTier(Tier.UNTIERED) ? unTiered : toTier.getTiered();
+    final int index = destination.indexOf(position);
+
+    if (!destination.contains(position)) {
+      throw new TierElementNotFoundException("--- Position to move to: " + position + " doesn't exist ---");
+    }
+
     addElement(element, toTier);
-    toTier.move(element, toTier.getTiered().indexOf(position));
+
+    if (!toTier.equalsTier(Tier.UNTIERED))
+      toTier.move(element, destination.indexOf(position));
+    else {
+      destination.remove(element);
+      destination.add(index, element);
+    }
   }
 
-  public void addElement(TierElement element, Tier toTier, int index) {
-    addElement(element, toTier);
-    toTier.move(element, index);
+  public void addElement(TierElement element, Tier toTier, int index) throws TierNotFoundException, TierElementNotFoundException {
+
+    final var destination = toTier.equalsTier(Tier.UNTIERED) ? unTiered : toTier.getTiered();
+
+    if (index == destination.size() && toTier.equalsTier(Tier.UNTIERED)) {
+      destination.add(element);
+      return;
+    }
+    else if (index == destination.size() && !toTier.equalsTier(Tier.UNTIERED)){
+      toTier.add(element);
+      return;
+    }
+
+    try {
+      addElement(element, toTier, destination.get(index));
+    } catch (IndexOutOfBoundsException _) {
+      throw new TierElementNotFoundException("--- Element index is out of bounds: " + index + " ---");
+    }
+
   }
 
-  public void addAllElements(List<TierElement> elements, Tier toTier) {
+  public void addAllElements(List<TierElement> elements, Tier toTier) throws TierNotFoundException {
     elements.forEach(e -> addElement(e, toTier));
   }
 
@@ -298,19 +326,20 @@ public class TierList {
       throw new TierNotFoundException("--- Indexes out of bounds for removal, max = " + tiersQuantity() + " ---");
 
     } catch (UnsupportedOperationException _) {
-      throw new TierNotFoundException("--- Unsupported removel operation ---");
+      throw new TierNotFoundException("--- Unsupported removal operation ---");
     }
   }
 
   public void removeTier(Tier tier) throws TierNotFoundException {
     try {
-      tiers.remove(tier);
+      if (!tiers.remove(tier))
+        throw new TierNotFoundException("--- Tier to remove not found: " + tier + " ---");
 
     } catch (IndexOutOfBoundsException _) {
       throw new TierNotFoundException("--- Indexes out of bounds for removal, max = " + tiersQuantity() + " ---");
 
     } catch (UnsupportedOperationException _) {
-      throw new TierNotFoundException("--- Unsupported removel operation ---");
+      throw new TierNotFoundException("--- Unsupported removal operation ---");
     }
   }
 
@@ -353,20 +382,6 @@ public class TierList {
     }
   }
 
-  public void swapElements(TierElement src, TierElement dest) throws TierElementNotFoundException {
-
-    Tier srcTier = tierByElement(src), destTier = tierByElement(dest);
-    int srcIndex = srcTier.indexOf(src), destIndex = destTier.indexOf(dest);
-
-    removeAllElements(Set.of(src, dest));
-
-    srcTier.add(dest);
-    srcTier.move(dest, srcIndex);
-
-    destTier.add(src);
-    destTier.move(src, destIndex);
-  }
-
   // ----- utils -----//
 
   /**
@@ -391,10 +406,14 @@ public class TierList {
    * @throws TierNotFoundException if tier doesn't exist
    */
   public int indexOf(TierElement element) throws TierNotFoundException {
-    final var i = tiers.stream()
-        .filter(t -> t.contains(element))
-        .map(t -> t.getTiered().indexOf(element))
-        .findFirst();
+
+    final Optional<Integer> i = unTiered.contains(element) ?
+            Optional.of(unTiered.indexOf(element)) :
+            tiers.stream()
+                    .filter(t -> t.contains(element))
+                    .map(t -> t.getTiered().indexOf(element))
+                    .findFirst();
+
     if (i.isEmpty() || i.get() == -1)
       throw new TierNotFoundException(
           "--- Could not find index of tier: " + element.toString(TierStringFormat.COMPACT));
@@ -440,7 +459,10 @@ public class TierList {
 
   // ----- moving -----//
 
-  public void moveTier(Tier from, Tier to) throws TierNotFoundException {
+  public void moveTier(Tier from, Tier to) throws TierNotFoundException, UnsupportedOperationException {
+
+    if (from.equalsTier(Tier.UNTIERED) || to.equalsTier(Tier.UNTIERED))
+      throw new UnsupportedOperationException("--- Cannot move UNTIERED tier ---");
 
     int fromIndex, toIndex;
     if ((fromIndex = tiers.indexOf(from)) == -1)
@@ -480,10 +502,12 @@ public class TierList {
     if (!this.contains(position))
       throw new TierElementNotFoundException("--- Position to move to: " + position + " not found ---");
 
-    moveElement(element, toTier);
+    final var destination = toTier.equalsTier(Tier.UNTIERED) ?
+            getUnTiered() : toTier.getTiered();
 
-    final int index = toTier.equalsTier(Tier.UNTIERED) ?
-            getUnTiered().indexOf(position) : toTier.indexOf(position);
+    final int index = destination.indexOf(position);
+
+    moveElement(element, toTier);
 
     if (!toTier.equalsTier(Tier.UNTIERED))
       toTier.move(element, index);
@@ -497,11 +521,11 @@ public class TierList {
     final var destination = toTier.equalsTier(Tier.UNTIERED) ?
             unTiered : toTier.getTiered();
 
-    if (destination.size() < index)
+    if (index < 0 || destination.size() < index)
       throw new TierElementNotFoundException("--- Index to move to: " + index + " not found ---");
 
     if (index == destination.size()) {
-      addElement(element, toTier);
+      moveElement(element, toTier);
       return;
     }
 

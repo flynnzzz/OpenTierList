@@ -198,7 +198,7 @@ public class MainPane extends BorderPane {
         if (selectedFile != null && selectedFile.exists()) {
           try {
             controller.addUnTiered(new TierElement(selectedFile.getName(), selectedFile.toURI().toString()));
-          } catch (IllegalArgumentException | FileNotFoundException _) {
+          } catch (IllegalArgumentException _) {
             System.err.println("--- Resource not found, aborting ---");
             System.exit(-1);
           }

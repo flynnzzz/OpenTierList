@@ -1,7 +1,6 @@
 package net.flynn.opentierlist.model.models;
 
 import net.flynn.opentierlist.model.enums.TierStringFormat;
-import net.flynn.opentierlist.model.enums.TieredStatus;
 import net.flynn.opentierlist.model.exceptions.TierElementNotFoundException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -27,7 +26,7 @@ public class Tier {
   public static final Tier UNTIERED = new Tier("__UNTIERED__");
 
   private TierHeader header;
-  private final List<TierElement> tiered;
+  protected final List<TierElement> tiered;
 
   private static long NEXT_ID = 1;
   private final long id;
@@ -108,6 +107,7 @@ public class Tier {
     return tiered.add(element);
   }
 
+  // TODO: add details to exceptions thrown
   public boolean remove(TierElement element) throws TierElementNotFoundException {
     if (!tiered.remove(element))
       throw new TierElementNotFoundException();
@@ -173,8 +173,11 @@ public class Tier {
    * @throws TierElementNotFoundException if element is not found
    */
   public void move(TierElement element, int toIndex) throws TierElementNotFoundException {
-    if (!tiered.contains(element) || toIndex >= tiered.size())
+    if (!this.contains(element))
       throw new TierElementNotFoundException("--- Element to move not found: " + element + " ---");
+
+    if (toIndex > tiered.size())
+      throw new TierElementNotFoundException("--- Index to move to is out of bounds: " + toIndex + " ---");
 
     tiered.remove(element);
     tiered.add(toIndex, element);

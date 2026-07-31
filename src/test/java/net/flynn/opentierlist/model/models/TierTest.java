@@ -7,7 +7,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,7 +18,7 @@ public class TierTest {
     TierElement el1, el2, el3, el4, el0, elm1;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
 
         elm1 = new TierElement();
         el0 = new TierElement();
@@ -147,7 +146,7 @@ public class TierTest {
     }
 
     @Test
-    public void contains() throws FileNotFoundException {
+    public void contains() {
 
         assertTrue(c.contains(el1));
         assertTrue(c.contains(el2));

@@ -1,6 +1,5 @@
 package net.flynn.opentierlist.model.models;
 
-import java.io.FileNotFoundException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Objects;
@@ -54,7 +53,7 @@ public class TierElement {
    * @throws IllegalArgumentException if either name or image path are blank
    */
   public TierElement(TieredStatus status, String elementName, String uri)
-      throws IllegalArgumentException, FileNotFoundException {
+      throws IllegalArgumentException  {
     if (uri.isBlank())
       throw new IllegalArgumentException();
     this(status, elementName, ImagePath.of(uri));
@@ -68,7 +67,7 @@ public class TierElement {
    * 
    * @throws IllegalArgumentException if either name or path are blank
    */
-  public TierElement(String elementName, String uri) throws IllegalArgumentException, FileNotFoundException {
+  public TierElement(String elementName, String uri) throws IllegalArgumentException  {
     this(TieredStatus.UNTIERED, elementName, uri);
   }
 
@@ -79,14 +78,14 @@ public class TierElement {
    * 
    * @throws IllegalArgumentException if name is blank
    */
-  public TierElement(String elementName) throws IllegalArgumentException, FileNotFoundException {
+  public TierElement(String elementName) throws IllegalArgumentException {
     this(TieredStatus.UNTIERED, elementName, ImagePath.defaultResource());
   }
 
   /**
    * Constructs a 'default' {@link TierList} entry.
    */
-  public TierElement() throws FileNotFoundException {
+  public TierElement() {
     this(DEFAULT_ELEMENT_NAME);
   }
 

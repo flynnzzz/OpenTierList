@@ -1,10 +1,6 @@
 package net.flynn.opentierlist.model.models;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThrows;
-import static org.junit.Assert.assertTrue;
-
+import java.io.FileNotFoundException;
 import java.net.URISyntaxException;
 import java.util.Objects;
 
@@ -15,16 +11,21 @@ import org.junit.Test;
 import net.flynn.opentierlist.model.enums.TieredStatus;
 import net.flynn.opentierlist.persistence.ResourceHolder;
 
+import static org.junit.Assert.*;
+
 public class TierElementTest {
 
   TierElement defaultTierElement, el1, el2, el3;
 
   @Before
   public void setUp() throws Exception {
+
+    final String resource = Objects.requireNonNull(getClass().getResource("/greyyakuza.jpg")).toURI().toString();
+
     defaultTierElement = new TierElement();
     el1 = new TierElement("elementName1");
-    el2 = new TierElement("elementName2", "uri2");
-    el3 = new TierElement(TieredStatus.TIERED, "elementName3", "uri3");
+    el2 = new TierElement("elementName2", resource);
+    el3 = new TierElement(TieredStatus.TIERED, "elementName3", resource);
 
   }
 
@@ -108,36 +109,56 @@ public class TierElementTest {
 
   @Test
   public void getImageUri() throws URISyntaxException {
+
+    String resource = Objects.requireNonNull(getClass().getResource("/greyyakuza.jpg")).toURI().toString();
+
     assertEquals(
         (Objects.requireNonNull(getClass().getResource(ResourceHolder.getDefaultElementIcon()))).toURI().toString(),
-        defaultTierElement.getImageUri());
+        defaultTierElement.getImageUri()
+    );
+
+    assertEquals(resource, el2.getImageUri() );
   }
 
   @Test
-  public void getId() {
-  }
+  public void updateImagePath() throws URISyntaxException {
 
-  @Test
-  public void updateImagePath() {
-  }
+    var el4 = new TierElement("elementName4", "nonExistentUrl");
 
-  @Test
-  public void testHashCode() {
+    assertEquals(
+            (Objects.requireNonNull(getClass().getResource(ResourceHolder.getDefaultElementIcon()))).toURI().toString(),
+            el4.getImageUri()
+    );
+
+    el4.updateImagePath();
+
+    assertEquals(
+            (Objects.requireNonNull(getClass().getResource(ResourceHolder.getDefaultElementIcon()))).toURI().toString(),
+            el4.getImageUri()
+    );
+
   }
 
   @Test
   public void testEquals() {
+
+    assertNotEquals(el1, el2);
+    assertNotEquals(el2, el3);
+    assertNotEquals(el3, el1);
+
+    assertNotEquals(el2, el1);
+    assertNotEquals(el3, el2);
+    assertNotEquals(el1, el3);
+
+    assertNotEquals(el1, new TierElement(el1.getElementName(), el1.getImageUri()));
+
   }
 
   @Test
-  public void equalsTier() {
-  }
+  public void equalsElement() {
 
-  @Test
-  public void testToString() {
-  }
+    assertTrue(el1.equalsElement(new TierElement(el1.getElementName(), el1.getImageUri())));
+    assertFalse(el1.equalsElement(el2));
 
-  @Test
-  public void testToString1() {
   }
 }
