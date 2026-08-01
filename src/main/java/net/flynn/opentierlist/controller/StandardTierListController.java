@@ -206,26 +206,6 @@ public class StandardTierListController implements TierListController {
     }
   }
 
-  @Override
-  @Deprecated
-  public void swapTiered(Tier tier, TierElement a, TierElement b) {
-    try {
-      tierList.swapTiered(tier, a, b);
-    } catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) {
-      System.err.println(ex.getClass() + ": in 'swapTiered' method");
-    }
-  }
-
-  @Override
-  @Deprecated
-  public void swapUnTiered(TierElement a, TierElement b) {
-    try {
-      tierList.swapUnTiered(a, b);
-    } catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) {
-      System.err.println(ex.getClass() + ": in 'swapUnTiered' method");
-    }
-  }
-
   // ------------------------------ moving ------------------------------//
 
   @Override
@@ -252,58 +232,6 @@ public class StandardTierListController implements TierListController {
       tierList.moveElement(element, toTier, index);
     } catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) {
       System.err.println(ex.getClass() + ": in 'moveElement' method");
-    }
-  }
-
-  @Override
-  @Deprecated
-  public void appendTiered(TierElement tiered, Tier toTier) {
-    try {
-      tierList.moveToTier(tiered, toTier);
-    } catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) {
-      System.err.println(ex.getClass() + ": in 'appendTiered' method");
-    }
-  }
-
-  @Override
-  @Deprecated
-  public void moveTiered(TierElement tiered, Tier toTier, TierElement toElement) {
-    try {
-      int toIndex = toTier.getTiered().indexOf(toElement);
-      tierList.moveToTier(tiered, toTier, toIndex);
-    } catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) {
-      System.err.println(ex.getClass() + ": in 'moveTiered' method");
-    }
-  }
-
-  @Override
-  @Deprecated
-  public void moveTiered(TierElement tiered, Tier toTier, int toIndex) {
-    try {
-      tierList.moveToTier(tiered, toTier, toIndex);
-    } catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) {
-      System.err.println(ex.getClass() + ": in 'moveTiered' method");
-    }
-  }
-
-  @Override
-  @Deprecated
-  public void moveUnTiered(TierElement unTiered, TierElement toElement) {
-    try {
-      int toIndex = tierList.getUnTiered().indexOf(toElement);
-      tierList.moveUnTiered(unTiered, toIndex);
-    } catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) {
-      System.err.println(ex.getClass() + ": in 'moveUnTiered' method");
-    }
-  }
-
-  @Override
-  @Deprecated
-  public void moveUnTiered(TierElement unTiered, int toIndex) {
-    try {
-      tierList.moveUnTiered(unTiered, toIndex);
-    } catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) {
-      System.err.println(ex.getClass() + ": in 'moveTiered' method");
     }
   }
 
@@ -466,5 +394,77 @@ public class StandardTierListController implements TierListController {
 
     return getTiers().stream().anyMatch(t -> t.equals(tier));
 
+  }
+
+  @Override
+  @Deprecated
+  public void swapTiered(Tier tier, TierElement a, TierElement b) {
+    try {
+      tierList.swapTiered(tier, a, b);
+    } catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) {
+      System.err.println(ex.getClass() + ": in 'swapTiered' method");
+    }
+  }
+
+  @Override
+  @Deprecated
+  public void swapUnTiered(TierElement a, TierElement b) {
+    try {
+      tierList.swapUnTiered(a, b);
+    } catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) {
+      System.err.println(ex.getClass() + ": in 'swapUnTiered' method");
+    }
+  }
+
+  @Override
+  @Deprecated
+  public void appendTiered(TierElement tiered, Tier toTier) {
+    try {
+      tierList.moveToTier(tiered, toTier);
+    } catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) {
+      System.err.println(ex.getClass() + ": in 'appendTiered' method");
+    }
+  }
+
+  @Override
+  @Deprecated
+  public void moveTiered(TierElement tiered, Tier toTier, TierElement toElement) {
+    try {
+      int toIndex = toTier.getTiered().indexOf(toElement);
+      tierList.moveToTier(tiered, toTier, toIndex);
+    } catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) {
+      System.err.println(ex.getClass() + ": in 'moveTiered' method");
+    }
+  }
+
+  @Override
+  @Deprecated
+  public void moveTiered(TierElement tiered, Tier toTier, int toIndex) {
+    try {
+      tierList.moveToTier(tiered, toTier, toIndex);
+    } catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) {
+      System.err.println(ex.getClass() + ": in 'moveTiered' method");
+    }
+  }
+
+  @Override
+  @Deprecated
+  public void moveUnTiered(TierElement unTiered, TierElement toElement) {
+    try {
+      int toIndex = tierList.getUnTiered().indexOf(toElement);
+      tierList.moveUnTiered(unTiered, toIndex);
+    } catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) {
+      System.err.println(ex.getClass() + ": in 'moveUnTiered' method");
+    }
+  }
+
+  @Override
+  @Deprecated
+  public void moveUnTiered(TierElement unTiered, int toIndex) {
+    try {
+      tierList.moveUnTiered(unTiered, toIndex);
+    } catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) {
+      System.err.println(ex.getClass() + ": in 'moveTiered' method");
+    }
   }
 }
