@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-import net.flynn.opentierlist.model.enums.DefaultTier;
 import net.flynn.opentierlist.model.enums.TierStringFormat;
 import net.flynn.opentierlist.model.models.Tier;
 import net.flynn.opentierlist.model.models.TierElement;
@@ -38,10 +37,7 @@ public interface TierListController {
    * @return {@link TierListController}
    */
   static TierListController ofDefaultTiers() {
-    var tierList = new TierList();
-    for (var tier : DefaultTier.values())
-      tierList.addTier(tier.value());
-    return new StandardTierListController(tierList);
+    return new StandardTierListController(TierList.ofDefaultTiers());
   }
 
   // ----- ranking ------ //
@@ -73,14 +69,14 @@ public interface TierListController {
   void tier(TierElement unTiered, Tier toTier, int toIndex);
 
   /**
-   * Unrank an tiered element
+   * Unrank a tiered element
    *
    * @param tiered element to unrank
    */
   void unTier(TierElement tiered);
 
   /**
-   * Unrank an tiered element to a speficied position
+   * Unrank a tiered element to a specified position
    *
    * @param tiered   element to unrank
    * @param position destination position
@@ -88,7 +84,7 @@ public interface TierListController {
   void unTier(TierElement tiered, TierElement position);
 
   /**
-   * Unrank an tiered element to a speficied position
+   * Unrank a tiered element to a specified position
    *
    * @param tiered  element to unrank
    * @param toIndex position

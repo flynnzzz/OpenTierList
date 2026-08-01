@@ -17,7 +17,7 @@ public class ResourceHolder {
     return ResourceHolder.addElementButtonIcon;
   }
 
-  public static String getAddtierbuttonicon() {
+  public static String getAddTierButtonIcon() {
     return ResourceHolder.addTierButtonIcon;
   }
 

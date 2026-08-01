@@ -1,7 +1,7 @@
 package net.flynn.opentierlist.model.enums;
 
-import javafx.scene.paint.Color;
 import net.flynn.opentierlist.model.models.Tier;
+import net.flynn.opentierlist.ui.manual.UISettings;
 
 /**
  * 
@@ -9,13 +9,13 @@ import net.flynn.opentierlist.model.models.Tier;
  * @since v1.2.5
  */
 public enum DefaultTier {
-  S(Color.ORANGERED.toString()),
-  A(Color.ORANGE.toString()),
-  B(Color.YELLOW.toString()),
-  C(Color.GREENYELLOW.toString()),
-  D(Color.LIGHTBLUE.toString()),
-  E(Color.ALICEBLUE.toString()),
-  F(Color.GRAY.toString());
+  S(UISettings.DEFAULT_S_COLOR_LIGHT),
+  A(UISettings.DEFAULT_A_COLOR_LIGHT),
+  B(UISettings.DEFAULT_B_COLOR_LIGHT),
+  C(UISettings.DEFAULT_C_COLOR_LIGHT),
+  D(UISettings.DEFAULT_D_COLOR_LIGHT),
+  E(UISettings.DEFAULT_E_COLOR_LIGHT),
+  F(UISettings.DEFAULT_F_COLOR_LIGHT);
 
   private final Tier value;
 

@@ -46,15 +46,6 @@ public class StandardTierListController implements TierListController {
     this.dataHandler = new DataHandler();
   }
 
-  /**
-   * Constructor that creates a controller for {@link TierList}.
-   * <p>
-   * Instantiates an empty {@link TierList}
-   */
-  public StandardTierListController() {
-    this(new TierList());
-  }
-
   // ------------------------------ ranking ------------------------------//
 
   @Override

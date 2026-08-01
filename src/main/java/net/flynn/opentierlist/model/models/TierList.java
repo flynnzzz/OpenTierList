@@ -9,6 +9,7 @@ import java.util.stream.Stream;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import net.flynn.opentierlist.model.enums.DefaultTier;
 import net.flynn.opentierlist.model.enums.TierStringFormat;
 import net.flynn.opentierlist.model.enums.TieredStatus;
 import net.flynn.opentierlist.model.exceptions.TierElementNotFoundException;
@@ -90,6 +91,13 @@ public class TierList {
    */
   public TierList() {
     this(new ArrayList<>());
+  }
+
+  public static TierList ofDefaultTiers() {
+    var tierList = new TierList();
+    for (var tier : DefaultTier.values())
+      tierList.addTier(tier.value());
+    return tierList;
   }
 
   @JsonCreator

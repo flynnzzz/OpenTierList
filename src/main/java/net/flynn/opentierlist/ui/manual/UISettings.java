@@ -19,6 +19,31 @@ public class UISettings {
   public final static String DEFAULT_BAR_BORDER_COLOR = Color.DIMGRAY.toString();
   public final static String DEFAULT_BAR_HIGHLIGHT_COLOR = Color.DEEPSKYBLUE.toString();
 
+  // placeholder implementation
+  public enum Theme {
+    LIGHT, DARK;
+  }
+
+  public final static Theme currentTheme = Theme.LIGHT;
+
+  public static final String DEFAULT_S_COLOR_LIGHT = "#bf616a";
+  public static final String DEFAULT_A_COLOR_LIGHT = "#d08770";
+  public static final String DEFAULT_B_COLOR_LIGHT = "#ebcb8b";
+  public static final String DEFAULT_C_COLOR_LIGHT = "#a3be8c";
+  public static final String DEFAULT_D_COLOR_LIGHT = "#e5e9f0";
+  public static final String DEFAULT_E_COLOR_LIGHT = "#eceff4";
+  public static final String DEFAULT_F_COLOR_LIGHT = "#434c5e";
+  public static final String DEFAULT_ACCENT_COLOR_LIGHT = "#8fbcbb";
+
+  public static final String DEFAULT_S_COLOR_DARK = "#bf616a";
+  public static final String DEFAULT_A_COLOR_DARK = "#d08770";
+  public static final String DEFAULT_B_COLOR_DARK = "#ebcb8b";
+  public static final String DEFAULT_C_COLOR_DARK = "#a3be8c";
+  public static final String DEFAULT_D_COLOR_DARK = "#88c0d0";
+  public static final String DEFAULT_E_COLOR_DARK = "#81a1c1";
+  public static final String DEFAULT_F_COLOR_DARK = "#434c5e";
+  public static final String DEFAULT_ACCENT_COLOR_DARK = "#81a1c1";
+
   @Deprecated public final static String IMAGE_SOURCE_EFFECT = "-fx-effect: dropshadow(gaussian, rgba(235,0,0,0.95), 6, 0.7, 0, 0);";
   @Deprecated public final static String IMAGE_TARGET_EFFECT = "-fx-effect: dropshadow(gaussian, rgba(0,191,255,0.95), 6, 0.7, 0, 0);";
 

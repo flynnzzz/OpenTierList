@@ -5,7 +5,8 @@ import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
+import javafx.scene.paint.Paint;
 import net.flynn.opentierlist.controller.TierListController;
 
 /**
@@ -39,6 +40,11 @@ public class ScrollPaneTiers extends ScrollPane {
     tiersVBox.getChildren().addAll(tierBoxList);
     this.setContent(tiersVBox);
     this.setFitToWidth(true);
+    this.setVbarPolicy(ScrollBarPolicy.AS_NEEDED);
+    this.setHbarPolicy(ScrollBarPolicy.AS_NEEDED);
+
+    updateBorder(UISettings.DEFAULT_ACCENT_COLOR_LIGHT);
+
     tiersVBox.setAlignment(Pos.CENTER);
     tiersVBox.setPadding(new Insets(UISettings.DEFAULT_TIERS_VBOX_PADDING));
   }
@@ -54,5 +60,15 @@ public class ScrollPaneTiers extends ScrollPane {
 
   public void updateTierList() {
     parent.updateTierList();
+  }
+
+  public void updateBorder(String color) {
+    final var border = new Border(
+            new BorderStroke(
+                    Paint.valueOf(color),
+                    BorderStrokeStyle.SOLID,
+                    CornerRadii.EMPTY,
+                    BorderWidths.DEFAULT));
+    this.setBorder(border);
   }
 }

@@ -1,10 +1,12 @@
 package net.flynn.opentierlist.ui.manual;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.net.URISyntaxException;
 import java.util.List;
 
+import atlantafx.base.theme.NordDark;
+import atlantafx.base.theme.NordLight;
+import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -23,6 +25,7 @@ import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
 import net.flynn.opentierlist.controller.TierListController;
 import net.flynn.opentierlist.model.models.TierElement;
+import net.flynn.opentierlist.model.models.TierList;
 import net.flynn.opentierlist.persistence.ResourceHolder;
 
 /**
@@ -68,6 +71,12 @@ public class MainPane extends BorderPane {
   }
 
   public void initPane() {
+
+    var theme = UISettings.currentTheme == UISettings.Theme.LIGHT ?
+            new NordLight() : new NordDark();
+
+    Application.setUserAgentStylesheet(theme.getUserAgentStylesheet());
+
     // ----- title ----- //
     titleLabel.setFocusTraversable(false);
 
@@ -79,7 +88,14 @@ public class MainPane extends BorderPane {
     tierListFileChooser.getExtensionFilters().add(new ExtensionFilter("Tier List json files", "*.tson"));
 
     // ----- menu bar ----- //
-    MenuItem menuSaveItem = new MenuItem("Save"), menuLoadItem = new MenuItem("Load");
+    MenuItem menuNewTierList = new MenuItem("New...\t\t"), menuSaveItem = new MenuItem("Save\t\t"), menuLoadItem = new MenuItem("Load\t\t");
+
+    menuNewTierList.setOnAction( _ -> {
+      controller.setTierList(TierList.ofDefaultTiers());
+
+      FlowPaneElements.reloadImageCache();
+      updateTierList();
+    });
 
     menuSaveItem.setOnAction(_ -> controller.saveTierList());
 
@@ -96,9 +112,6 @@ public class MainPane extends BorderPane {
 
       if (parsedTier.isPresent()) {
         controller.setTierList(parsedTier.get());
-        titleLabel.setText(controller.getTierListName());
-        stage.setTitle(titleLabel.getText());
-        oldTitle = titleLabel.getText();
 
         titleLabel.getScene().getRoot().requestFocus();
 
@@ -107,7 +120,7 @@ public class MainPane extends BorderPane {
       }
     });
 
-    fileMenu.getItems().addAll(menuSaveItem, menuLoadItem);
+    fileMenu.getItems().addAll(menuNewTierList, menuSaveItem, menuLoadItem);
     menuBar.getMenus().add(fileMenu);
     setTop(menuBar);
 
@@ -127,7 +140,7 @@ public class MainPane extends BorderPane {
     addElementButton.setFocusTraversable(false);
 
     try {
-      var imageURI = getClass().getResource(ResourceHolder.getAddtierbuttonicon());
+      var imageURI = getClass().getResource(ResourceHolder.getAddTierButtonIcon());
       if (imageURI == null)
         throw new URISyntaxException("imageURI", "--- addtier button resource not found, exiting ---");
       addTierButton.setGraphic(new ImageView(new Image(imageURI.toURI().toString())));
@@ -209,6 +222,9 @@ public class MainPane extends BorderPane {
   }
 
   public void updateTierList() {
+    titleLabel.setText(controller.getTierListName());
+    stage.setTitle(titleLabel.getText());
+    oldTitle = titleLabel.getText();
     tieredPane.updateAllTiers();
     unTieredPane.updatePane();
   }

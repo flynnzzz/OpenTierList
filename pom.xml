@@ -8,7 +8,7 @@
   <packaging>jar</packaging>
 
   <name>opentierlist</name>
-  <url>http://maven.apache.org</url>
+  <url>https://maven.apache.org</url>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -27,6 +27,12 @@
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-databind</artifactId>
       <version>2.16.1</version>
+    </dependency>
+
+    <dependency>
+      <groupId>io.github.mkpaz</groupId>
+        <artifactId>atlantafx-base</artifactId>
+        <version>2.0.0</version>
     </dependency>
 
     <dependency>
