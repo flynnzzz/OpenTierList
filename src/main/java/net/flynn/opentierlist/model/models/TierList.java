@@ -30,8 +30,6 @@ public class TierList {
 
   public static final String DEFAULT_TIER_LIST_NAME = "New Tier List";
 
-  // ----- Ctors -----//
-
   /**
    * Constructs a {@link TierList} instance
    * <p>
@@ -107,8 +105,6 @@ public class TierList {
     this.tiers = tiers;
     this.unTiered = unTiered;
   }
-
-  // ----- ranking -----//
 
   /**
    * Ranks a {@link TierElement}
@@ -260,8 +256,6 @@ public class TierList {
       unTierInsert(tiered, unTiered.get(index));
   }
 
-  // ----- editing -----//
-
   public void addTier(Tier tier) {
     tiers.add(tier);
   }
@@ -372,7 +366,6 @@ public class TierList {
   public void removeAllElements(Set<TierElement> elements) {
     elements.forEach(this::removeElement);
   }
-  // ----- swapping -----//
 
   public void swapTiers(int src, int dest) throws TierNotFoundException {
     try {
@@ -390,7 +383,6 @@ public class TierList {
     }
   }
 
-  // ----- utils -----//
 
   /**
    * Returns the index of a tier

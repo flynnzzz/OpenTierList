@@ -31,8 +31,6 @@ public class Tier {
   private static long NEXT_ID = 1;
   private final long id;
 
-  // ----- Ctors -----//
-
   private Tier(TierHeader header, List<TierElement> tiered) {
     Objects.requireNonNull(header);
     Objects.requireNonNull(tiered);
@@ -191,8 +189,6 @@ public class Tier {
     return tiered.indexOf(element);
   }
 
-  // ----- setters and getters -----//
-
   public void setName(String name) throws IllegalArgumentException {
     Objects.requireNonNull(name);
     if (name.isBlank())
@@ -233,7 +229,6 @@ public class Tier {
     return List.copyOf(tiered);
   }
 
-  // ----- hashCode, equals and toString -----//
   @Override
   public int hashCode() {
     return Objects.hash(tiered, header, id);

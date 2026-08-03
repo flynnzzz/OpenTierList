@@ -1,12 +1,15 @@
 package net.flynn.opentierlist.controller;
 
 import java.io.File;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import javafx.scene.SnapshotParameters;
+import javafx.scene.image.WritableImage;
 import net.flynn.opentierlist.model.enums.TierStringFormat;
 import net.flynn.opentierlist.model.exceptions.TierElementNotFoundException;
 import net.flynn.opentierlist.model.exceptions.TierNotFoundException;
@@ -27,10 +30,6 @@ public class StandardTierListController implements TierListController {
   private TierList tierList;
 
   private final DataHandler dataHandler;
-  private String fileName;
-  private Path savePath;
-
-  // ---------------------------------- Ctors ----------------------------------//
 
   /**
    * Constructor that creates a controller for {@link TierList}.
@@ -41,12 +40,8 @@ public class StandardTierListController implements TierListController {
    */
   public StandardTierListController(TierList tierList) {
     this.tierList = tierList;
-    this.fileName = getTierListName() + ".tson";
-    this.savePath = Path.of(System.getProperty("user.home"), "Documents").resolve(fileName);
     this.dataHandler = new DataHandler();
   }
-
-  // ------------------------------ ranking ------------------------------//
 
   @Override
   public void tier(TierElement unTiered, Tier toTier) {
@@ -101,8 +96,6 @@ public class StandardTierListController implements TierListController {
       System.err.println(ex.getClass() + ": in 'unTierInsert' method");
     }
   }
-
-  // ------------------------------ editing ------------------------------//
 
   @Override
   public void setTierList(TierList tierList) {
@@ -186,8 +179,6 @@ public class StandardTierListController implements TierListController {
     }
   }
 
-  // ------------------------------ swapping ------------------------------//
-
   @Override
   public void swapTiers(Tier a, Tier b) {
     try {
@@ -196,8 +187,6 @@ public class StandardTierListController implements TierListController {
       System.err.println(ex.getClass() + ": in 'swapTiers' method");
     }
   }
-
-  // ------------------------------ moving ------------------------------//
 
   @Override
   public void moveElement(TierElement element, Tier toTier) {
@@ -244,14 +233,16 @@ public class StandardTierListController implements TierListController {
     }
   }
 
-  // ------------------------------ persistence ------------------------------//
-
   @Override
   public void saveTierList() {
     try {
-      fileName = getTierListName() + ".tson";
-      savePath = Path.of(System.getProperty("user.home"), "Documents").resolve(fileName);
-      dataHandler.save(savePath.toFile(), tierList);
+      final Path defaultPath = Path.of(System.getProperty("user.home"), "Documents", "OpenTierList");
+
+      if (!Files.exists(defaultPath)) {
+        if (!defaultPath.toFile().mkdir())
+          System.err.println("--- Could not create folder 'OpenTierList' in " + System.getProperty("user.home") + "/Documents ---");
+      }
+      dataHandler.save(defaultPath.resolve(getTierListName() + ".tson").toFile(), tierList);
     } catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) {
       System.err.println(ex.getClass() + ": in 'saveTierList' method");
     }
@@ -259,23 +250,23 @@ public class StandardTierListController implements TierListController {
 
   @Override
   public void saveTierList(Path path) {
-    savePath = path;
-    saveTierList();
+    try {
+      if (!Files.exists(path))
+        System.err.println("--- Path " + path + " does not exist ---");
+      dataHandler.save(path.toFile(), tierList);
+    } catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) {
+      System.err.println(ex.getClass() + ": in 'saveTierList' method");
+    }
   }
 
-  @Override
+  @Deprecated @Override
   public void saveTierListAs(String name) {
-    fileName = name;
-    savePath = savePath.getParent().resolve(fileName);
-    saveTierList();
   }
 
   @Override
   public Optional<TierList> loadTierList(File file) {
     return dataHandler.load(file);
   }
-
-  // ------------------------------ misc ------------------------------//
 
   @Override
   public String toString() {
@@ -286,8 +277,6 @@ public class StandardTierListController implements TierListController {
   public String toString(TierStringFormat format) {
     return tierList.toString(format);
   }
-
-  // ------------------------------ getters ------------------------------//
 
   @Override
   public String getTierListName() {

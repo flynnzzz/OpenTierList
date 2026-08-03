@@ -16,12 +16,10 @@ import net.flynn.opentierlist.model.models.TierElement;
  * @since v1.2.5
  */
 public class ScrollPaneUnTiered extends ScrollPane {
-  // ----- panels -----//
   private final FlowPaneElements unTieredPane;
 
   public ScrollPaneUnTiered(MainPane parent, TierListController controller) {
 
-    // ----- TierElementsPane's on 'drag dropped' behaviour -----//
     BiConsumer<TierElement, TierElement> onDragDropped = (src, dest) -> {
       switch (src.getStatus()) {
         case TieredStatus.UNTIERED: {

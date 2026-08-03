@@ -9,13 +9,13 @@ import net.flynn.opentierlist.ui.manual.UISettings;
  * @since v1.2.5
  */
 public enum DefaultTier {
-  S(UISettings.DEFAULT_S_COLOR_LIGHT),
-  A(UISettings.DEFAULT_A_COLOR_LIGHT),
-  B(UISettings.DEFAULT_B_COLOR_LIGHT),
-  C(UISettings.DEFAULT_C_COLOR_LIGHT),
-  D(UISettings.DEFAULT_D_COLOR_LIGHT),
-  E(UISettings.DEFAULT_E_COLOR_LIGHT),
-  F(UISettings.DEFAULT_F_COLOR_LIGHT);
+  S(UISettings.DEFAULT_S_COLOR),
+  A(UISettings.DEFAULT_A_COLOR),
+  B(UISettings.DEFAULT_B_COLOR),
+  C(UISettings.DEFAULT_C_COLOR),
+  D(UISettings.DEFAULT_D_COLOR),
+  E(UISettings.DEFAULT_E_COLOR),
+  F(UISettings.DEFAULT_F_COLOR);
 
   private final Tier value;
 

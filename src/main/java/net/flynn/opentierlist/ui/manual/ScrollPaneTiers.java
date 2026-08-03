@@ -15,7 +15,6 @@ import net.flynn.opentierlist.controller.TierListController;
  * @since v1.2.5
  */
 public class ScrollPaneTiers extends ScrollPane {
-  // ----- panels -----//
   private final VBox tiersVBox;
   private final MainPane parent;
 
@@ -31,11 +30,10 @@ public class ScrollPaneTiers extends ScrollPane {
   }
 
   private void loadTiers() {
-    controller.getTiers().forEach(tier -> tierBoxList.add(new HBoxTier(this, parent.getStage(), controller, tier)));
+    controller.getTiers().forEach(tier -> tierBoxList.add(new HBoxTier(this, parent.getMainStage(), controller, tier)));
   }
 
   private void setupPane() {
-    // ----- init vbox -----//
     loadTiers();
     tiersVBox.getChildren().addAll(tierBoxList);
     this.setContent(tiersVBox);

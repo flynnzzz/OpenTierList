@@ -194,7 +194,7 @@ public interface TierListController {
 
   void saveTierList(Path path);
 
-  void saveTierListAs(String name);
+  @Deprecated void saveTierListAs(String name);
 
   Optional<TierList> loadTierList(File file);
 

@@ -29,8 +29,6 @@ public class TierElement {
 
   public static final String DEFAULT_ELEMENT_NAME = "element";
 
-  // ----- Ctors -----//
-
   private TierElement(TieredStatus status, String elementName, ImagePath imagePath) throws IllegalArgumentException {
     Objects.requireNonNull(elementName);
     Objects.requireNonNull(imagePath);
@@ -105,8 +103,6 @@ public class TierElement {
     }
   }
 
-  // ----- setters and getters -----//
-
   public TieredStatus getStatus() {
     return status;
   }
@@ -148,8 +144,6 @@ public class TierElement {
   public void updateImagePath() {
     this.imagePath = imagePath.exists() ? imagePath : ImagePath.defaultResource();
   }
-
-  // ----- hashCode, equals and toString ----- //
 
   @Override
   public int hashCode() {

@@ -49,26 +49,20 @@ import net.flynn.opentierlist.persistence.ResourceHolder;
  */
 public class HBoxTier extends HBox {
 
-  // ----- panels -----//
   private final TextField tierNameLabel;
   private final FlowPaneElements tieredPane;
   private final Button editTierButton;
   private final ScrollPaneTiers parent;
 
-  // ----- edit menu -----//
-  ContextMenu contextMenu;
-  MenuItem delete;
-  MenuItem duplicate;
-  MenuItem color;
+  private ContextMenu contextMenu;
+  private MenuItem delete;
+  private MenuItem duplicate;
+  private MenuItem color;
 
-  // ----- color picker -----//
-  Stage colorStage;
-  BorderPane colorPane;
-  Scene colorMenu;
+  private Stage colorStage;
 
-  // TODO: find out why cpu usage skyrockets when color changes (?)
-  ColorPicker colorPicker;
-  Button confirmColor;
+  private ColorPicker colorPicker;
+  private Button confirmColor;
 
   private final TierListController controller;
   private final Stage mainStage;
@@ -210,9 +204,9 @@ public class HBoxTier extends HBox {
   private void setupColorPicker() {
     colorStage = new Stage();
 
-    colorPane = new BorderPane();
+    BorderPane colorPane = new BorderPane();
 
-    colorMenu = new Scene(colorPane, 200, 150);
+    Scene colorMenu = new Scene(colorPane, 200, 150);
     colorPicker = new ColorPicker();
     colorPicker.setPadding(new Insets(5, 20, 5, 20));
     VBox colorBox = new VBox();
