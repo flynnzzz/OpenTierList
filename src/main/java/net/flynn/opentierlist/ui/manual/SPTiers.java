@@ -14,14 +14,14 @@ import net.flynn.opentierlist.controller.TierListController;
  * @version 2.20
  * @since v1.2.5
  */
-public class ScrollPaneTiers extends ScrollPane {
+public class SPTiers extends ScrollPane {
   private final VBox tiersVBox;
   private final MainPane parent;
 
   private final TierListController controller;
-  private final ObservableList<HBoxTier> tierBoxList;
+  private final ObservableList<HBTier> tierBoxList;
 
-  public ScrollPaneTiers(MainPane parent, TierListController controller) {
+  public SPTiers(MainPane parent, TierListController controller) {
     this.parent = parent;
     this.controller = controller;
     this.tierBoxList = FXCollections.observableArrayList();
@@ -30,7 +30,7 @@ public class ScrollPaneTiers extends ScrollPane {
   }
 
   private void loadTiers() {
-    controller.getTiers().forEach(tier -> tierBoxList.add(new HBoxTier(this, parent.getMainStage(), controller, tier)));
+    controller.getTiers().forEach(tier -> tierBoxList.add(new HBTier(this, parent.getMainStage(), controller, tier)));
   }
 
   private void setupPane() {
@@ -72,15 +72,15 @@ public class ScrollPaneTiers extends ScrollPane {
 
   public void hideEditButtons() {
     tiersVBox.getChildren().stream()
-            .filter(b -> b instanceof HBoxTier)
-            .map( h -> (HBoxTier) h )
-            .forEach(HBoxTier::hideEditButton);
+            .filter(b -> b instanceof HBTier)
+            .map( h -> (HBTier) h )
+            .forEach(HBTier::hideEditButton);
   }
 
   public void showEditButtons() {
     tiersVBox.getChildren().stream()
-            .filter(b -> b instanceof HBoxTier)
-            .map( h -> (HBoxTier) h )
-            .forEach(HBoxTier::showEditButton);
+            .filter(b -> b instanceof HBTier)
+            .map( h -> (HBTier) h )
+            .forEach(HBTier::showEditButton);
   }
 }

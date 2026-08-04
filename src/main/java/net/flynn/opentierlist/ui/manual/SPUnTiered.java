@@ -15,10 +15,10 @@ import net.flynn.opentierlist.model.models.TierElement;
  * @version 2.20
  * @since v1.2.5
  */
-public class ScrollPaneUnTiered extends ScrollPane {
-  private final FlowPaneElements unTieredPane;
+public class SPUnTiered extends ScrollPane {
+  private final FPElements unTieredPane;
 
-  public ScrollPaneUnTiered(MainPane parent, TierListController controller) {
+  public SPUnTiered(MainPane parent, TierListController controller) {
 
     BiConsumer<TierElement, TierElement> onDragDropped = (src, dest) -> {
       switch (src.getStatus()) {
@@ -37,7 +37,7 @@ public class ScrollPaneUnTiered extends ScrollPane {
       }
     };
 
-    this.unTieredPane = new FlowPaneElements(parent.getFirstChild(), controller, controller.getUnTiered(),
+    this.unTieredPane = new FPElements(parent.getFirstChild(), controller, controller.getUnTiered(),
         onDragDropped);
 
     this.setupPane();

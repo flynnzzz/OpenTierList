@@ -47,12 +47,12 @@ import net.flynn.opentierlist.persistence.ResourceHolder;
  * @version 3.00
  * @since v1.2.5
  */
-public class HBoxTier extends HBox {
+public class HBTier extends HBox {
 
   private final TextField tierNameLabel;
-  private final FlowPaneElements tieredPane;
+  private final FPElements tieredPane;
   private final Button editTierButton;
-  private final ScrollPaneTiers parent;
+  private final SPTiers parent;
 
   private ContextMenu contextMenu;
   private MenuItem delete;
@@ -70,7 +70,7 @@ public class HBoxTier extends HBox {
 
   private String oldTextValue;
 
-  public HBoxTier(ScrollPaneTiers parent, Stage mainStage, TierListController controller, Tier tier) {
+  public HBTier(SPTiers parent, Stage mainStage, TierListController controller, Tier tier) {
     this.parent = parent;
     this.tierNameLabel = new TextField(tier.getName());
     this.controller = controller;
@@ -78,7 +78,6 @@ public class HBoxTier extends HBox {
     this.tier = tier;
     this.editTierButton = new Button();
 
-    // ----- TierElementsPane's on 'drag dropped' behaviour -----//
     BiConsumer<TierElement, TierElement> onDragDropped = (src, dest) -> {
       switch (src.getStatus()) {
         case TieredStatus.TIERED: {
@@ -100,14 +99,13 @@ public class HBoxTier extends HBox {
       }
     };
 
-    this.tieredPane = new FlowPaneElements(parent, controller, tier.getTiered(), tier, onDragDropped);
+    this.tieredPane = new FPElements(parent, controller, tier.getTiered(), tier, onDragDropped);
     this.setupPane();
   }
 
   private void setupPane() {
     this.getChildren().addAll(tierNameLabel, tieredPane, editTierButton);
 
-    // ----- settings -----//
     {
       this.tierNameLabel.setEditable(true);
       tierNameLabel.setFocusTraversable(false);
@@ -159,7 +157,6 @@ public class HBoxTier extends HBox {
     Tooltip tooltip = new Tooltip("Click to drag and move");
     tierNameLabel.setTooltip(tooltip);
 
-    // ----- edit button -----//
     editTierButton.setOnAction(_ -> contextMenu.show(editTierButton, Side.BOTTOM, 0, 0));
 
     delete.setOnAction(_ -> {
@@ -302,11 +299,11 @@ public class HBoxTier extends HBox {
 
       Node potentialTarget = (Node) event.getTarget();
 
-      while (potentialTarget != null && !(potentialTarget instanceof HBoxTier)) {
+      while (potentialTarget != null && !(potentialTarget instanceof HBTier)) {
         potentialTarget = potentialTarget.getParent();
       }
 
-      if (potentialTarget instanceof HBoxTier targetPane) {
+      if (potentialTarget instanceof HBTier targetPane) {
         Tier target = targetPane.getTier();
         controller.moveTier(source.get(), target);
       }

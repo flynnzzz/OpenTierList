@@ -8,7 +8,7 @@ import java.util.Optional;
 import com.fasterxml.jackson.databind.DatabindException;
 
 import net.flynn.opentierlist.model.models.TierList;
-import net.flynn.opentierlist.ui.manual.ScrollPaneTiers;
+import net.flynn.opentierlist.ui.manual.SPTiers;
 
 public class DataHandler {
   public DataHandler() {
@@ -22,7 +22,7 @@ public class DataHandler {
     }
   }
 
-  public void export(Path path, ScrollPaneTiers node) {
+  public void export(Path path, SPTiers node) {
     try {
       TierListWriter.export(path.toFile(), node);
     }

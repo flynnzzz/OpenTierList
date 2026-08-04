@@ -37,8 +37,8 @@ import net.flynn.opentierlist.persistence.ResourceHolder;
 public class MainPane extends BorderPane {
 
   private final TextField titleLabel;
-  private final ScrollPaneTiers tieredPane;
-  private final ScrollPaneUnTiered unTieredPane;
+  private final SPTiers tieredPane;
+  private final SPUnTiered unTieredPane;
   private final Button addTierButton, addElementButton;
   private final FileChooser imageFileChooser, tierListFileChooser;
   private final MenuBar menuBar;
@@ -52,8 +52,8 @@ public class MainPane extends BorderPane {
     this.controller = controller;
     this.mainStage = mainStage;
     this.titleLabel = new TextField(controller.getTierListName());
-    this.unTieredPane = new ScrollPaneUnTiered(this, controller);
-    this.tieredPane = new ScrollPaneTiers(this, controller);
+    this.unTieredPane = new SPUnTiered(this, controller);
+    this.tieredPane = new SPTiers(this, controller);
     this.addTierButton = new Button();
     this.addElementButton = new Button();
     this.menuBar = new MenuBar();
@@ -86,7 +86,7 @@ public class MainPane extends BorderPane {
       menuNewTierList.setOnAction(_ -> {
         controller.setTierList(TierList.ofDefaultTiers());
 
-        FlowPaneElements.reloadImageCache();
+        FPElements.reloadImageCache();
         updateTierList();
       });
 
@@ -230,7 +230,7 @@ public class MainPane extends BorderPane {
 
       titleLabel.getScene().getRoot().requestFocus();
 
-      FlowPaneElements.reloadImageCache();
+      FPElements.reloadImageCache();
       updateTierList();
     }
 
@@ -308,7 +308,7 @@ public class MainPane extends BorderPane {
     return this.mainStage;
   }
 
-  public ScrollPaneTiers getFirstChild() {
+  public SPTiers getFirstChild() {
     return this.tieredPane;
   }
 }

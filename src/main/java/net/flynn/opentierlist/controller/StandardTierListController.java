@@ -15,7 +15,7 @@ import net.flynn.opentierlist.model.models.Tier;
 import net.flynn.opentierlist.model.models.TierElement;
 import net.flynn.opentierlist.model.models.TierList;
 import net.flynn.opentierlist.persistence.DataHandler;
-import net.flynn.opentierlist.ui.manual.ScrollPaneTiers;
+import net.flynn.opentierlist.ui.manual.SPTiers;
 
 /**
  * Main implementation of {@link TierListController}.
@@ -263,7 +263,7 @@ public class StandardTierListController implements TierListController {
   }
 
   @Override
-  public void exportTierList(ScrollPaneTiers node) {
+  public void exportTierList(SPTiers node) {
     final Path defaultPath = Path.of(System.getProperty("user.home"), "Pictures", "OpenTierList");
 
     if (!Files.exists(defaultPath)) {
@@ -277,7 +277,7 @@ public class StandardTierListController implements TierListController {
   }
 
   @Override
-  public void exportTierList(ScrollPaneTiers node, Path path) {
+  public void exportTierList(SPTiers node, Path path) {
     try {
 
       if (!path.toString().endsWith(".png"))

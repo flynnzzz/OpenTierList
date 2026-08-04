@@ -9,18 +9,11 @@ import java.util.function.BiConsumer;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.EventTarget;
 import javafx.geometry.Insets;
-import javafx.geometry.Side;
-import javafx.scene.control.ContextMenu;
-import javafx.scene.control.MenuItem;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
-import javafx.scene.input.MouseButton;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderStroke;
@@ -38,14 +31,10 @@ import net.flynn.opentierlist.model.models.TierElement;
  * @version 3.40
  * @since v1.2.5
  */
-public class FlowPaneElements extends FlowPane {
-  // ----- panels -----//
-  private final ScrollPaneTiers grandparent;
-  private ContextMenu imageContextMenu;
-  private MenuItem deleteImageMenu, unTierImageMenu;
-  private ObservableList<ImageView> images;
+public class FPElements extends FlowPane {
+  private final SPTiers grandparent;
+  private ObservableList<IMGElement> images;
 
-  // ---- cache -----//
   private static Map<Long, Image> imageCache;
 
   private final TierListController controller;
@@ -53,8 +42,8 @@ public class FlowPaneElements extends FlowPane {
   private final BiConsumer<TierElement, TierElement> onDragDropped;
   private List<TierElement> elements;
 
-  public FlowPaneElements(ScrollPaneTiers grandparent, TierListController controller, List<TierElement> elements,
-      Tier tier, BiConsumer<TierElement, TierElement> onDragDropped) {
+  public FPElements(SPTiers grandparent, TierListController controller, List<TierElement> elements,
+                    Tier tier, BiConsumer<TierElement, TierElement> onDragDropped) {
     this.controller = controller;
     this.elements = new ArrayList<>(elements);
 
@@ -71,85 +60,9 @@ public class FlowPaneElements extends FlowPane {
     this.setupPane();
   }
 
-  public FlowPaneElements(ScrollPaneTiers grandparent, TierListController controller, List<TierElement> elements,
-      BiConsumer<TierElement, TierElement> onDragDropped) {
+  public FPElements(SPTiers grandparent, TierListController controller, List<TierElement> elements,
+                    BiConsumer<TierElement, TierElement> onDragDropped) {
     this(grandparent, controller, elements, Tier.UNTIERED, onDragDropped);
-  }
-
-  private void setupImage(ImageView imageViewer) {
-    // ----- settings -----//
-    imageViewer.setFitHeight(UISettings.DEFAULT_CELL_SIZE);
-    imageViewer.setFitWidth(UISettings.DEFAULT_CELL_SIZE);
-
-    imageContextMenu = new ContextMenu();
-    deleteImageMenu = new MenuItem("Delete");
-    unTierImageMenu = new MenuItem("UnTier");
-
-    imageViewer.setOnMouseClicked(mouseEvent -> {
-      if (mouseEvent.getButton() == MouseButton.SECONDARY) {
-
-        deleteImageMenu.setOnAction(_ -> {
-          if (imageViewer.getUserData() instanceof TierElement element) {
-            controller.removeElement(element);
-            this.getChildren().remove(imageViewer);
-            updateImages();
-          }
-        });
-
-        if (imageViewer.getUserData() instanceof TierElement element && element.isTiered()) {
-          imageContextMenu.getItems().add(unTierImageMenu);
-          unTierImageMenu.setOnAction(_ -> {
-            controller.unTier(element);
-            grandparent.updateTierList();
-          });
-        }
-        imageContextMenu.getItems().add(deleteImageMenu);
-        imageContextMenu.show(imageViewer, Side.RIGHT, 0, 0);
-      }
-    });
-
-    // ----- images drag and drop -----//
-    imageViewer.setOnDragDetected(this::handleDragDetectedImage);
-
-    imageViewer.setOnDragOver(event -> {
-      if (event.getDragboard().hasImage())
-        event.acceptTransferModes(TransferMode.MOVE);
-      event.consume();
-    });
-    imageViewer.setOnDragEntered(event -> {
-      if (event.getDragboard().hasImage()) {
-
-        imageViewer.setFitHeight(UISettings.DEFAULT_EXPANDED_IMAGE_SIZE);
-        this.setPadding(
-            new Insets(
-                0,
-                UISettings.DEFAULT_DRAG_ENTERED_PADDING,
-                0,
-                UISettings.DEFAULT_DRAG_ENTERED_PADDING));
-      }
-      event.consume();
-    });
-
-    imageViewer.setOnDragExited(event -> {
-      if (event.getTarget() instanceof ImageView && event.getSource() instanceof ImageView) {
-
-        imageViewer.setFitHeight(UISettings.DEFAULT_CELL_SIZE);
-
-        if (!event.isDropCompleted())
-          this.setPadding(new Insets(UISettings.DEFAULT_DRAG_ENTERED_PADDING));
-      }
-      event.consume();
-    });
-
-    imageViewer.setOnDragDropped(this::handleDragDroppedImage);
-
-    imageViewer.setOnDragDone(event -> {
-      if (event.getTransferMode() == TransferMode.MOVE) {
-        updateImages();
-      }
-      this.setPadding(Insets.EMPTY);
-      event.consume();
-    });
   }
 
   public static void reloadImageCache() {
@@ -172,13 +85,14 @@ public class FlowPaneElements extends FlowPane {
     this.getChildren().addAll(images);
   }
 
-  private ObservableList<ImageView> loadImages() {
+  private ObservableList<IMGElement> loadImages() {
     images = FXCollections.observableArrayList();
 
     elements.forEach(element -> {
 
       element.updateImagePath();
       Image img = imageCache.get(element.getId());
+
       if (img == null) {
         img = new Image(element.getImageUri(),
             UISettings.DEFAULT_CELL_SIZE,
@@ -188,10 +102,11 @@ public class FlowPaneElements extends FlowPane {
         imageCache.put(element.getId(), img);
       }
 
-      var imageViewer = new ImageView(img);
+      var imageViewer = new IMGElement(
+              img, controller, this, grandparent, onDragDropped
+      );
       imageViewer.setUserData(element);
 
-      setupImage(imageViewer);
       images.add(imageViewer);
     });
 
@@ -202,7 +117,6 @@ public class FlowPaneElements extends FlowPane {
     this.getChildren().addAll(images);
     this.initFlowPaneBorder();
 
-    // ----- settings -----//
     this.setPrefWidth(UISettings.DEFAULT_BAR_WIDTH);
     this.setMaxHeight(UISettings.DEFAULT_BAR_MAX_HEIGHT);
     this.setMinHeight(UISettings.DEFAULT_BAR_MIN_HEIGHT);
@@ -238,10 +152,8 @@ public class FlowPaneElements extends FlowPane {
     this.setOnDragDropped(this::handleDragDropped);
 
     this.setOnDragDone(event -> {
-      if (event.getTransferMode() == TransferMode.MOVE) {
-        this.setPadding(Insets.EMPTY);
+      if (event.getTransferMode() == TransferMode.MOVE)
         updateImages();
-      }
       event.consume();
     });
   }
@@ -256,63 +168,13 @@ public class FlowPaneElements extends FlowPane {
     this.setBorder(flowPaneBorder);
   }
 
-  private void handleDragDetectedImage(MouseEvent event) {
-
-    if (!(event.getSource() instanceof ImageView sourceImage))
-      return;
-
-    // ----- define transfer mode -----//
-    Dragboard dragBoard = sourceImage.startDragAndDrop(TransferMode.MOVE);
-    var content = new ClipboardContent();
-
-    if (sourceImage.getUserData() instanceof TierElement sourceElement) {
-
-      content.putImage(sourceImage.getImage());
-      content.putString(String.valueOf(sourceElement.hashCode()));
-
-      dragBoard.setContent(content);
-    }
-    event.consume();
-  }
-
-  private void handleDragDroppedImage(DragEvent event) {
-    boolean success = false;
-
-    Dragboard dragBoard = event.getDragboard();
-    String elementHash = dragBoard.getString();
-
-    Optional<TierElement> potentialSource = controller.getElementByHash(elementHash);
-    if (potentialSource.isEmpty()) {
-      System.err.println("--- Element to be dropped was not found ---");
-      return;
-    }
-
-    EventTarget eventTarget = event.getTarget();
-    if (dragBoard.hasImage() && dragBoard.hasString()
-        && eventTarget instanceof ImageView targetImage
-        && targetImage.getUserData() instanceof TierElement targetElement) {
-
-      TierElement source = potentialSource.get();
-      if (!source.equals(targetElement)) {
-
-        this.setPadding(Insets.EMPTY);
-
-        onDragDropped.accept(potentialSource.get(), targetElement);
-        updateImages();
-
-        success = true;
-      }
-    }
-    event.setDropCompleted(success);
-    event.consume();
-  }
 
   private void handleDragDropped(DragEvent event) {
     boolean success = false;
 
     Dragboard dragBoard = event.getDragboard();
     if (dragBoard.hasImage() && dragBoard.hasString()
-        && event.getTarget() instanceof FlowPaneElements) {
+        && event.getTarget() instanceof FPElements) {
 
       String elementHash = dragBoard.getString();
       Optional<TierElement> potentialSource = controller.getElementByHash(elementHash);
@@ -321,7 +183,6 @@ public class FlowPaneElements extends FlowPane {
         return;
       }
 
-      this.setPadding(Insets.EMPTY);
       var source = potentialSource.get();
 
       controller.moveElement(source, this.tier);
@@ -343,4 +204,5 @@ public class FlowPaneElements extends FlowPane {
             BorderWidths.DEFAULT));
     this.setBorder(tierElementsPaneBorder);
   }
+
 }
