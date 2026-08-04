@@ -16,10 +16,10 @@ public class UISettings {
   public final static String DEFAULT_BAR_HIGHLIGHT_COLOR = Color.DEEPSKYBLUE.toString();
 
   public enum Theme {
-    LIGHT, DARK;
+    LIGHT, DARK
   }
-  public static final String DEFAULT_ACCENT_COLOR_LIGHT = "#8fbcbb";
-  public static final String DEFAULT_ACCENT_COLOR_DARK = "#81a1c1";
+  public static final String DEFAULT_ACCENT_COLOR_LIGHT = "#dadfe7";
+  public static final String DEFAULT_ACCENT_COLOR_DARK = "#3b4252";
 
   public static final String DEFAULT_S_COLOR = "#bf616a";
   public static final String DEFAULT_A_COLOR = "#d08770";

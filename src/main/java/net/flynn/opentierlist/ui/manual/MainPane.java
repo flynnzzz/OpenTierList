@@ -1,20 +1,15 @@
 package net.flynn.opentierlist.ui.manual;
 
 import java.io.File;
-import java.io.IOException;
 import java.net.URISyntaxException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.List;
 import java.util.Objects;
 
 import atlantafx.base.theme.NordDark;
 import atlantafx.base.theme.NordLight;
 import javafx.application.Application;
-import javafx.embed.swing.SwingFXUtils;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.SnapshotParameters;
 import javafx.scene.control.Button;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
@@ -23,12 +18,9 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.image.WritableImage;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
-import javafx.scene.transform.Scale;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
@@ -36,8 +28,6 @@ import net.flynn.opentierlist.controller.TierListController;
 import net.flynn.opentierlist.model.models.TierElement;
 import net.flynn.opentierlist.model.models.TierList;
 import net.flynn.opentierlist.persistence.ResourceHolder;
-
-import javax.imageio.ImageIO;
 
 /**
  * 
@@ -80,14 +70,18 @@ public class MainPane extends BorderPane {
     {
       imageFileChooser.setTitle("Select file");
       imageFileChooser.getExtensionFilters().add(new ExtensionFilter("Image Files", "*.png", "*.jpg", "*.jpeg", "*.gif"));
+      imageFileChooser.setInitialDirectory(new File(System.getProperty("user.home") + "/Pictures"));
 
       tierListFileChooser.setTitle("Load tier list");
       tierListFileChooser.getExtensionFilters().add(new ExtensionFilter("Tier List json files", "*.tson"));
+      imageFileChooser.setInitialDirectory(new File(System.getProperty("user.home") + "/Documents"));
     }
 
     {
-      // TODO: save as .tson to path
-      final MenuItem menuNewTierList = new MenuItem("New...\t\t"), menuSaveItem = new MenuItem("Save as .tson file...\t\t"), menuLoadItem = new MenuItem("Load\t\t");
+      final MenuItem menuNewTierList = new MenuItem("New...\t\t"),
+              menuSaveItem = new MenuItem("Save file...\t\t"),
+              menuSaveItemAs = new MenuItem("Save file to...\t\t"),
+              menuLoadItem = new MenuItem("Load\t\t");
 
       menuNewTierList.setOnAction(_ -> {
         controller.setTierList(TierList.ofDefaultTiers());
@@ -98,9 +92,29 @@ public class MainPane extends BorderPane {
 
       menuSaveItem.setOnAction(_ -> controller.saveTierList());
 
+      menuSaveItemAs.setOnAction(_ -> {
+
+        final var saveChooser = new FileChooser();
+        saveChooser.setTitle("Save Tier List");
+        saveChooser.getExtensionFilters().addAll(tierListFileChooser.getExtensionFilters());
+        saveChooser.setInitialDirectory(new File(System.getProperty("user.home") + "/Documents"));
+
+        saveChooser.setInitialFileName(controller.getTierListName() + ".tson");
+
+        final var file = saveChooser.showSaveDialog(mainStage);
+        if (file == null) {
+          System.err.println("--- No file selected ---");
+          return;
+        }
+        controller.saveTierList(file.toPath());
+
+      });
+
       menuLoadItem.setOnAction(_ -> parseAndLoadTierList());
 
-      final MenuItem menuExport = setupMenuExport();
+      final MenuItem menuExport = new MenuItem("Export as PNG...\t\t");
+      menuExport.setOnAction(_ -> controller.exportTierList(tieredPane));
+
       final MenuItem menuExportAs = setupMenuExportAs();
 
       final var lightTheme = new NordLight().getUserAgentStylesheet();
@@ -113,7 +127,7 @@ public class MainPane extends BorderPane {
       menuLightTheme.setOnAction(_ -> applyTheme(UISettings.Theme.LIGHT, lightTheme));
       menuDarkTheme.setOnAction(_ -> applyTheme(UISettings.Theme.DARK, darkTheme));
 
-      fileMenu.getItems().addAll(menuNewTierList, menuSaveItem, menuLoadItem, menuExport, menuExportAs);
+      fileMenu.getItems().addAll(menuNewTierList, menuSaveItem, menuSaveItemAs, menuLoadItem, menuExport, menuExportAs);
       viewMenu.getItems().addAll(menuLightTheme, menuDarkTheme);
       menuBar.getMenus().addAll(fileMenu, viewMenu);
       setTop(menuBar);
@@ -177,32 +191,6 @@ public class MainPane extends BorderPane {
     setupEventHandlers();
   }
 
-  // TODO: move to persistence
-  private MenuItem setupMenuExport() {
-    final MenuItem menuExport = new MenuItem("Export as PNG...\t\t");
-
-    menuExport.setOnAction(_ -> {
-
-      final Path defaultPath = Path.of(System.getProperty("user.home"), "Pictures", "OpenTierList");
-
-      if (!Files.exists(defaultPath)) {
-        if (!defaultPath.toFile().mkdir())
-          System.err.println("--- Could not create folder 'OpenTierList' in " + System.getProperty("user.home") + "/Pictures ---");
-      }
-
-      final var file = defaultPath.resolve(controller.getTierListName() + ".png").toFile();
-
-        try {
-            ImageIO.write(SwingFXUtils.fromFXImage(takeScreenshot(), null), "png", file);
-        } catch (IOException _) {
-          System.err.println(
-                  "--- IO exception: could not export Tier List" + controller.getTierListName() + " ---"
-          );
-        }
-    });
-    return menuExport;
-  }
-
   private MenuItem setupMenuExportAs() {
 
     final MenuItem menuExportAs = new MenuItem("Export as PNG to...\t\t");
@@ -214,36 +202,16 @@ public class MainPane extends BorderPane {
       saveChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("PNG Images", "*.png"));
       saveChooser.setInitialDirectory(new File(System.getProperty("user.home") + "/Pictures"));
 
+      saveChooser.setInitialFileName(controller.getTierListName() + ".png");
+
       final var file = saveChooser.showSaveDialog(mainStage);
       if (file == null) {
         System.err.println("--- No file selected ---");
         return;
       }
-      try {
-        ImageIO.write(SwingFXUtils.fromFXImage(takeScreenshot(), null), "png", file);
-      } catch (IOException _) {
-        System.err.println(
-                "--- IO exception: could not export Tier List" + controller.getTierListName() + " ---"
-        );
-      }
+      controller.exportTierList(tieredPane, file.toPath());
     });
     return menuExportAs;
-  }
-
-  private WritableImage takeScreenshot() {
-
-    final double inboundWidth = tieredPane.getContent().getBoundsInLocal().getWidth(),
-                 inboundHeight = tieredPane.getContent().getBoundsInLocal().getHeight();
-
-    final WritableImage image = new WritableImage((int) inboundWidth, (int) inboundHeight);
-
-    final var params = new SnapshotParameters();
-    params.setTransform(new Scale(1, 1));
-
-    // TODO: temporarily disable tier hbox buttons
-    tieredPane.getContent().snapshot(params, image);
-
-    return image;
   }
 
   private void parseAndLoadTierList() {

@@ -2,11 +2,13 @@ package net.flynn.opentierlist.persistence;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.Optional;
 
 import com.fasterxml.jackson.databind.DatabindException;
 
 import net.flynn.opentierlist.model.models.TierList;
+import net.flynn.opentierlist.ui.manual.ScrollPaneTiers;
 
 public class DataHandler {
   public DataHandler() {
@@ -16,7 +18,18 @@ public class DataHandler {
     try {
       TierListWriter.write(file, tierList);
     } catch (IOException e) {
-      System.err.println("--- Could not save tierlist '" + tierList.getTierListName() + "', aborting ---");
+      System.err.println("--- Could not save tier list '" + tierList.getTierListName() + "', aborting ---");
+    }
+  }
+
+  public void export(Path path, ScrollPaneTiers node) {
+    try {
+      TierListWriter.export(path.toFile(), node);
+    }
+    catch (IOException _) {
+      System.err.println(
+              "--- IO exception: could not export Tier List to " + path.getFileName() + " ---"
+      );
     }
   }
 
@@ -27,7 +40,7 @@ public class DataHandler {
     } catch (DatabindException _) {
       System.err.println("--- Failed to parse tier list from file '" + file.getAbsolutePath() + "', aborting ---");
     } catch (IOException _) {
-      System.err.println("--- Could not load tierlist from path '" + file.getAbsolutePath() + "', aborting ---");
+      System.err.println("--- Could not load tier list from path '" + file.getAbsolutePath() + "', aborting ---");
     }
     return res;
   }

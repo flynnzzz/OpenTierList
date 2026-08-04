@@ -8,8 +8,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import javafx.scene.SnapshotParameters;
-import javafx.scene.image.WritableImage;
 import net.flynn.opentierlist.model.enums.TierStringFormat;
 import net.flynn.opentierlist.model.exceptions.TierElementNotFoundException;
 import net.flynn.opentierlist.model.exceptions.TierNotFoundException;
@@ -17,6 +15,7 @@ import net.flynn.opentierlist.model.models.Tier;
 import net.flynn.opentierlist.model.models.TierElement;
 import net.flynn.opentierlist.model.models.TierList;
 import net.flynn.opentierlist.persistence.DataHandler;
+import net.flynn.opentierlist.ui.manual.ScrollPaneTiers;
 
 /**
  * Main implementation of {@link TierListController}.
@@ -242,7 +241,9 @@ public class StandardTierListController implements TierListController {
         if (!defaultPath.toFile().mkdir())
           System.err.println("--- Could not create folder 'OpenTierList' in " + System.getProperty("user.home") + "/Documents ---");
       }
-      dataHandler.save(defaultPath.resolve(getTierListName() + ".tson").toFile(), tierList);
+
+      saveTierList(defaultPath);
+
     } catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) {
       System.err.println(ex.getClass() + ": in 'saveTierList' method");
     }
@@ -251,16 +252,46 @@ public class StandardTierListController implements TierListController {
   @Override
   public void saveTierList(Path path) {
     try {
-      if (!Files.exists(path))
-        System.err.println("--- Path " + path + " does not exist ---");
+
+      if (!path.toString().endsWith(".tson"))
+        path = Path.of(path + ".tson");
+
       dataHandler.save(path.toFile(), tierList);
     } catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) {
       System.err.println(ex.getClass() + ": in 'saveTierList' method");
     }
   }
 
+  @Override
+  public void exportTierList(ScrollPaneTiers node) {
+    final Path defaultPath = Path.of(System.getProperty("user.home"), "Pictures", "OpenTierList");
+
+    if (!Files.exists(defaultPath)) {
+      if (!defaultPath.toFile().mkdir())
+        System.err.println("--- Could not create folder 'OpenTierList' in " + System.getProperty("user.home") + "/Pictures ---");
+    }
+
+    final var file = defaultPath.resolve(getTierListName() + ".png").toFile();
+
+    exportTierList(node, file.toPath());
+  }
+
+  @Override
+  public void exportTierList(ScrollPaneTiers node, Path path) {
+    try {
+
+      if (!path.toString().endsWith(".png"))
+        path = Path.of(path + ".png");
+
+      dataHandler.export(path, node);
+    } catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) {
+      System.err.println(ex.getClass() + ": in 'saveTierList' method");
+    }
+  }
+
   @Deprecated @Override
-  public void saveTierListAs(String name) {
+  public void saveTierListAs(String name) throws UnsupportedOperationException {
+    throw new UnsupportedOperationException("--- Deprecated method used ---");
   }
 
   @Override

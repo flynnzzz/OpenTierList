@@ -2,7 +2,7 @@ package net.flynn.opentierlist.persistence;
 
 public class ResourceHolder {
 
-  private final static String defaultTelementIcon = "/default_icon.jpeg";
+  private final static String defaultElementIcon = "/default_icon.jpeg";
 
   // placeholders
   private final static String editButtonIcon = "/edit_icon_resized.png";
@@ -10,7 +10,7 @@ public class ResourceHolder {
   private final static String addTierButtonIcon = "/add_tier_icon.png";
 
   public static String getDefaultElementIcon() {
-    return ResourceHolder.defaultTelementIcon;
+    return ResourceHolder.defaultElementIcon;
   }
 
   public static String getAddElementButtonIcon() {

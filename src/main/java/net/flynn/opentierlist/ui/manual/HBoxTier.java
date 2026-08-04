@@ -334,4 +334,12 @@ public class HBoxTier extends HBox {
   private Tier getTier() {
     return this.tier;
   }
+
+  public void hideEditButton() {
+    getChildren().remove(editTierButton);
+  }
+
+  public void showEditButton() {
+    getChildren().add(editTierButton);
+  }
 }

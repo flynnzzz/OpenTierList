@@ -69,4 +69,18 @@ public class ScrollPaneTiers extends ScrollPane {
                     BorderWidths.DEFAULT));
     this.setBorder(border);
   }
+
+  public void hideEditButtons() {
+    tiersVBox.getChildren().stream()
+            .filter(b -> b instanceof HBoxTier)
+            .map( h -> (HBoxTier) h )
+            .forEach(HBoxTier::hideEditButton);
+  }
+
+  public void showEditButtons() {
+    tiersVBox.getChildren().stream()
+            .filter(b -> b instanceof HBoxTier)
+            .map( h -> (HBoxTier) h )
+            .forEach(HBoxTier::showEditButton);
+  }
 }

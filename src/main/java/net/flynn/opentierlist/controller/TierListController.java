@@ -10,6 +10,7 @@ import net.flynn.opentierlist.model.enums.TierStringFormat;
 import net.flynn.opentierlist.model.models.Tier;
 import net.flynn.opentierlist.model.models.TierElement;
 import net.flynn.opentierlist.model.models.TierList;
+import net.flynn.opentierlist.ui.manual.ScrollPaneTiers;
 
 /**
  * Controller interface for creating and modifying tier lists.
@@ -193,6 +194,10 @@ public interface TierListController {
   void saveTierList();
 
   void saveTierList(Path path);
+
+  void exportTierList(ScrollPaneTiers node);
+
+  void exportTierList(ScrollPaneTiers node, Path path);
 
   @Deprecated void saveTierListAs(String name);
 
