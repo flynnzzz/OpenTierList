@@ -15,7 +15,7 @@ import net.flynn.opentierlist.model.models.Tier;
 import net.flynn.opentierlist.model.models.TierElement;
 import net.flynn.opentierlist.model.models.TierList;
 import net.flynn.opentierlist.persistence.DataHandler;
-import net.flynn.opentierlist.ui.manual.SPTiers;
+import net.flynn.opentierlist.ui.manual.SPTiered;
 
 /**
  * Main implementation of {@link TierListController}.
@@ -199,7 +199,7 @@ public class StandardTierListController implements TierListController {
   @Override
   public void moveElement(TierElement element, Tier toTier, TierElement position) {
     try {
-      tierList.moveElement(element, toTier, position);
+      tierList.insertElement(element, toTier, position);
     } catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) {
       System.err.println(ex.getClass() + ": in 'moveElement' method");
     }
@@ -208,7 +208,7 @@ public class StandardTierListController implements TierListController {
   @Override
   public void moveElement(TierElement element, Tier toTier, int index) {
     try {
-      tierList.moveElement(element, toTier, index);
+      tierList.insertElement(element, toTier, index);
     } catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) {
       System.err.println(ex.getClass() + ": in 'moveElement' method");
     }
@@ -242,7 +242,7 @@ public class StandardTierListController implements TierListController {
           System.err.println("--- Could not create folder 'OpenTierList' in " + System.getProperty("user.home") + "/Documents ---");
       }
 
-      saveTierList(defaultPath);
+      saveTierList(defaultPath.resolve(getTierListName() + ".tson"));
 
     } catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) {
       System.err.println(ex.getClass() + ": in 'saveTierList' method");
@@ -263,7 +263,7 @@ public class StandardTierListController implements TierListController {
   }
 
   @Override
-  public void exportTierList(SPTiers node) {
+  public void exportTierList(SPTiered node) {
     final Path defaultPath = Path.of(System.getProperty("user.home"), "Pictures", "OpenTierList");
 
     if (!Files.exists(defaultPath)) {
@@ -271,13 +271,11 @@ public class StandardTierListController implements TierListController {
         System.err.println("--- Could not create folder 'OpenTierList' in " + System.getProperty("user.home") + "/Pictures ---");
     }
 
-    final var file = defaultPath.resolve(getTierListName() + ".png").toFile();
-
-    exportTierList(node, file.toPath());
+    exportTierList(node, defaultPath.resolve(getTierListName() + ".png"));
   }
 
   @Override
-  public void exportTierList(SPTiers node, Path path) {
+  public void exportTierList(SPTiered node, Path path) {
     try {
 
       if (!path.toString().endsWith(".png"))
@@ -333,6 +331,9 @@ public class StandardTierListController implements TierListController {
           .filter(t -> t.contains(e))
           .findFirst();
 
+      if (element.isEmpty() && getUnTiered().contains(e))
+        element = Optional.of(Tier.UNTIERED);
+
     } catch (NullPointerException | IllegalArgumentException ex) {
       System.err.println(ex.getClass() + ": in 'getTierByElement' method");
     }
@@ -380,14 +381,7 @@ public class StandardTierListController implements TierListController {
   }
 
   @Override
-  public boolean tierElementExists(TierElement element) {
-
-    return tierList.contains(element);
-
-  }
-
-  @Override
-  public boolean tierElementExistsById(Long id) {
+  public boolean elementExists(Long id) {
 
     return Stream
         .concat(
@@ -397,13 +391,6 @@ public class StandardTierListController implements TierListController {
             tierList.getUnTiered()
                 .stream())
         .anyMatch(e -> Objects.equals(e.getId(), id));
-
-  }
-
-  @Override
-  public boolean tierExists(Tier tier) {
-
-    return getTiers().stream().anyMatch(t -> t.equals(tier));
 
   }
 
@@ -460,22 +447,9 @@ public class StandardTierListController implements TierListController {
 
   @Override
   @Deprecated
-  public void moveUnTiered(TierElement unTiered, TierElement toElement) {
-    try {
-      int toIndex = tierList.getUnTiered().indexOf(toElement);
-      tierList.moveUnTiered(unTiered, toIndex);
-    } catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) {
-      System.err.println(ex.getClass() + ": in 'moveUnTiered' method");
-    }
-  }
+  public void moveUnTiered(TierElement unTiered, TierElement toElement) { }
 
   @Override
   @Deprecated
-  public void moveUnTiered(TierElement unTiered, int toIndex) {
-    try {
-      tierList.moveUnTiered(unTiered, toIndex);
-    } catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) {
-      System.err.println(ex.getClass() + ": in 'moveTiered' method");
-    }
-  }
+  public void moveUnTiered(TierElement unTiered, int toIndex) { }
 }

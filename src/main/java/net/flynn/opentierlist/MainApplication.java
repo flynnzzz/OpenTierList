@@ -22,9 +22,7 @@ public class MainApplication extends Application {
     stage.setHeight(900);
     stage.setWidth(1100);
 
-    final var imageResource = ResourceHolder.getEditButtonIcon();
-
-    stage.getIcons().add(new Image(imageResource));
+    stage.getIcons().add(new Image(ResourceHolder.APPLICATION_ICON));
     stage.setScene(scene);
 
     stage.show();

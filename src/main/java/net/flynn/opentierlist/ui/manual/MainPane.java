@@ -28,6 +28,7 @@ import net.flynn.opentierlist.controller.TierListController;
 import net.flynn.opentierlist.model.models.TierElement;
 import net.flynn.opentierlist.model.models.TierList;
 import net.flynn.opentierlist.persistence.ResourceHolder;
+import net.flynn.opentierlist.ui.ConfigHolder;
 
 /**
  * 
@@ -37,7 +38,7 @@ import net.flynn.opentierlist.persistence.ResourceHolder;
 public class MainPane extends BorderPane {
 
   private final TextField titleLabel;
-  private final SPTiers tieredPane;
+  private final SPTiered tieredPane;
   private final SPUnTiered unTieredPane;
   private final Button addTierButton, addElementButton;
   private final FileChooser imageFileChooser, tierListFileChooser;
@@ -53,7 +54,7 @@ public class MainPane extends BorderPane {
     this.mainStage = mainStage;
     this.titleLabel = new TextField(controller.getTierListName());
     this.unTieredPane = new SPUnTiered(this, controller);
-    this.tieredPane = new SPTiers(this, controller);
+    this.tieredPane = new SPTiered(this, controller);
     this.addTierButton = new Button();
     this.addElementButton = new Button();
     this.menuBar = new MenuBar();
@@ -124,8 +125,8 @@ public class MainPane extends BorderPane {
 
       final MenuItem menuLightTheme = new MenuItem("Light Theme\t\t"), menuDarkTheme = new MenuItem("Dark Theme\t\t");
 
-      menuLightTheme.setOnAction(_ -> applyTheme(UISettings.Theme.LIGHT, lightTheme));
-      menuDarkTheme.setOnAction(_ -> applyTheme(UISettings.Theme.DARK, darkTheme));
+      menuLightTheme.setOnAction(_ -> applyTheme(ConfigHolder.Theme.LIGHT, lightTheme));
+      menuDarkTheme.setOnAction(_ -> applyTheme(ConfigHolder.Theme.DARK, darkTheme));
 
       fileMenu.getItems().addAll(menuNewTierList, menuSaveItem, menuSaveItemAs, menuLoadItem, menuExport, menuExportAs);
       viewMenu.getItems().addAll(menuLightTheme, menuDarkTheme);
@@ -141,12 +142,12 @@ public class MainPane extends BorderPane {
       addElementButton.setFocusTraversable(false);
 
       try {
-        var imageURI = getClass().getResource(ResourceHolder.getAddTierButtonIcon());
+        var imageURI = getClass().getResource(ResourceHolder.ADD_TIER_BUTTON_ICON);
         if (imageURI == null)
           throw new URISyntaxException("imageURI", "--- add tier button resource not found, exiting ---");
         addTierButton.setGraphic(new ImageView(new Image(imageURI.toURI().toString())));
 
-        imageURI = getClass().getResource(ResourceHolder.getAddElementButtonIcon());
+        imageURI = getClass().getResource(ResourceHolder.ADD_ELEMENT_BUTTON_ICON);
         if (imageURI == null)
           throw new URISyntaxException("imageURI", "--- add element button resource not found, exiting ---");
         addElementButton.setGraphic(new ImageView(new Image(imageURI.toURI().toString())));
@@ -161,22 +162,25 @@ public class MainPane extends BorderPane {
     {
       buttonsHBox.getChildren().addAll(addTierButton, addElementButton);
 
-      buttonsHBox.setPadding(new Insets(UISettings.DEFAULT_DBUTTON_PADDING,
-              UISettings.DEFAULT_DBUTTON_PADDING,
-              UISettings.DEFAULT_DBUTTON_PADDING,
-              UISettings.DEFAULT_DBUTTON_PADDING));
+      buttonsHBox.setPadding(new Insets(
+                      ConfigHolder.DEFAULT_BUTTON_PADDING,
+                      ConfigHolder.DEFAULT_BUTTON_PADDING,
+                      ConfigHolder.DEFAULT_BUTTON_PADDING,
+                      ConfigHolder.DEFAULT_BUTTON_PADDING
+              )
+      );
 
-      buttonsHBox.setSpacing((double) UISettings.DEFAULT_DBUTTON_PADDING / 3);
+      buttonsHBox.setSpacing(ConfigHolder.DEFAULT_BUTTON_SPACING);
       buttonsHBox.setAlignment(Pos.BOTTOM_CENTER);
     }
     {
       titleLabel.setFocusTraversable(false);
       HBox titleBox = new HBox(titleLabel);
       titleBox.setPadding(new Insets(
-              UISettings.DEFAULT_TITLE_PADDING_TOP,
-              UISettings.DEFAULT_TITLE_PADDING_RIGHT,
-              UISettings.DEFAULT_TITLE_PADDING_BOTTOM,
-              UISettings.DEFAULT_TITLE_PADDING_LEFT));
+              ConfigHolder.DEFAULT_TITLE_PADDING_TOP,
+              ConfigHolder.DEFAULT_TITLE_PADDING_RIGHT,
+              ConfigHolder.DEFAULT_TITLE_PADDING_BOTTOM,
+              ConfigHolder.DEFAULT_TITLE_PADDING_LEFT));
 
       titleBox.setAlignment(Pos.BASELINE_CENTER);
       var centerBox = new VBox(titleBox, tieredPane, buttonsHBox);
@@ -236,7 +240,7 @@ public class MainPane extends BorderPane {
 
   }
 
-  private void applyTheme(UISettings.Theme mode, String styleSheet) {
+  private void applyTheme(ConfigHolder.Theme mode, String styleSheet) {
 
     Objects.requireNonNull(styleSheet, "--- Style sheet cannot be null ---");
     if (styleSheet.isBlank())
@@ -245,8 +249,8 @@ public class MainPane extends BorderPane {
     Application.setUserAgentStylesheet(styleSheet);
 
     switch (mode) {
-      case UISettings.Theme.LIGHT -> tieredPane.updateBorder(UISettings.DEFAULT_ACCENT_COLOR_LIGHT);
-      case UISettings.Theme.DARK -> tieredPane.updateBorder(UISettings.DEFAULT_ACCENT_COLOR_DARK);
+      case ConfigHolder.Theme.LIGHT -> tieredPane.updateBorder(ConfigHolder.DEFAULT_ACCENT_COLOR_LIGHT);
+      case ConfigHolder.Theme.DARK -> tieredPane.updateBorder(ConfigHolder.DEFAULT_ACCENT_COLOR_DARK);
     }
   }
 
@@ -300,6 +304,7 @@ public class MainPane extends BorderPane {
     titleLabel.setText(controller.getTierListName());
     mainStage.setTitle(titleLabel.getText());
     oldTitle = titleLabel.getText();
+
     tieredPane.updateAllTiers();
     unTieredPane.updatePane();
   }
@@ -308,7 +313,7 @@ public class MainPane extends BorderPane {
     return this.mainStage;
   }
 
-  public SPTiers getFirstChild() {
+  public SPTiered getFirstChild() {
     return this.tieredPane;
   }
 }

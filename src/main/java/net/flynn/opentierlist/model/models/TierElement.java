@@ -27,7 +27,7 @@ public class TierElement {
   private static long NEXT_ID = 1;
   private final long id;
 
-  public static final String DEFAULT_ELEMENT_NAME = "element";
+  public static final String DEFAULT_ELEMENT_NAME = "New Element";
 
   private TierElement(TieredStatus status, String elementName, ImagePath imagePath) throws IllegalArgumentException {
     Objects.requireNonNull(elementName);

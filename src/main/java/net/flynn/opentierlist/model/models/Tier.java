@@ -32,13 +32,13 @@ public class Tier {
   private final long id;
 
   private Tier(TierHeader header, List<TierElement> tiered) {
+
     Objects.requireNonNull(header);
-    Objects.requireNonNull(tiered);
     if (header.name().isBlank())
-      throw new IllegalArgumentException();
+      throw new IllegalArgumentException("--- Tier name cannot be null ---");
 
     this.header = header;
-    this.tiered = tiered;
+    this.tiered = Objects.requireNonNull(tiered);
     this.id = NEXT_ID++;
   }
 
@@ -93,8 +93,6 @@ public class Tier {
     this.tiered = tiered;
   }
 
-  // ----- methods -----//
-
   /**
    * Adds an element to the tier instance
    *
@@ -105,10 +103,11 @@ public class Tier {
     return tiered.add(element);
   }
 
-  // TODO: add details to exceptions thrown
   public boolean remove(TierElement element) throws TierElementNotFoundException {
     if (!tiered.remove(element))
-      throw new TierElementNotFoundException();
+      throw new TierElementNotFoundException(
+              "--- Removal of element: " + element + " was not successful ---"
+      );
     else
       return true;
   }
@@ -116,16 +115,18 @@ public class Tier {
   public TierElement remove(int i) throws TierElementNotFoundException {
     try {
       return tiered.remove(i);
-    } catch (IndexOutOfBoundsException e) {
-      throw new TierElementNotFoundException();
+    } catch (IndexOutOfBoundsException _) {
+      throw new TierElementNotFoundException(
+              "--- Removal of element at index: " + i + " was not successful ---"
+      );
     }
   }
 
   public void swap(TierElement src, TierElement dest) throws TierElementNotFoundException {
     try {
       swap(tiered.indexOf(src), tiered.indexOf(dest));
-    } catch (IndexOutOfBoundsException e) {
-      throw new TierElementNotFoundException();
+    } catch (IndexOutOfBoundsException _) {
+      throw new TierElementNotFoundException("--- Cannot swap elements: " + src + ", " + dest + " ---");
     }
 
   }
@@ -133,8 +134,10 @@ public class Tier {
   public void swap(int src, int dest) throws TierElementNotFoundException {
     try {
       Collections.swap(tiered, src, dest);
-    } catch (IndexOutOfBoundsException e) {
-      throw new TierElementNotFoundException();
+    } catch (IndexOutOfBoundsException _) {
+      throw new TierElementNotFoundException(
+              "---  Cannot swap elements: " + src + ", " + dest + " ---"
+      );
     }
   }
 
@@ -192,7 +195,7 @@ public class Tier {
   public void setName(String name) throws IllegalArgumentException {
     Objects.requireNonNull(name);
     if (name.isBlank())
-      throw new IllegalArgumentException();
+      throw new IllegalArgumentException("--- Tier name cannot be set to null ---");
     setHeader(new TierHeader(name, this.header.color()));
   }
 
@@ -204,8 +207,7 @@ public class Tier {
   }
 
   private void setHeader(TierHeader header) {
-    Objects.requireNonNull(header);
-    this.header = header;
+    this.header = Objects.requireNonNull(header);
   }
 
   private TierHeader getHeader() {

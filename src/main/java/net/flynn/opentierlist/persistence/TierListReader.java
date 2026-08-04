@@ -11,7 +11,7 @@ import net.flynn.opentierlist.model.models.TierList;
 
 public class TierListReader {
   public static TierList read(File file) throws IOException, StreamReadException, DatabindException {
-    var tierMapper = new ObjectMapper();
+    final var tierMapper = new ObjectMapper();
     return tierMapper.readValue(file, TierList.class);
   }
 }

@@ -10,7 +10,7 @@ import net.flynn.opentierlist.model.enums.TierStringFormat;
 import net.flynn.opentierlist.model.models.Tier;
 import net.flynn.opentierlist.model.models.TierElement;
 import net.flynn.opentierlist.model.models.TierList;
-import net.flynn.opentierlist.ui.manual.SPTiers;
+import net.flynn.opentierlist.ui.manual.SPTiered;
 
 /**
  * Controller interface for creating and modifying tier lists.
@@ -41,8 +41,6 @@ public interface TierListController {
     return new StandardTierListController(TierList.ofDefaultTiers());
   }
 
-  // ----- ranking ------ //
-
   /**
    * Rank an untiered element
    *
@@ -70,29 +68,27 @@ public interface TierListController {
   void tier(TierElement unTiered, Tier toTier, int toIndex);
 
   /**
-   * Unrank a tiered element
+   * Un-rank a tiered element
    *
-   * @param tiered element to unrank
+   * @param tiered element to un-rank
    */
   void unTier(TierElement tiered);
 
   /**
-   * Unrank a tiered element to a specified position
+   * Un-rank a tiered element to a specified position
    *
-   * @param tiered   element to unrank
+   * @param tiered   element to un-rank
    * @param position destination position
    */
   void unTier(TierElement tiered, TierElement position);
 
   /**
-   * Unrank a tiered element to a specified position
+   * Un-rank a tiered element to a specified position
    *
-   * @param tiered  element to unrank
+   * @param tiered  element to un-rank
    * @param toIndex position
    */
   void unTier(TierElement tiered, int toIndex);
-
-  // ----- adding and removing ------//
 
   /**
    * Add a tier to the tier list
@@ -169,8 +165,6 @@ public interface TierListController {
    */
   void moveTier(Tier from, int toIndex);
 
-  // ----- setters and getters ------//
-
   void setTierList(TierList tierList);
 
   void setTierListName(String name);
@@ -189,31 +183,23 @@ public interface TierListController {
 
   String getTierListName();
 
-  // ----- persistence ------//
-
   void saveTierList();
 
   void saveTierList(Path path);
 
-  void exportTierList(SPTiers node);
+  void exportTierList(SPTiered node);
 
-  void exportTierList(SPTiers node, Path path);
+  void exportTierList(SPTiered node, Path path);
 
   @Deprecated void saveTierListAs(String name);
 
   Optional<TierList> loadTierList(File file);
 
-  // ----- misc ------//
-
   String toString();
 
   String toString(TierStringFormat format);
 
-  boolean tierElementExists(TierElement element);
-
-  boolean tierElementExistsById(Long id);
-
-  boolean tierExists(Tier tier);
+  boolean elementExists(Long id);
 
   /**
    * Remove an unranked element from the tier list
@@ -222,8 +208,6 @@ public interface TierListController {
    */
   @Deprecated
   void deleteUnTiered(TierElement unTiered);
-
-  // ----- swapping ------//
 
   /**
    * Swaps the positions of two tiers
@@ -252,8 +236,6 @@ public interface TierListController {
    */
   @Deprecated
   void swapUnTiered(TierElement a, TierElement b);
-
-  // ----- moving ------//
 
   /**
    * Move and append a ranked element to a specified tier

@@ -8,20 +8,21 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Paint;
 import net.flynn.opentierlist.controller.TierListController;
+import net.flynn.opentierlist.ui.ConfigHolder;
 
 /**
  * 
  * @version 2.20
  * @since v1.2.5
  */
-public class SPTiers extends ScrollPane {
+public class SPTiered extends ScrollPane {
   private final VBox tiersVBox;
   private final MainPane parent;
 
   private final TierListController controller;
   private final ObservableList<HBTier> tierBoxList;
 
-  public SPTiers(MainPane parent, TierListController controller) {
+  public SPTiered(MainPane parent, TierListController controller) {
     this.parent = parent;
     this.controller = controller;
     this.tierBoxList = FXCollections.observableArrayList();
@@ -36,15 +37,16 @@ public class SPTiers extends ScrollPane {
   private void setupPane() {
     loadTiers();
     tiersVBox.getChildren().addAll(tierBoxList);
+
     this.setContent(tiersVBox);
     this.setFitToWidth(true);
     this.setVbarPolicy(ScrollBarPolicy.AS_NEEDED);
     this.setHbarPolicy(ScrollBarPolicy.AS_NEEDED);
 
-    updateBorder(UISettings.DEFAULT_ACCENT_COLOR_LIGHT);
+    updateBorder(ConfigHolder.DEFAULT_ACCENT_COLOR_LIGHT);
 
     tiersVBox.setAlignment(Pos.CENTER);
-    tiersVBox.setPadding(new Insets(UISettings.DEFAULT_TIERS_VBOX_PADDING));
+    tiersVBox.setPadding(new Insets(ConfigHolder.DEFAULT_TIERS_VBOX_PADDING));
   }
 
   public void updateAllTiers() {

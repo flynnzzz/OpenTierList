@@ -1,6 +1,5 @@
 package net.flynn.opentierlist.model.models;
 
-import java.io.FileNotFoundException;
 import java.net.URISyntaxException;
 import java.util.Objects;
 
@@ -113,7 +112,7 @@ public class TierElementTest {
     String resource = Objects.requireNonNull(getClass().getResource("/greyyakuza.jpg")).toURI().toString();
 
     assertEquals(
-        (Objects.requireNonNull(getClass().getResource(ResourceHolder.getDefaultElementIcon()))).toURI().toString(),
+        (Objects.requireNonNull(getClass().getResource(ResourceHolder.DEFAULT_ELEMENT_IMAGE))).toURI().toString(),
         defaultTierElement.getImageUri()
     );
 
@@ -126,14 +125,14 @@ public class TierElementTest {
     var el4 = new TierElement("elementName4", "nonExistentUrl");
 
     assertEquals(
-            (Objects.requireNonNull(getClass().getResource(ResourceHolder.getDefaultElementIcon()))).toURI().toString(),
+            (Objects.requireNonNull(getClass().getResource(ResourceHolder.DEFAULT_ELEMENT_IMAGE))).toURI().toString(),
             el4.getImageUri()
     );
 
     el4.updateImagePath();
 
     assertEquals(
-            (Objects.requireNonNull(getClass().getResource(ResourceHolder.getDefaultElementIcon()))).toURI().toString(),
+            (Objects.requireNonNull(getClass().getResource(ResourceHolder.DEFAULT_ELEMENT_IMAGE))).toURI().toString(),
             el4.getImageUri()
     );
 

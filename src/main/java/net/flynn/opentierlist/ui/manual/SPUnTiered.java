@@ -9,6 +9,7 @@ import net.flynn.opentierlist.controller.TierListController;
 import net.flynn.opentierlist.model.enums.TieredStatus;
 import net.flynn.opentierlist.model.models.Tier;
 import net.flynn.opentierlist.model.models.TierElement;
+import net.flynn.opentierlist.ui.ConfigHolder;
 
 /**
  * 
@@ -20,44 +21,25 @@ public class SPUnTiered extends ScrollPane {
 
   public SPUnTiered(MainPane parent, TierListController controller) {
 
-    BiConsumer<TierElement, TierElement> onDragDropped = (src, dest) -> {
-      switch (src.getStatus()) {
-        case TieredStatus.UNTIERED: {
-          controller.moveElement(src, Tier.UNTIERED, dest);
-          break;
-        }
-        case TieredStatus.TIERED: {
-          controller.unTier(src, dest);
-          break;
-        }
-        default: {
-          System.err.println("--- Unexpected error, exiting ---");
-          System.exit(-1);
-        }
-      }
-    };
-
-    this.unTieredPane = new FPElements(parent.getFirstChild(), controller, controller.getUnTiered(),
-        onDragDropped);
-
-    this.setupPane();
+    this.unTieredPane = new FPElements(parent.getFirstChild(), controller);
+    setupPane();
   }
 
   private void setupPane() {
     this.setHbarPolicy(ScrollBarPolicy.AS_NEEDED);
     this.setVbarPolicy(ScrollBarPolicy.AS_NEEDED);
 
-    this.setPrefWidth(UISettings.DEFAULT_BAR_WIDTH);
-    this.setMaxHeight(UISettings.DEFAULT_UNRANKED_PANE_MAX_HEIGHT);
-    this.setMinHeight(UISettings.DEFAULT_UNRANKED_PANE_MAX_HEIGHT / 2);
+    this.setPrefWidth(ConfigHolder.DEFAULT_BAR_WIDTH);
+    this.setMaxHeight(ConfigHolder.DEFAULT_UNRANKED_PANE_MAX_HEIGHT);
+    this.setMinHeight(ConfigHolder.DEFAULT_UNRANKED_PANE_MAX_HEIGHT / 2);
     this.setFitToWidth(true);
     this.unTieredPane.setAlignment(Pos.CENTER_LEFT);
 
     this.setPadding(new Insets(
-        UISettings.DEFAULT_UNRANKED_PADDING_TOP,
-        UISettings.DEFAULT_UNRANKED_PADDING_RIGHT,
-        UISettings.DEFAULT_UNRANKED_PADDING_BOTTOM,
-        UISettings.DEFAULT_UNRANKED_PADDING_LEFT));
+        ConfigHolder.DEFAULT_UNRANKED_PADDING_TOP,
+        ConfigHolder.DEFAULT_UNRANKED_PADDING_RIGHT,
+        ConfigHolder.DEFAULT_UNRANKED_PADDING_BOTTOM,
+        ConfigHolder.DEFAULT_UNRANKED_PADDING_LEFT));
 
     this.setContent(unTieredPane);
   }

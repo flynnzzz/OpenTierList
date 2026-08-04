@@ -2,7 +2,6 @@ package net.flynn.opentierlist.ui.manual;
 
 import java.net.URISyntaxException;
 import java.util.Optional;
-import java.util.function.BiConsumer;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -37,22 +36,21 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import net.flynn.opentierlist.controller.TierListController;
-import net.flynn.opentierlist.model.enums.TieredStatus;
-import net.flynn.opentierlist.model.models.TierElement;
 import net.flynn.opentierlist.model.models.Tier;
 import net.flynn.opentierlist.persistence.ResourceHolder;
+import net.flynn.opentierlist.ui.ConfigHolder;
 
 /**
  * 
- * @version 3.00
+ * @version 3.60
  * @since v1.2.5
  */
 public class HBTier extends HBox {
 
   private final TextField tierNameLabel;
   private final FPElements tieredPane;
+
   private final Button editTierButton;
-  private final SPTiers parent;
 
   private ContextMenu contextMenu;
   private MenuItem delete;
@@ -60,17 +58,17 @@ public class HBTier extends HBox {
   private MenuItem color;
 
   private Stage colorStage;
-
   private ColorPicker colorPicker;
   private Button confirmColor;
 
   private final TierListController controller;
-  private final Stage mainStage;
   private final Tier tier;
+  private final Stage mainStage;
+  private final SPTiered parent;
 
   private String oldTextValue;
 
-  public HBTier(SPTiers parent, Stage mainStage, TierListController controller, Tier tier) {
+  public HBTier(SPTiered parent, Stage mainStage, TierListController controller, Tier tier) {
     this.parent = parent;
     this.tierNameLabel = new TextField(tier.getName());
     this.controller = controller;
@@ -78,66 +76,48 @@ public class HBTier extends HBox {
     this.tier = tier;
     this.editTierButton = new Button();
 
-    BiConsumer<TierElement, TierElement> onDragDropped = (src, dest) -> {
-      switch (src.getStatus()) {
-        case TieredStatus.TIERED: {
-          Optional<Tier> potentialTargetTier = controller.getTierByElement(dest);
-
-          potentialTargetTier.ifPresent(targetTier -> controller.moveElement(src, targetTier, dest));
-          break;
-        }
-        case TieredStatus.UNTIERED: {
-          Optional<Tier> potentialTargetTier = controller.getTierByElement(dest);
-
-          potentialTargetTier.ifPresent(targetTier -> controller.tier(src, targetTier, dest));
-          break;
-        }
-        default: {
-          System.err.println("--- Unexpected error, aborting ---");
-          System.exit(-1);
-        }
-      }
-    };
-
-    this.tieredPane = new FPElements(parent, controller, tier.getTiered(), tier, onDragDropped);
-    this.setupPane();
+    this.tieredPane = new FPElements(parent, controller, tier);
+    setupPane();
   }
 
   private void setupPane() {
     this.getChildren().addAll(tierNameLabel, tieredPane, editTierButton);
 
     {
-      this.tierNameLabel.setEditable(true);
+      tierNameLabel.setEditable(true);
       tierNameLabel.setFocusTraversable(false);
       tierNameLabel.setAlignment(Pos.CENTER);
-      tierNameLabel.setPrefSize(UISettings.DEFAULT_CELL_SIZE, UISettings.DEFAULT_CELL_SIZE);
+      tierNameLabel.setPrefSize(ConfigHolder.DEFAULT_CELL_SIZE, ConfigHolder.DEFAULT_CELL_SIZE);
 
-      this.editTierButton.setAlignment(Pos.CENTER);
+      editTierButton.setAlignment(Pos.CENTER);
       editTierButton.setFocusTraversable(false);
 
       this.setTierNameLabelBackground();
-      this.setTierNameLabelBorder(UISettings.DEFAULT_BAR_BORDER_COLOR);
+      this.setTierNameLabelBorder(ConfigHolder.DEFAULT_BAR_BORDER_COLOR);
 
       this.setAlignment(Pos.CENTER);
 
-      this.setSpacing(UISettings.DEFAULT_TIER_SPACING);
+      this.setSpacing(ConfigHolder.DEFAULT_TIER_SPACING);
       this.setPadding(new Insets(
-          UISettings.DEFAULT_TIER_PADDING_TOP,
-          UISettings.DEFAULT_TIER_PADDING_RIGHT,
-          UISettings.DEFAULT_TIER_PADDING_BOTTOM,
-          UISettings.DEFAULT_TIER_PADDING_LEFT));
+          ConfigHolder.DEFAULT_TIER_PADDING_TOP,
+          ConfigHolder.DEFAULT_TIER_PADDING_RIGHT,
+          ConfigHolder.DEFAULT_TIER_PADDING_BOTTOM,
+          ConfigHolder.DEFAULT_TIER_PADDING_LEFT));
     }
+
+    contextMenu = new ContextMenu();
+    delete = new MenuItem("Delete");
+    duplicate = new MenuItem("Duplicate");
+    color = new MenuItem("Color");
+    contextMenu.getItems().addAll(delete, duplicate, color);
+
     setupEditButton();
+    setupDragAndDrop();
+    setupColorPicker();
     setupEventHandlers();
   }
 
   private void setupEventHandlers() {
-
-    setupDragAndDrop();
-
-    setupColorPicker();
-
-    setupEditMenu();
 
     this.tierNameLabel.focusedProperty().addListener((_, _, now) -> {
       if (now)
@@ -154,7 +134,7 @@ public class HBTier extends HBox {
       tierNameLabel.getScene().getRoot().requestFocus();
     });
 
-    Tooltip tooltip = new Tooltip("Click to drag and move");
+    final Tooltip tooltip = new Tooltip("Click to drag and move");
     tierNameLabel.setTooltip(tooltip);
 
     editTierButton.setOnAction(_ -> contextMenu.show(editTierButton, Side.BOTTOM, 0, 0));
@@ -167,7 +147,7 @@ public class HBTier extends HBox {
     });
 
     duplicate.setOnAction(_ -> {
-      var clone = tier.copy();
+      final var clone = tier.copy();
       controller.addTier(clone);
       controller.moveTier(clone, controller.getTiers().indexOf(tier) + 1);
 
@@ -187,7 +167,7 @@ public class HBTier extends HBox {
     });
 
     confirmColor.setOnAction(_ -> {
-      var chosenColor = Optional.ofNullable(colorPicker.getValue());
+      final var chosenColor = Optional.ofNullable(colorPicker.getValue());
 
       if (chosenColor.isEmpty())
         return;
@@ -201,13 +181,13 @@ public class HBTier extends HBox {
   private void setupColorPicker() {
     colorStage = new Stage();
 
-    BorderPane colorPane = new BorderPane();
+    final BorderPane colorPane = new BorderPane();
 
-    Scene colorMenu = new Scene(colorPane, 200, 150);
+    final Scene colorMenu = new Scene(colorPane, 200, 150);
     colorPicker = new ColorPicker();
     colorPicker.setPadding(new Insets(5, 20, 5, 20));
-    VBox colorBox = new VBox();
-    Label colorLabel = new Label("Pick a color");
+    final VBox colorBox = new VBox();
+    final Label colorLabel = new Label("Pick a color");
     confirmColor = new Button("Ok");
     confirmColor.setAlignment(Pos.BASELINE_RIGHT);
 
@@ -221,11 +201,12 @@ public class HBTier extends HBox {
     colorStage.initModality(Modality.WINDOW_MODAL);
     colorStage.initStyle(StageStyle.UTILITY);
     colorStage.setAlwaysOnTop(true);
+
   }
 
   private void setupEditButton() {
     try {
-      var imageURI = getClass().getResource(ResourceHolder.getEditButtonIcon());
+      final var imageURI = getClass().getResource(ResourceHolder.EDIT_BUTTON_ICON);
       if (imageURI == null)
         throw new URISyntaxException("imageURI", "--- Default edit tier resource not found, exiting ---");
       editTierButton.setGraphic(new ImageView(new Image(imageURI.toURI().toString())));
@@ -235,61 +216,54 @@ public class HBTier extends HBox {
     }
   }
 
-  private void setupEditMenu() {
-    contextMenu = new ContextMenu();
-    delete = new MenuItem("Delete");
-    duplicate = new MenuItem("Duplicate");
-    color = new MenuItem("Color");
-    contextMenu.getItems().addAll(delete, duplicate, color);
-  }
-
   private void setupDragAndDrop() {
-    this.tierNameLabel.setOnDragDetected(this::handleDragDetected);
-    this.tierNameLabel.setOnDragOver(event -> {
+    tierNameLabel.setOnDragDetected(this::handleDragDetected);
+    tierNameLabel.setOnDragOver(event -> {
       if (event.getDragboard().hasString() && !event.getDragboard().hasImage())
         event.acceptTransferModes(TransferMode.MOVE);
       event.consume();
     });
 
-    this.tierNameLabel.setOnDragEntered(event -> {
+    tierNameLabel.setOnDragEntered(event -> {
       if (event.getTarget() instanceof TextField target && event.getGestureSource() != target
           && event.getDragboard().hasString() && !event.getDragboard().hasImage())
-        this.setTierNameLabelBorder(UISettings.DEFAULT_BAR_HIGHLIGHT_COLOR);
+        this.setTierNameLabelBorder(ConfigHolder.DEFAULT_BAR_HIGHLIGHT_COLOR);
       event.consume();
     });
 
-    this.tierNameLabel.setOnDragExited(event -> {
+    tierNameLabel.setOnDragExited(event -> {
       if (event.getTarget() instanceof TextField target && event.getGestureSource() != target
           && event.getDragboard().hasString() && !event.getDragboard().hasImage())
-        this.setTierNameLabelBorder(UISettings.DEFAULT_BAR_BORDER_COLOR);
+        this.setTierNameLabelBorder(ConfigHolder.DEFAULT_BAR_BORDER_COLOR);
       event.consume();
     });
 
-    this.tierNameLabel.setOnDragDone(event -> {
+    tierNameLabel.setOnDragDone(event -> {
       if (event.getTransferMode() == TransferMode.MOVE)
         parent.updateAllTiers();
       event.consume();
     });
 
-    this.tierNameLabel.setOnDragDropped(this::handleDragDropped);
+    tierNameLabel.setOnDragDropped(this::handleDragDropped);
   }
 
   private void handleDragDetected(MouseEvent event) {
 
-    // ----- define transfer mode -----//
-    Dragboard dragBoard = ((TextField) event.getSource()).startDragAndDrop(TransferMode.MOVE);
+    if (!(event.getSource() instanceof TextField eventSource))
+      return;
 
-    // ----- put Text on drag board -----//
-    var content = new ClipboardContent();
-    String sourceId = Integer.valueOf(tier.hashCode()).toString();
+    Dragboard dragBoard = eventSource.startDragAndDrop(TransferMode.MOVE);
 
-    content.putString(sourceId);
+    final var content = new ClipboardContent();
+
+    content.putString(String.valueOf(tier.hashCode()));
     dragBoard.setContent(content);
     event.consume();
   }
 
   private void handleDragDropped(DragEvent event) {
     Dragboard db = event.getDragboard();
+
     if (db.hasString() && !event.getDragboard().hasImage()) {
 
       Optional<Tier> source = controller.getTierByHash(db.getString());
@@ -302,11 +276,10 @@ public class HBTier extends HBox {
       while (potentialTarget != null && !(potentialTarget instanceof HBTier)) {
         potentialTarget = potentialTarget.getParent();
       }
-
-      if (potentialTarget instanceof HBTier targetPane) {
-        Tier target = targetPane.getTier();
-        controller.moveTier(source.get(), target);
-      }
+        if (potentialTarget != null) {
+          final Tier target = ((HBTier) potentialTarget).getTier();
+          controller.moveTier(source.get(), target);
+        }
     }
     event.setDropCompleted(true);
     event.consume();

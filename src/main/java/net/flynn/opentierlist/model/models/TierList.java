@@ -151,7 +151,7 @@ public class TierList {
     if (unTiered.getStatus() != TieredStatus.UNTIERED)
       throw new IllegalArgumentException("--- Cannot tier: " + unTiered + " as it's already tiered ---");
 
-    moveElement(unTiered, tier, position);
+    insertElement(unTiered, tier, position);
   }
 
   /**
@@ -199,9 +199,9 @@ public class TierList {
   }
 
   /**
-   * Unranks a {@link TierElement}
+   * Un-ranks a {@link TierElement}
    *
-   * @param tiered element to unrank
+   * @param tiered element to un-rank
    * @throws TierNotFoundException        if tier doesn't exist
    * @throws TierElementNotFoundException if tier element doesn't exist
    * @throws IllegalArgumentException     if the element is already untiered
@@ -215,7 +215,7 @@ public class TierList {
   }
 
   /**
-   * Unranks a {@link TierElement} to a specified position
+   * Un-ranks a {@link TierElement} to a specified position
    *
    * @param tiered   element to rank
    * @param position destination
@@ -229,11 +229,11 @@ public class TierList {
     if (tiered.getStatus() != TieredStatus.TIERED)
       throw new IllegalArgumentException("--- Cannot untier: " + tiered + " as it's already untiered ---");
 
-    moveElement(tiered, Tier.UNTIERED, position);
+    insertElement(tiered, Tier.UNTIERED, position);
   }
 
   /**
-   * Unranks a {@link TierElement} to a specified position
+   * Un-ranks a {@link TierElement} to a specified position
    *
    * @param tiered element to rank
    * @param index  destination index
@@ -490,8 +490,7 @@ public class TierList {
     element.changeTo(updatedStatus);
   }
 
-  // TODO: rename to 'insertElement'
-  public void moveElement(TierElement element, Tier toTier, TierElement position) {
+  public void insertElement(TierElement element, Tier toTier, TierElement position) {
     if (!this.contains(position))
       throw new TierElementNotFoundException("--- Position to move to: " + position + " not found ---");
 
@@ -504,7 +503,7 @@ public class TierList {
     destination.move(element, index);
   }
 
-  public void moveElement(TierElement element, Tier toTier, int index) {
+  public void insertElement(TierElement element, Tier toTier, int index) {
 
     final var destination = toTier.equalsTier(Tier.UNTIERED) ? unTiered : toTier;
 
@@ -518,10 +517,8 @@ public class TierList {
 
     final TierElement position = destination.get(index);
 
-    moveElement(element, destination, position);
+    insertElement(element, destination, position);
   }
-
-  // ----- setters and getters -----//
 
   public void setTierListName(String name) throws IllegalArgumentException {
     this.tierListName = Objects.requireNonNull(name);
@@ -548,14 +545,6 @@ public class TierList {
 
   public String getTierListName() {
     return tierListName;
-  }
-
-  public String getTierName(int tierIndex) {
-    return tiers.get(tierIndex).getName();
-  }
-
-  public String getTierColor(int tierIndex) {
-    return tiers.get(tierIndex).getColor();
   }
 
   public List<TierElement> getUnTiered() {
@@ -605,7 +594,7 @@ public class TierList {
           sb.append(System.lineSeparator());
         });
 
-    sb.append("Unranked:").append(System.lineSeparator()).append(unTiered.toString());
+    sb.append("Untiered: ").append(System.lineSeparator()).append(unTiered.toString());
     return sb.toString();
   }
 
@@ -694,12 +683,6 @@ public class TierList {
   }
 
   @Deprecated
-  public void addUnTiered(TierElement element, int index) {
-    unTiered.add(element);
-    element.changeTo(UNTIERED);
-  }
-
-  @Deprecated
   public void addToTier(int tierIndex, TierElement element) throws TierNotFoundException {
     verifyTierExistence(tierIndex);
     element.changeTo(TIERED);
@@ -767,16 +750,6 @@ public class TierList {
       throws TierElementNotFoundException, TierNotFoundException {
     verifyTierExistence(tier);
     verifyElementExistence(element, tier.getTiered());
-  }
-
-  @Deprecated
-  public void moveUnTiered(TierElement element, int toElementIndex)
-      throws TierElementNotFoundException, TierNotFoundException {
-
-    verifyElementExistence(element, unTiered.getTiered());
-
-    unTiered.remove(element);
-    unTiered.add(element);
   }
 
   /**

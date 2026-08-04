@@ -747,7 +747,7 @@ public class TierListTest {
     @Test
     public void moveElementPointer() {
 
-        assertThrows(TierElementNotFoundException.class, () -> tierList.moveElement(el1, t1, new TierElement()));
+        assertThrows(TierElementNotFoundException.class, () -> tierList.insertElement(el1, t1, new TierElement()));
 
         assertEquals(List.of(el1, el2, el3, el4), tierList.getUnTiered());
 
@@ -756,22 +756,22 @@ public class TierListTest {
         assertEquals(List.of(el2, el3, el4), tierList.getUnTiered());
         assertEquals(List.of(el1), t1.getTiered());
 
-        tierList.moveElement(el2, t1, el1);
+        tierList.insertElement(el2, t1, el1);
         assertEquals(TieredStatus.TIERED, el2.getStatus());
         assertEquals(List.of(el3, el4), tierList.getUnTiered());
         assertEquals(List.of(el2, el1), t1.getTiered());
 
-        tierList.moveElement(el3, t1, el2);
+        tierList.insertElement(el3, t1, el2);
         assertEquals(TieredStatus.TIERED, el3.getStatus());
         assertEquals(List.of(el4), tierList.getUnTiered());
         assertEquals(List.of(el3, el2, el1), t1.getTiered());
 
-        tierList.moveElement(el1, Tier.UNTIERED, el4);
+        tierList.insertElement(el1, Tier.UNTIERED, el4);
         assertEquals(TieredStatus.UNTIERED, el1.getStatus());
         assertEquals(List.of(el1, el4), tierList.getUnTiered());
         assertEquals(List.of(el3, el2), t1.getTiered());
 
-        tierList.moveElement(el1, Tier.UNTIERED, el4);
+        tierList.insertElement(el1, Tier.UNTIERED, el4);
         assertEquals(List.of(el4, el1), tierList.getUnTiered());
 
     }
@@ -779,26 +779,26 @@ public class TierListTest {
     @Test
     public void moveElementIndex() {
 
-        assertThrows(TierElementNotFoundException.class, () -> tierList.moveElement(el1, t1, -1));
+        assertThrows(TierElementNotFoundException.class, () -> tierList.insertElement(el1, t1, -1));
 
         assertEquals(List.of(el1, el2, el3, el4), tierList.getUnTiered());
 
-        tierList.moveElement(el1, t1, 0);
+        tierList.insertElement(el1, t1, 0);
         assertEquals(TieredStatus.TIERED, el1.getStatus());
         assertEquals(List.of(el2, el3, el4), tierList.getUnTiered());
         assertEquals(List.of(el1), t1.getTiered());
 
-        tierList.moveElement(el2, t1, 0);
+        tierList.insertElement(el2, t1, 0);
         assertEquals(TieredStatus.TIERED, el2.getStatus());
         assertEquals(List.of(el3, el4), tierList.getUnTiered());
         assertEquals(List.of(el2, el1), t1.getTiered());
 
-        tierList.moveElement(el3, t1, 1);
+        tierList.insertElement(el3, t1, 1);
         assertEquals(TieredStatus.TIERED, el3.getStatus());
         assertEquals(List.of(el4), tierList.getUnTiered());
         assertEquals(List.of(el2, el3, el1), t1.getTiered());
 
-        tierList.moveElement(el1, Tier.UNTIERED, 1);
+        tierList.insertElement(el1, Tier.UNTIERED, 1);
         assertEquals(TieredStatus.UNTIERED, el1.getStatus());
         assertEquals(List.of(el4, el1), tierList.getUnTiered());
         assertEquals(List.of(el2, el3), t1.getTiered());
@@ -897,6 +897,16 @@ public class TierListTest {
         assertEquals(t2, tiers.get(1));
 
         assertFalse(tiers.contains(Tier.UNTIERED));
+
+    }
+
+    @Test
+    public void getTier() {
+
+        assertTrue(tierList.getTier(0).equalsTier(t1));
+        assertTrue(tierList.getTier(1).equalsTier(t2));
+        assertTrue(tierList.getTier(2).equalsTier(t3));
+        assertTrue(tierList.getTier(3).equalsTier(t4));
 
     }
 

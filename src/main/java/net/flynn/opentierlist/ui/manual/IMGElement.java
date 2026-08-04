@@ -9,29 +9,28 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
 import net.flynn.opentierlist.controller.TierListController;
+import net.flynn.opentierlist.model.models.Tier;
 import net.flynn.opentierlist.model.models.TierElement;
+import net.flynn.opentierlist.ui.ConfigHolder;
 
 import java.util.Optional;
-import java.util.function.BiConsumer;
 
 public class IMGElement extends ImageView {
 
     private final FPElements parent;
-    private final SPTiers grandparent;
+    private final SPTiered grandparent;
     private final TierListController controller;
-    private final BiConsumer<TierElement, TierElement> onDragDropped;
 
     public IMGElement(
-            Image image, TierListController controller, FPElements parent, SPTiers grandparent, BiConsumer<TierElement, TierElement> onDragDropped
+            Image image, TierListController controller, FPElements parent, SPTiered grandparent
     ) {
         super(image);
         this.controller = controller;
         this.parent = parent;
         this.grandparent = grandparent;
-        this.onDragDropped = onDragDropped;
 
-        this.setFitHeight(UISettings.DEFAULT_CELL_SIZE);
-        this.setFitWidth(UISettings.DEFAULT_CELL_SIZE);
+        this.setFitHeight(ConfigHolder.DEFAULT_CELL_SIZE);
+        this.setFitWidth(ConfigHolder.DEFAULT_CELL_SIZE);
 
 
         setupEventHandlers();
@@ -44,9 +43,11 @@ public class IMGElement extends ImageView {
         final var unTierImageMenu = new MenuItem("UnTier");
 
         this.setOnMouseClicked(mouseEvent -> {
+
             if (mouseEvent.getButton() == MouseButton.SECONDARY) {
 
                 deleteImageMenu.setOnAction(_ -> {
+
                     if (this.getUserData() instanceof TierElement element) {
                         controller.removeElement(element);
                         parent.getChildren().remove(this);
@@ -55,14 +56,17 @@ public class IMGElement extends ImageView {
                 });
 
                 if (this.getUserData() instanceof TierElement element && element.isTiered()) {
+
                     imageContextMenu.getItems().add(unTierImageMenu);
                     unTierImageMenu.setOnAction(_ -> {
                         controller.unTier(element);
                         grandparent.updateTierList();
                     });
                 }
+
                 imageContextMenu.getItems().add(deleteImageMenu);
                 imageContextMenu.show(this, Side.RIGHT, 0, 0);
+
             }
         });
 
@@ -76,13 +80,12 @@ public class IMGElement extends ImageView {
         this.setOnDragEntered(event -> {
             if (event.getDragboard().hasImage()) {
 
-                this.setFitHeight(UISettings.DEFAULT_EXPANDED_IMAGE_SIZE);
+                this.setFitHeight(ConfigHolder.DEFAULT_EXPANDED_IMAGE_SIZE);
+
                 parent.setPadding(
                         new Insets(
-                                0,
-                                UISettings.DEFAULT_DRAG_ENTERED_PADDING,
-                                0,
-                                UISettings.DEFAULT_DRAG_ENTERED_PADDING
+                                0, ConfigHolder.DEFAULT_DRAG_ENTERED_PADDING,
+                                0, ConfigHolder.DEFAULT_DRAG_ENTERED_PADDING
                         )
                 );
             }
@@ -92,7 +95,7 @@ public class IMGElement extends ImageView {
         this.setOnDragExited(event -> {
             if (event.getTarget() instanceof ImageView && event.getSource() instanceof ImageView) {
 
-                this.setFitHeight(UISettings.DEFAULT_CELL_SIZE);
+                this.setFitHeight(ConfigHolder.DEFAULT_CELL_SIZE);
                 parent.setPadding(Insets.EMPTY);
 
             }
@@ -127,6 +130,7 @@ public class IMGElement extends ImageView {
     }
 
     private void handleDragDroppedImage(DragEvent event) {
+
         boolean success = false;
 
         Dragboard dragBoard = event.getDragboard();
@@ -140,19 +144,27 @@ public class IMGElement extends ImageView {
 
         EventTarget eventTarget = event.getTarget();
         if (dragBoard.hasImage() && dragBoard.hasString()
-                && eventTarget instanceof ImageView targetImage
-                && targetImage.getUserData() instanceof TierElement targetElement) {
+            && eventTarget instanceof ImageView targetImage
+            && targetImage.getUserData() instanceof TierElement targetElement) {
 
-            TierElement source = potentialSource.get();
-            if (!source.equals(targetElement)) {
+            TierElement sourceElement = potentialSource.get();
 
-                onDragDropped.accept(potentialSource.get(), targetElement);
-                parent.updateImages();
+            if (!sourceElement.equals(targetElement)) {
 
-                success = true;
+                Optional<Tier> potentialTargetTier = controller.getTierByElement(targetElement);
+
+                potentialTargetTier.ifPresent(
+                        targetTier -> controller.moveElement(sourceElement, targetTier, targetElement)
+                );
             }
+
+            parent.updateImages();
+
+            success = true;
         }
+
         event.setDropCompleted(success);
         event.consume();
+
     }
 }

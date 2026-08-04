@@ -1,16 +1,18 @@
-package net.flynn.opentierlist.ui.manual;
+package net.flynn.opentierlist.ui;
 
 import javafx.scene.paint.Color;
 
-public class UISettings {
+public class ConfigHolder {
 
-  public final static int DEFAULT_CELL_SIZE = 80;
-  public final static int DEFAULT_BAR_WIDTH = 9 * DEFAULT_CELL_SIZE;
+  public final static int DEFAULT_CELL_SIZE = 64 + 32;
+
+  public final static int DEFAULT_BAR_WIDTH = 8 * DEFAULT_CELL_SIZE;
   public final static int DEFAULT_BAR_MAX_HEIGHT = 4 * DEFAULT_CELL_SIZE;
   public final static int DEFAULT_BAR_MIN_HEIGHT = DEFAULT_CELL_SIZE + 2;
+
   public final static int DEFAULT_DRAG_ENTERED_PADDING = 8;
-  public final static double DEFAULT_EXPANDED_IMAGE_SIZE = DEFAULT_CELL_SIZE * 1.2;
-  public final static int DEFAULT_TIERS_VBOX_PADDING = 10;
+  public final static double DEFAULT_EXPANDED_IMAGE_SIZE = DEFAULT_CELL_SIZE * (0.8 + 0.4);
+  public final static int DEFAULT_TIERS_VBOX_PADDING = 8;
 
   public final static String DEFAULT_BAR_BORDER_COLOR = Color.DIMGRAY.toString();
   public final static String DEFAULT_BAR_HIGHLIGHT_COLOR = Color.DEEPSKYBLUE.toString();
@@ -18,6 +20,7 @@ public class UISettings {
   public enum Theme {
     LIGHT, DARK
   }
+
   public static final String DEFAULT_ACCENT_COLOR_LIGHT = "#dadfe7";
   public static final String DEFAULT_ACCENT_COLOR_DARK = "#3b4252";
 
@@ -34,21 +37,23 @@ public class UISettings {
 
   public final static double DEFAULT_UNRANKED_PANE_MIN_HEIGHT = DEFAULT_CELL_SIZE * 1.6;
   public final static double DEFAULT_UNRANKED_PANE_MAX_HEIGHT = DEFAULT_UNRANKED_PANE_MIN_HEIGHT * 2;
-  public final static int DEFAULT_UNRANKED_PADDING_TOP = 20;
-  public final static int DEFAULT_UNRANKED_PADDING_RIGHT = 20;
-  public final static int DEFAULT_UNRANKED_PADDING_BOTTOM = 20;
-  public final static int DEFAULT_UNRANKED_PADDING_LEFT = 20;
 
-  public final static int DEFAULT_TIER_SPACING = 10;
-  public final static int DEFAULT_TIER_PADDING_TOP = 10;
-  public final static int DEFAULT_TIER_PADDING_RIGHT = 10;
-  public final static int DEFAULT_TIER_PADDING_BOTTOM = 10;
-  public final static int DEFAULT_TIER_PADDING_LEFT = 10;
+  public final static int DEFAULT_UNRANKED_PADDING_TOP = 16;
+  public final static int DEFAULT_UNRANKED_PADDING_RIGHT = 16;
+  public final static int DEFAULT_UNRANKED_PADDING_BOTTOM = 4;
+  public final static int DEFAULT_UNRANKED_PADDING_LEFT = 16;
 
-  public final static int DEFAULT_TITLE_PADDING_TOP = 20;
-  public final static int DEFAULT_TITLE_PADDING_RIGHT = 20;
-  public final static int DEFAULT_TITLE_PADDING_BOTTOM = 20;
-  public final static int DEFAULT_TITLE_PADDING_LEFT = 20;
+  public final static int DEFAULT_TIER_SPACING = 8;
+  public final static int DEFAULT_TIER_PADDING_TOP = 8;
+  public final static int DEFAULT_TIER_PADDING_RIGHT = 8;
+  public final static int DEFAULT_TIER_PADDING_BOTTOM = 8;
+  public final static int DEFAULT_TIER_PADDING_LEFT = 8;
 
-  public final static int DEFAULT_DBUTTON_PADDING = 10;
+  public final static int DEFAULT_TITLE_PADDING_TOP = 16;
+  public final static int DEFAULT_TITLE_PADDING_RIGHT = 16;
+  public final static int DEFAULT_TITLE_PADDING_BOTTOM = 16;
+  public final static int DEFAULT_TITLE_PADDING_LEFT = 16;
+
+  public final static int DEFAULT_BUTTON_PADDING = 8;
+  public final static double DEFAULT_BUTTON_SPACING = DEFAULT_BUTTON_PADDING / 1.6;
 }

@@ -10,25 +10,22 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import javafx.application.Application;
 import javafx.embed.swing.SwingFXUtils;
-import javafx.scene.Parent;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.image.WritableImage;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.transform.Scale;
 import net.flynn.opentierlist.model.models.TierList;
-import net.flynn.opentierlist.ui.manual.SPTiers;
+import net.flynn.opentierlist.ui.manual.SPTiered;
 
 import javax.imageio.ImageIO;
 
 public class TierListWriter {
 	public static void write(File file, TierList tierList) throws IOException, StreamReadException, DatabindException {
-		var tierMapper = new ObjectMapper();
+		final var tierMapper = new ObjectMapper();
 		tierMapper.writeValue(file, tierList);
 	}
 
-	private static WritableImage screenshot(SPTiers node) {
+	private static WritableImage screenshot(SPTiered node) {
 
 		final double inboundWidth = node.getContent().getBoundsInLocal().getWidth(),
 				inboundHeight = node.getContent().getBoundsInLocal().getHeight();
@@ -51,7 +48,7 @@ public class TierListWriter {
 		return image;
 	}
 
-	public static void export(File file, SPTiers node) throws  IOException {
+	public static void export(File file, SPTiered node) throws  IOException {
 
 		ImageIO.write(SwingFXUtils.fromFXImage(screenshot(node), null), "png", file);
 

@@ -1,11 +1,9 @@
 package net.flynn.opentierlist.ui.manual;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.BiConsumer;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -25,32 +23,31 @@ import javafx.scene.paint.Paint;
 import net.flynn.opentierlist.controller.TierListController;
 import net.flynn.opentierlist.model.models.Tier;
 import net.flynn.opentierlist.model.models.TierElement;
+import net.flynn.opentierlist.ui.ConfigHolder;
 
 /**
  *
- * @version 3.40
+ * @version 3.80
  * @since v1.2.5
  */
 public class FPElements extends FlowPane {
-  private final SPTiers grandparent;
+
+  private final SPTiered grandparent;
   private ObservableList<IMGElement> images;
 
   private static Map<Long, Image> imageCache;
 
   private final TierListController controller;
   private final Tier tier;
-  private final BiConsumer<TierElement, TierElement> onDragDropped;
   private List<TierElement> elements;
 
-  public FPElements(SPTiers grandparent, TierListController controller, List<TierElement> elements,
-                    Tier tier, BiConsumer<TierElement, TierElement> onDragDropped) {
+  public FPElements(
+          SPTiered grandparent, TierListController controller, Tier tier
+  ) {
     this.controller = controller;
-    this.elements = new ArrayList<>(elements);
-
     this.grandparent = grandparent;
-    this.onDragDropped = onDragDropped;
-
     this.tier = tier;
+    this.elements = tier.equalsTier(Tier.UNTIERED) ? controller.getUnTiered() : tier.getTiered();
 
     this.images = loadImages();
     if (imageCache == null) {
@@ -60,9 +57,8 @@ public class FPElements extends FlowPane {
     this.setupPane();
   }
 
-  public FPElements(SPTiers grandparent, TierListController controller, List<TierElement> elements,
-                    BiConsumer<TierElement, TierElement> onDragDropped) {
-    this(grandparent, controller, elements, Tier.UNTIERED, onDragDropped);
+  public FPElements( SPTiered grandparent, TierListController controller ) {
+    this(grandparent, controller, Tier.UNTIERED);
   }
 
   public static void reloadImageCache() {
@@ -71,13 +67,10 @@ public class FPElements extends FlowPane {
   }
 
   public void updateImages() {
-    elements = !tier.equalsTier(Tier.UNTIERED) ? new ArrayList<>(tier.getTiered())
-        : new ArrayList<>(controller.getUnTiered());
-
-    images.clear();
+    elements = !tier.equalsTier(Tier.UNTIERED) ? tier.getTiered() : controller.getUnTiered();
 
     imageCache.keySet()
-        .removeIf(id -> !controller.tierElementExistsById(id));
+        .removeIf(id -> !controller.elementExists(id));
 
     images = loadImages();
 
@@ -86,6 +79,10 @@ public class FPElements extends FlowPane {
   }
 
   private ObservableList<IMGElement> loadImages() {
+
+    if (images != null)
+      images.clear();
+
     images = FXCollections.observableArrayList();
 
     elements.forEach(element -> {
@@ -95,19 +92,19 @@ public class FPElements extends FlowPane {
 
       if (img == null) {
         img = new Image(element.getImageUri(),
-            UISettings.DEFAULT_CELL_SIZE,
-            UISettings.DEFAULT_CELL_SIZE,
+            ConfigHolder.DEFAULT_CELL_SIZE,
+            ConfigHolder.DEFAULT_CELL_SIZE,
             false,
             false);
         imageCache.put(element.getId(), img);
       }
 
       var imageViewer = new IMGElement(
-              img, controller, this, grandparent, onDragDropped
+              img, controller, this, grandparent
       );
       imageViewer.setUserData(element);
-
       images.add(imageViewer);
+
     });
 
     return images;
@@ -115,11 +112,11 @@ public class FPElements extends FlowPane {
 
   private void setupPane() {
     this.getChildren().addAll(images);
-    this.initFlowPaneBorder();
 
-    this.setPrefWidth(UISettings.DEFAULT_BAR_WIDTH);
-    this.setMaxHeight(UISettings.DEFAULT_BAR_MAX_HEIGHT);
-    this.setMinHeight(UISettings.DEFAULT_BAR_MIN_HEIGHT);
+    setFlowPaneBorder(ConfigHolder.DEFAULT_BAR_BORDER_COLOR);
+    this.setPrefWidth(ConfigHolder.DEFAULT_BAR_WIDTH);
+    this.setMaxHeight(ConfigHolder.DEFAULT_BAR_MAX_HEIGHT);
+    this.setMinHeight(ConfigHolder.DEFAULT_BAR_MIN_HEIGHT);
 
     this.setupDragAndDrop();
   }
@@ -134,8 +131,8 @@ public class FPElements extends FlowPane {
     this.setOnDragEntered(event -> {
       var sourceData = event.getGestureSource();
       if (sourceData instanceof ImageView && event.getDragboard().hasImage()) {
-        this.setTierElementsPaneBorder(UISettings.DEFAULT_BAR_HIGHLIGHT_COLOR);
-        this.setPadding(new Insets(UISettings.DEFAULT_DRAG_ENTERED_PADDING));
+        this.setFlowPaneBorder(ConfigHolder.DEFAULT_BAR_HIGHLIGHT_COLOR);
+        this.setPadding(new Insets(ConfigHolder.DEFAULT_DRAG_ENTERED_PADDING));
       }
       event.consume();
     });
@@ -143,7 +140,7 @@ public class FPElements extends FlowPane {
     this.setOnDragExited(event -> {
       var sourceData = event.getGestureSource();
       if (sourceData instanceof ImageView && event.getDragboard().hasImage()) {
-        this.setTierElementsPaneBorder(UISettings.DEFAULT_BAR_BORDER_COLOR);
+        this.setFlowPaneBorder(ConfigHolder.DEFAULT_BAR_BORDER_COLOR);
         this.setPadding(Insets.EMPTY);
       }
       event.consume();
@@ -157,17 +154,6 @@ public class FPElements extends FlowPane {
       event.consume();
     });
   }
-
-  private void initFlowPaneBorder() {
-    var flowPaneBorder = new Border(
-        new BorderStroke(
-            Paint.valueOf(UISettings.DEFAULT_BAR_BORDER_COLOR),
-            BorderStrokeStyle.SOLID,
-            CornerRadii.EMPTY,
-            BorderWidths.DEFAULT));
-    this.setBorder(flowPaneBorder);
-  }
-
 
   private void handleDragDropped(DragEvent event) {
     boolean success = false;
@@ -195,14 +181,14 @@ public class FPElements extends FlowPane {
     event.consume();
   }
 
-  private void setTierElementsPaneBorder(String color) {
-    var tierElementsPaneBorder = new Border(
+  private void setFlowPaneBorder(String color) {
+    final var border = new Border(
         new BorderStroke(
             Paint.valueOf(color),
             BorderStrokeStyle.SOLID,
             CornerRadii.EMPTY,
             BorderWidths.DEFAULT));
-    this.setBorder(tierElementsPaneBorder);
+    this.setBorder(border);
   }
 
 }
