@@ -77,7 +77,7 @@ public class TierElementTest {
 
   @Test
   public void getElementName() {
-    assertEquals("element", defaultTierElement.getElementName());
+    assertEquals("New Element", defaultTierElement.getElementName());
     assertEquals("elementName1", el1.getElementName());
     assertEquals("elementName2", el2.getElementName());
     assertEquals("elementName3", el3.getElementName());

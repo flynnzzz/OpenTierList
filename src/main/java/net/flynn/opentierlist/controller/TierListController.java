@@ -138,7 +138,7 @@ public interface TierListController {
    * @param toTier   destination
    * @param position to move to
    */
-  void moveElement(TierElement element, Tier toTier, TierElement position);
+  void insertElement(TierElement element, Tier toTier, TierElement position);
 
   /**
    * Move and a ranked element to a specified tier
@@ -147,7 +147,7 @@ public interface TierListController {
    * @param toTier  destination
    * @param index   to move to
    */
-  void moveElement(TierElement element, Tier toTier, int index);
+  void insertElement(TierElement element, Tier toTier, int index);
 
   /**
    * Move a tier to a destination

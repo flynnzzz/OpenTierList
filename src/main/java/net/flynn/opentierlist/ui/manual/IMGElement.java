@@ -154,7 +154,7 @@ public class IMGElement extends ImageView {
                 Optional<Tier> potentialTargetTier = controller.getTierByElement(targetElement);
 
                 potentialTargetTier.ifPresent(
-                        targetTier -> controller.moveElement(sourceElement, targetTier, targetElement)
+                        targetTier -> controller.insertElement(sourceElement, targetTier, targetElement)
                 );
             }
 

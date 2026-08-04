@@ -42,7 +42,9 @@ public class TierList {
    */
   public TierList(String tierListName, List<TierElement> unTiered, List<Tier> tiers) throws IllegalArgumentException {
     this.tierListName = Objects.requireNonNull(tierListName);
-    this.unTiered = new Tier("__UNTIERED__", "#ffffff", Objects.requireNonNull(unTiered));
+    this.unTiered = new Tier(
+            "__UNTIERED__", "#ffffff", Objects.requireNonNull(unTiered)
+    );
     this.tiers = Objects.requireNonNull(tiers);
     if (tierListName.isBlank())
       throw new IllegalArgumentException("--- TierList name cannot be blank ---");
@@ -521,9 +523,10 @@ public class TierList {
   }
 
   public void setTierListName(String name) throws IllegalArgumentException {
-    this.tierListName = Objects.requireNonNull(name);
+    Objects.requireNonNull(name);
     if (name.isBlank())
       throw new IllegalArgumentException("--- The tier list's name cannot be blank ---");
+    this.tierListName = name;
   }
 
   public void setTierName(int tierIndex, String name) {

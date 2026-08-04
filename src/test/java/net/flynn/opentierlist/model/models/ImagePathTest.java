@@ -45,7 +45,7 @@ public class ImagePathTest {
     }
 
     @Test
-    public void ofFile() throws FileNotFoundException {
+    public void ofFile() {
         assertEquals(imagePath, ImagePath.of(new File(resource)));
         assertEquals(ImagePath.defaultResource(), ImagePath.of(new File("_")));
     }

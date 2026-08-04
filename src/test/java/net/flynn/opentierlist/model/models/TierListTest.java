@@ -745,7 +745,7 @@ public class TierListTest {
     }
 
     @Test
-    public void moveElementPointer() {
+    public void insertElementPointer() {
 
         assertThrows(TierElementNotFoundException.class, () -> tierList.insertElement(el1, t1, new TierElement()));
 
@@ -777,7 +777,7 @@ public class TierListTest {
     }
 
     @Test
-    public void moveElementIndex() {
+    public void insertElementIndex() {
 
         assertThrows(TierElementNotFoundException.class, () -> tierList.insertElement(el1, t1, -1));
 
