@@ -188,7 +188,17 @@ public class MainPane extends BorderPane {
       setCenter(centerBox);
 
       HBox unrankedBox = new HBox(unTieredPane);
-      unrankedBox.setAlignment(Pos.BASELINE_CENTER);
+      unrankedBox.setAlignment(Pos.CENTER);
+
+      unrankedBox.setPadding(
+              new Insets(
+                      ConfigHolder.DEFAULT_UNRANKED_PADDING_TOP,
+                      ConfigHolder.DEFAULT_UNRANKED_PADDING_RIGHT,
+                      ConfigHolder.DEFAULT_UNRANKED_PADDING_BOTTOM,
+                      ConfigHolder.DEFAULT_UNRANKED_PADDING_LEFT
+              )
+      );
+
       setBottom(unrankedBox);
     }
 
@@ -249,8 +259,8 @@ public class MainPane extends BorderPane {
     Application.setUserAgentStylesheet(styleSheet);
 
     switch (mode) {
-      case ConfigHolder.Theme.LIGHT -> tieredPane.updateBorder(ConfigHolder.DEFAULT_ACCENT_COLOR_LIGHT);
-      case ConfigHolder.Theme.DARK -> tieredPane.updateBorder(ConfigHolder.DEFAULT_ACCENT_COLOR_DARK);
+      case ConfigHolder.Theme.LIGHT -> updateBorders(ConfigHolder.DEFAULT_ACCENT_COLOR_LIGHT);
+      case ConfigHolder.Theme.DARK -> updateBorders(ConfigHolder.DEFAULT_ACCENT_COLOR_DARK);
     }
   }
 
@@ -311,6 +321,11 @@ public class MainPane extends BorderPane {
 
   public Stage getMainStage() {
     return this.mainStage;
+  }
+
+  private void updateBorders(String color) {
+    tieredPane.updateBorder(color);
+    unTieredPane.updateBorder(color);
   }
 
   public SPTiered getFirstChild() {

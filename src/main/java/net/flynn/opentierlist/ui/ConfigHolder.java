@@ -6,9 +6,9 @@ public class ConfigHolder {
 
   public final static int DEFAULT_CELL_SIZE = 64 + 32;
 
-  public final static int DEFAULT_BAR_WIDTH = 8 * DEFAULT_CELL_SIZE;
+  public final static int DEFAULT_BAR_WIDTH = (8 + 1) * DEFAULT_CELL_SIZE;
   public final static int DEFAULT_BAR_MAX_HEIGHT = 4 * DEFAULT_CELL_SIZE;
-  public final static int DEFAULT_BAR_MIN_HEIGHT = DEFAULT_CELL_SIZE + 2;
+  public final static int DEFAULT_BAR_MIN_HEIGHT = DEFAULT_CELL_SIZE;
 
   public final static int DEFAULT_DRAG_ENTERED_PADDING = 8;
   public final static double DEFAULT_EXPANDED_IMAGE_SIZE = DEFAULT_CELL_SIZE * (0.8 + 0.4);
@@ -40,7 +40,7 @@ public class ConfigHolder {
 
   public final static int DEFAULT_UNRANKED_PADDING_TOP = 16;
   public final static int DEFAULT_UNRANKED_PADDING_RIGHT = 16;
-  public final static int DEFAULT_UNRANKED_PADDING_BOTTOM = 4;
+  public final static int DEFAULT_UNRANKED_PADDING_BOTTOM = 16;
   public final static int DEFAULT_UNRANKED_PADDING_LEFT = 16;
 
   public final static int DEFAULT_TIER_SPACING = 8;
