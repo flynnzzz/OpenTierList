@@ -1,7 +1,7 @@
 package net.flynn.opentierlist.model.enums;
 
-import javafx.scene.paint.Color;
 import net.flynn.opentierlist.model.models.Tier;
+import net.flynn.opentierlist.ui.manual.UISettings;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -39,13 +39,13 @@ public class DefaultTierTest {
 
     @Test
     public void value() {
-        assertTrue(s.value().equalsTier(new Tier("S", Color.ORANGERED.toString())));
-        assertTrue(a.value().equalsTier(new Tier("A", Color.ORANGE.toString())));
-        assertTrue(b.value().equalsTier(new Tier("B", Color.YELLOW.toString())));
-        assertTrue(c.value().equalsTier(new Tier("C", Color.GREENYELLOW.toString())));
-        assertTrue(d.value().equalsTier(new Tier("D", Color.LIGHTBLUE.toString())));
-        assertTrue(e.value().equalsTier(new Tier("E", Color.ALICEBLUE.toString())));
-        assertTrue(f.value().equalsTier(new Tier("F", Color.GRAY.toString())));
+        assertTrue(s.value().equalsTier(new Tier("S", UISettings.DEFAULT_S_COLOR)));
+        assertTrue(a.value().equalsTier(new Tier("A", UISettings.DEFAULT_A_COLOR)));
+        assertTrue(b.value().equalsTier(new Tier("B", UISettings.DEFAULT_B_COLOR)));
+        assertTrue(c.value().equalsTier(new Tier("C", UISettings.DEFAULT_C_COLOR)));
+        assertTrue(d.value().equalsTier(new Tier("D", UISettings.DEFAULT_D_COLOR)));
+        assertTrue(e.value().equalsTier(new Tier("E", UISettings.DEFAULT_E_COLOR)));
+        assertTrue(f.value().equalsTier(new Tier("F", UISettings.DEFAULT_F_COLOR)));
     }
 
     @Test

@@ -23,7 +23,7 @@ public class Tier {
 
   public static final String DEFAULT_TIER_NAME = "New Tier";
   public static final String DEFAULT_TIER_COLOR = Color.GRAY.toString();
-  public static final Tier UNTIERED = new Tier("__UNTIERED__");
+  public static final Tier UNTIERED = new Tier("__UNTIERED__", "#ffffff");
 
   private TierHeader header;
   protected final List<TierElement> tiered;
@@ -229,6 +229,8 @@ public class Tier {
     return List.copyOf(tiered);
   }
 
+  public TierElement get(int i) { return tiered.get(i); }
+
   @Override
   public int hashCode() {
     return Objects.hash(tiered, header, id);
@@ -260,8 +262,7 @@ public class Tier {
     if (!(tier instanceof Tier other)) {
       return false;
     }
-    return Objects.equals(tiered, other.tiered)
-        && Objects.equals(header, other.header);
+    return Objects.equals(header, other.header);
   }
 
   private String toStringElements(List<TierElement> elements) {
