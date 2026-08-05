@@ -12,22 +12,24 @@ import net.flynn.opentierlist.controller.TierListController;
 import net.flynn.opentierlist.model.models.Tier;
 import net.flynn.opentierlist.model.models.TierElement;
 import net.flynn.opentierlist.ui.ConfigHolder;
+import net.flynn.opentierlist.controller.GraphicsController;
 
 import java.util.Optional;
 
 public class IMGElement extends ImageView {
 
+    private final TierListController tierListController;
+    private final GraphicsController graphicsController;
+
     private final FPElements parent;
-    private final SPTiered grandparent;
-    private final TierListController controller;
 
     public IMGElement(
-            Image image, TierListController controller, FPElements parent, SPTiered grandparent
+            Image image, TierListController tierListController, GraphicsController graphicsController, FPElements parent
     ) {
         super(image);
-        this.controller = controller;
+        this.tierListController = tierListController;
+        this.graphicsController = graphicsController;
         this.parent = parent;
-        this.grandparent = grandparent;
 
         this.setFitHeight(ConfigHolder.DEFAULT_CELL_SIZE);
         this.setFitWidth(ConfigHolder.DEFAULT_CELL_SIZE);
@@ -38,29 +40,29 @@ public class IMGElement extends ImageView {
 
     private void setupEventHandlers() {
 
-        final var imageContextMenu = new ContextMenu();
-        final var deleteImageMenu = new MenuItem("Delete");
-        final var unTierImageMenu = new MenuItem("UnTier");
-
         this.setOnMouseClicked(mouseEvent -> {
 
+            final var imageContextMenu = new ContextMenu();
             if (mouseEvent.getButton() == MouseButton.SECONDARY) {
 
+                final var deleteImageMenu = new MenuItem("Delete");
                 deleteImageMenu.setOnAction(_ -> {
 
                     if (this.getUserData() instanceof TierElement element) {
-                        controller.removeElement(element);
+                        tierListController.removeElement(element);
                         parent.getChildren().remove(this);
-                        parent.updateImages();
+                        graphicsController.updateImages(parent);
                     }
                 });
 
                 if (this.getUserData() instanceof TierElement element && element.isTiered()) {
 
+                    final var unTierImageMenu = new MenuItem("UnTier");
                     imageContextMenu.getItems().add(unTierImageMenu);
                     unTierImageMenu.setOnAction(_ -> {
-                        controller.unTier(element);
-                        grandparent.updateTierList();
+
+                        tierListController.unTier(element);
+                        graphicsController.updateTierList();
                     });
                 }
 
@@ -81,11 +83,14 @@ public class IMGElement extends ImageView {
             if (event.getDragboard().hasImage()) {
 
                 this.setFitHeight(ConfigHolder.DEFAULT_EXPANDED_IMAGE_SIZE);
+                graphicsController.setScrollPaneWidth(
+                        parent.status(), ConfigHolder.DEFAULT_BAR_WIDTH + 16
+                );
 
                 parent.setPadding(
                         new Insets(
                                 0, ConfigHolder.DEFAULT_DRAG_ENTERED_PADDING,
-                                0, ConfigHolder.DEFAULT_DRAG_ENTERED_PADDING
+                             0, ConfigHolder.DEFAULT_DRAG_ENTERED_PADDING
                         )
                 );
             }
@@ -96,6 +101,10 @@ public class IMGElement extends ImageView {
             if (event.getTarget() instanceof ImageView && event.getSource() instanceof ImageView) {
 
                 this.setFitHeight(ConfigHolder.DEFAULT_CELL_SIZE);
+                graphicsController.setScrollPaneWidth(
+                        parent.status(), ConfigHolder.DEFAULT_BAR_WIDTH
+                );
+
                 parent.setPadding(Insets.EMPTY);
 
             }
@@ -106,7 +115,7 @@ public class IMGElement extends ImageView {
 
         this.setOnDragDone(event -> {
             if (event.getTransferMode() == TransferMode.MOVE)
-                parent.updateImages();
+                graphicsController.updateImages(parent);
             event.consume();
         });
     }
@@ -136,9 +145,9 @@ public class IMGElement extends ImageView {
         Dragboard dragBoard = event.getDragboard();
         String elementHash = dragBoard.getString();
 
-        Optional<TierElement> potentialSource = controller.getElementByHash(elementHash);
+        Optional<TierElement> potentialSource = tierListController.getElementByHash(elementHash);
         if (potentialSource.isEmpty()) {
-            System.err.println("--- Element to be dropped was not found ---");
+            System.err.println("[ERROR] --- Element to be dropped was not found ---");
             return;
         }
 
@@ -151,14 +160,14 @@ public class IMGElement extends ImageView {
 
             if (!sourceElement.equals(targetElement)) {
 
-                Optional<Tier> potentialTargetTier = controller.getTierByElement(targetElement);
+                Optional<Tier> potentialTargetTier = tierListController.getTierByElement(targetElement);
 
                 potentialTargetTier.ifPresent(
-                        targetTier -> controller.insertElement(sourceElement, targetTier, targetElement)
+                        targetTier -> tierListController.insertElement(sourceElement, targetTier, targetElement)
                 );
             }
 
-            parent.updateImages();
+            graphicsController.updateImages(parent);
 
             success = true;
         }

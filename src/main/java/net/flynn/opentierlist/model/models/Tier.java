@@ -35,7 +35,7 @@ public class Tier {
 
     Objects.requireNonNull(header);
     if (header.name().isBlank())
-      throw new IllegalArgumentException("--- Tier name cannot be null ---");
+      throw new IllegalArgumentException("[ERROR] --- Tier name cannot be null ---");
 
     this.header = header;
     this.tiered = Objects.requireNonNull(tiered);
@@ -106,7 +106,7 @@ public class Tier {
   public boolean remove(TierElement element) throws TierElementNotFoundException {
     if (!tiered.remove(element))
       throw new TierElementNotFoundException(
-              "--- Removal of element: " + element + " was not successful ---"
+              "[ERROR] --- Removal of element: " + element + " was not successful ---"
       );
     else
       return true;
@@ -117,7 +117,7 @@ public class Tier {
       return tiered.remove(i);
     } catch (IndexOutOfBoundsException _) {
       throw new TierElementNotFoundException(
-              "--- Removal of element at index: " + i + " was not successful ---"
+              "[ERROR] --- Removal of element at index: " + i + " was not successful ---"
       );
     }
   }
@@ -126,7 +126,7 @@ public class Tier {
     try {
       swap(tiered.indexOf(src), tiered.indexOf(dest));
     } catch (IndexOutOfBoundsException _) {
-      throw new TierElementNotFoundException("--- Cannot swap elements: " + src + ", " + dest + " ---");
+      throw new TierElementNotFoundException("[ERROR] --- Cannot swap elements: " + src + ", " + dest + " ---");
     }
 
   }
@@ -136,7 +136,7 @@ public class Tier {
       Collections.swap(tiered, src, dest);
     } catch (IndexOutOfBoundsException _) {
       throw new TierElementNotFoundException(
-              "---  Cannot swap elements: " + src + ", " + dest + " ---"
+              "[ERROR] ---  Cannot swap elements: " + src + ", " + dest + " ---"
       );
     }
   }
@@ -158,9 +158,9 @@ public class Tier {
    */
   public void move(TierElement src, TierElement dest) throws TierElementNotFoundException {
     if (!tiered.contains(src))
-      throw new TierElementNotFoundException("--- Element to move not found: " + src + " ---");
+      throw new TierElementNotFoundException("[ERROR] --- Element to move not found: " + src + " ---");
     if (!tiered.contains(dest))
-      throw new TierElementNotFoundException("--- Element to move not found: " + src + " ---");
+      throw new TierElementNotFoundException("[ERROR] --- Element to move not found: " + src + " ---");
     final var destIndex = indexOf(dest);
     tiered.remove(src);
     tiered.add(destIndex, src);
@@ -175,10 +175,10 @@ public class Tier {
    */
   public void move(TierElement element, int toIndex) throws TierElementNotFoundException {
     if (!this.contains(element))
-      throw new TierElementNotFoundException("--- Element to move not found: " + element + " ---");
+      throw new TierElementNotFoundException("[ERROR] --- Element to move not found: " + element + " ---");
 
     if (toIndex > tiered.size())
-      throw new TierElementNotFoundException("--- Index to move to is out of bounds: " + toIndex + " ---");
+      throw new TierElementNotFoundException("[ERROR] --- Index to move to is out of bounds: " + toIndex + " ---");
 
     tiered.remove(element);
     tiered.add(toIndex, element);
@@ -195,14 +195,14 @@ public class Tier {
   public void setName(String name) throws IllegalArgumentException {
     Objects.requireNonNull(name);
     if (name.isBlank())
-      throw new IllegalArgumentException("--- Tier name cannot be set to null ---");
+      throw new IllegalArgumentException("[ERROR] --- Tier name cannot be set to null ---");
     setHeader(new TierHeader(name, this.header.color()));
   }
 
   public void setColor(String color) throws IllegalArgumentException {
     Objects.requireNonNull(color);
     if (color.isBlank())
-      throw new IllegalArgumentException("--- Color string must not me blank ---");
+      throw new IllegalArgumentException("[ERROR] --- Color string must not me blank ---");
     setHeader(new TierHeader(getName(), color));
   }
 

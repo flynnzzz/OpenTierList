@@ -13,6 +13,7 @@ import net.flynn.opentierlist.ui.manual.MainPane;
 import java.awt.*;
 
 public class MainApplication extends Application {
+
   @Override
   public void start(Stage stage) {
 

@@ -18,7 +18,7 @@ public class DataHandler {
     try {
       TierListWriter.write(file, tierList);
     } catch (IOException e) {
-      System.err.println("--- Could not save tier list '" + tierList.getTierListName() + "', aborting ---");
+      System.err.println("[ERROR] --- Could not save tier list '" + tierList.getTierListName() + "', aborting ---");
     }
   }
 
@@ -28,7 +28,7 @@ public class DataHandler {
     }
     catch (IOException _) {
       System.err.println(
-              "--- IO exception: could not export Tier List to " + path.getFileName() + " ---"
+              "[ERROR] --- IO exception: could not export Tier List to " + path.getFileName() + " ---"
       );
     }
   }
@@ -38,9 +38,9 @@ public class DataHandler {
     try {
       res = Optional.of(TierListReader.read(file));
     } catch (DatabindException _) {
-      System.err.println("--- Failed to parse tier list from file '" + file.getAbsolutePath() + "', aborting ---");
+      System.err.println("[ERROR] --- Failed to parse tier list from file '" + file.getAbsolutePath() + "', aborting ---");
     } catch (IOException _) {
-      System.err.println("--- Could not load tier list from path '" + file.getAbsolutePath() + "', aborting ---");
+      System.err.println("[ERROR] --- Could not load tier list from path '" + file.getAbsolutePath() + "', aborting ---");
     }
     return res;
   }

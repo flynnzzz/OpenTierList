@@ -137,10 +137,6 @@ public class TierElement {
     return this.imagePath.getUri();
   }
 
-  public Long getId() {
-    return this.id;
-  }
-
   public void updateImagePath() {
     this.imagePath = imagePath.exists() ? imagePath : ImagePath.defaultResource();
   }

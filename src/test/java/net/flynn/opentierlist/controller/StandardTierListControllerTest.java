@@ -613,11 +613,11 @@ public class StandardTierListControllerTest {
     @Test
     public void elementExists() {
 
-        assertTrue(controller.elementExists(el1.getId()));
-        assertTrue(controller.elementExists(el2.getId()));
-        assertTrue(controller.elementExists(el3.getId()));
-        assertTrue(controller.elementExists(el4.getId()));
-        assertFalse(controller.elementExists(new TierElement().getId()));
+        assertTrue(controller.elementExists(el1.hashCode()));
+        assertTrue(controller.elementExists(el2.hashCode()));
+        assertTrue(controller.elementExists(el3.hashCode()));
+        assertTrue(controller.elementExists(el4.hashCode()));
+        assertFalse(controller.elementExists(new TierElement().hashCode()));
 
     }
 }

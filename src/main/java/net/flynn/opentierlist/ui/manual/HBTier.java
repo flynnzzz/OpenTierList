@@ -39,6 +39,7 @@ import net.flynn.opentierlist.controller.TierListController;
 import net.flynn.opentierlist.model.models.Tier;
 import net.flynn.opentierlist.persistence.ResourceHolder;
 import net.flynn.opentierlist.ui.ConfigHolder;
+import net.flynn.opentierlist.controller.GraphicsController;
 
 /**
  * 
@@ -61,22 +62,20 @@ public class HBTier extends HBox {
   private ColorPicker colorPicker;
   private Button confirmColor;
 
-  private final TierListController controller;
+  private final TierListController tierListController;
+  private final GraphicsController graphicsController;
   private final Tier tier;
-  private final Stage mainStage;
-  private final SPTiered parent;
 
   private String oldTextValue;
 
-  public HBTier(SPTiered parent, Stage mainStage, TierListController controller, Tier tier) {
-    this.parent = parent;
-    this.tierNameLabel = new TextField(tier.getName());
-    this.controller = controller;
-    this.mainStage = mainStage;
+  public HBTier(TierListController tierListController, GraphicsController graphicsController, Tier tier) {
+    this.tierListController = tierListController;
+    this.graphicsController = graphicsController;
     this.tier = tier;
-    this.editTierButton = new Button();
 
-    this.tieredPane = new FPElements(parent, controller, tier);
+    this.tierNameLabel = new TextField(tier.getName());
+    this.editTierButton = new Button();
+    this.tieredPane = new FPElements(tierListController, graphicsController, tier);
     setupPane();
   }
 
@@ -119,20 +118,10 @@ public class HBTier extends HBox {
 
   private void setupEventHandlers() {
 
-    this.tierNameLabel.focusedProperty().addListener((_, _, now) -> {
-      if (now)
-        oldTextValue = tierNameLabel.getText();
-      else
-        tierNameLabel.setText(oldTextValue);
-    });
-
-    this.tierNameLabel.setOnAction(_ -> {
-      if (!tierNameLabel.getText().isBlank()) {
-        controller.setTierName(tier, tierNameLabel.getText());
-        oldTextValue = tierNameLabel.getText();
-      }
-      tierNameLabel.getScene().getRoot().requestFocus();
-    });
+    tierNameLabel.focusedProperty().addListener( (_, _, now) ->
+            this.oldTextValue = graphicsController.titleFocusBehavior(oldTextValue, now));
+    tierNameLabel.setOnAction( _ ->
+            this.oldTextValue = graphicsController.titleSetOnAction(oldTextValue));
 
     final Tooltip tooltip = new Tooltip("Click to drag and move");
     tierNameLabel.setTooltip(tooltip);
@@ -140,21 +129,22 @@ public class HBTier extends HBox {
     editTierButton.setOnAction(_ -> contextMenu.show(editTierButton, Side.BOTTOM, 0, 0));
 
     delete.setOnAction(_ -> {
-      tier.getTiered().forEach(controller::unTier);
+      tier.getTiered().forEach(tierListController::unTier);
 
-      controller.removeTier(tier);
-      parent.updateTierList();
+      tierListController.removeTier(tier);
+      graphicsController.updateTierList();
     });
 
     duplicate.setOnAction(_ -> {
       final var clone = tier.copy();
-      controller.addTier(clone);
-      controller.moveTier(clone, controller.getTiers().indexOf(tier) + 1);
+      tierListController.addTier(clone);
+      tierListController.moveTier(clone, tierListController.getTiers().indexOf(tier) + 1);
 
-      parent.updateTierList();
+      graphicsController.updateTierList();
     });
 
     color.setOnAction(_ -> {
+      final var mainStage = graphicsController.getMainStage();
       colorStage.show();
       colorStage.setX(mainStage.getX() + (mainStage.getWidth() - colorStage.getWidth()) / 2.0);
       colorStage.setY(mainStage.getY() + (mainStage.getHeight() - colorStage.getHeight()) / 2.0);
@@ -173,7 +163,7 @@ public class HBTier extends HBox {
         return;
 
       tier.setColor(chosenColor.get().toString());
-      parent.updateTierList();
+      graphicsController.updateTierList();
       colorStage.close();
     });
   }
@@ -208,7 +198,7 @@ public class HBTier extends HBox {
     try {
       final var imageURI = getClass().getResource(ResourceHolder.EDIT_BUTTON_ICON);
       if (imageURI == null)
-        throw new URISyntaxException("imageURI", "--- Default edit tier resource not found, exiting ---");
+        throw new URISyntaxException("imageURI", "[ERROR] --- Default edit tier resource not found, exiting ---");
       editTierButton.setGraphic(new ImageView(new Image(imageURI.toURI().toString())));
     } catch (URISyntaxException e) {
       System.err.println(e.getReason());
@@ -240,7 +230,7 @@ public class HBTier extends HBox {
 
     tierNameLabel.setOnDragDone(event -> {
       if (event.getTransferMode() == TransferMode.MOVE)
-        parent.updateAllTiers();
+        graphicsController.updateTierList();
       event.consume();
     });
 
@@ -266,7 +256,7 @@ public class HBTier extends HBox {
 
     if (db.hasString() && !event.getDragboard().hasImage()) {
 
-      Optional<Tier> source = controller.getTierByHash(db.getString());
+      Optional<Tier> source = tierListController.getTierByHash(db.getString());
 
       if (source.isEmpty())
         return;
@@ -278,7 +268,7 @@ public class HBTier extends HBox {
       }
         if (potentialTarget != null) {
           final Tier target = ((HBTier) potentialTarget).getTier();
-          controller.moveTier(source.get(), target);
+          tierListController.moveTier(source.get(), target);
         }
     }
     event.setDropCompleted(true);

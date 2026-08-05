@@ -47,7 +47,7 @@ public class StandardTierListController implements TierListController {
     try {
       tierList.tier(unTiered, toTier);
     } catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) {
-      System.err.println(ex.getClass() + ": in 'tier' method");
+      System.err.println("[ERROR] --- " + ex.getClass() + ": in 'tier' method ---");
     }
   }
 
@@ -56,7 +56,7 @@ public class StandardTierListController implements TierListController {
     try {
       tierList.tierInsert(unTiered, toTier, position);
     } catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) {
-      System.err.println(ex.getClass() + ": in 'tierInsert' method");
+      System.err.println("[ERROR] --- " + ex.getClass() + ": in 'tierInsert' method ---");
     }
   }
 
@@ -65,7 +65,7 @@ public class StandardTierListController implements TierListController {
     try {
       tierList.tierInsert(unTiered, toTier, toIndex);
     } catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) {
-      System.err.println(ex.getClass() + ": in 'tierInsert' method");
+      System.err.println("[ERROR] --- " + ex.getClass() + ": in 'tierInsert' method ---");
     }
   }
 
@@ -74,7 +74,7 @@ public class StandardTierListController implements TierListController {
     try {
       tierList.unTier(tiered);
     } catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) {
-      System.err.println(ex.getClass() + ": in 'unTier' method");
+      System.err.println("[ERROR] --- " + ex.getClass() + ": in 'unTier' method ---");
     }
   }
 
@@ -83,7 +83,7 @@ public class StandardTierListController implements TierListController {
     try {
       tierList.unTierInsert(tiered, position);
     } catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) {
-      System.err.println(ex.getClass() + ": in 'unTierInsert' method");
+      System.err.println("[ERROR] --- " + ex.getClass() + ": in 'unTierInsert' method ---");
     }
   }
 
@@ -92,7 +92,7 @@ public class StandardTierListController implements TierListController {
     try {
       tierList.unTierInsert(tiered, toIndex);
     } catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) {
-      System.err.println(ex.getClass() + ": in 'unTierInsert' method");
+      System.err.println("[ERROR] --- " + ex.getClass() + ": in 'unTierInsert' method ---");
     }
   }
 
@@ -101,7 +101,7 @@ public class StandardTierListController implements TierListController {
     try {
       this.tierList = tierList;
     } catch (NullPointerException ex) {
-      System.err.println(ex.getClass() + ": in 'setTierList' method");
+      System.err.println("[ERROR] --- " + ex.getClass() + ": in 'setTierList' method ---");
     }
   }
 
@@ -110,7 +110,7 @@ public class StandardTierListController implements TierListController {
     try {
       tierList.setTierListName(name);
     } catch (NullPointerException | IllegalArgumentException ex) {
-      System.err.println(ex.getClass() + ": in 'setTierListName' method");
+      System.err.println("[ERROR] --- " + ex.getClass() + ": in 'setTierListName' method ---");
     }
   }
 
@@ -119,7 +119,7 @@ public class StandardTierListController implements TierListController {
     try {
       tierList.setTierName(tierList.indexOf(tier), name);
     } catch (NullPointerException | IllegalArgumentException ex) {
-      System.err.println(ex.getClass() + ": in 'setTierName' method");
+      System.err.println("[ERROR] --- " + ex.getClass() + ": in 'setTierName' method ---");
     }
   }
 
@@ -128,7 +128,7 @@ public class StandardTierListController implements TierListController {
     try {
       tierList.addTier(tier);
     } catch (NullPointerException | IllegalArgumentException ex) {
-      System.err.println(ex.getClass() + ": in 'addTier' method");
+      System.err.println("[ERROR] --- " + ex.getClass() + ": in 'addTier' method ---");
     }
   }
 
@@ -137,7 +137,7 @@ public class StandardTierListController implements TierListController {
     try {
       tierList.addTier(new Tier());
     } catch (NullPointerException | IllegalArgumentException ex) {
-      System.err.println(ex.getClass() + ": in 'addDefaultTier' method");
+      System.err.println("[ERROR] --- " + ex.getClass() + ": in 'addDefaultTier' method ---");
     }
   }
 
@@ -146,7 +146,7 @@ public class StandardTierListController implements TierListController {
     try {
       tierList.addElement(element, Tier.UNTIERED);
     } catch (NullPointerException | IllegalArgumentException ex) {
-      System.err.println(ex.getClass() + ": in 'addUnTiered' method");
+      System.err.println("[ERROR] --- " + ex.getClass() + ": in 'addUnTiered' method ---");
     }
   }
 
@@ -155,7 +155,7 @@ public class StandardTierListController implements TierListController {
     try {
       tierList.removeTier(tier);
     } catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) {
-      System.err.println(ex.getClass() + ": in 'deleteTier' method");
+      System.err.println("[ERROR] --- " + ex.getClass() + ": in 'deleteTier' method ---");
     }
   }
 
@@ -164,7 +164,7 @@ public class StandardTierListController implements TierListController {
     try {
       tierList.removeElement(element);
     } catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) {
-      System.err.println(ex.getClass() + ": in 'deleteTierElement' method");
+      System.err.println("[ERROR] --- " + ex.getClass() + ": in 'deleteTierElement' method ---");
     }
   }
 
@@ -173,7 +173,7 @@ public class StandardTierListController implements TierListController {
     try {
       tierList.moveElement(element, toTier);
     } catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) {
-      System.err.println(ex.getClass() + ": in 'moveElement' method");
+      System.err.println("[ERROR] --- " + ex.getClass() + ": in 'moveElement' method ---");
     }
   }
 
@@ -182,7 +182,7 @@ public class StandardTierListController implements TierListController {
     try {
       tierList.insertElement(element, toTier, position);
     } catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) {
-      System.err.println(ex.getClass() + ": in 'moveElement' method");
+      System.err.println("[ERROR] --- " + ex.getClass() + ": in 'moveElement' method ---");
     }
   }
 
@@ -191,7 +191,7 @@ public class StandardTierListController implements TierListController {
     try {
       tierList.insertElement(element, toTier, index);
     } catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) {
-      System.err.println(ex.getClass() + ": in 'moveElement' method");
+      System.err.println("[ERROR] --- " + ex.getClass() + ": in 'moveElement' method ---");
     }
   }
 
@@ -205,7 +205,7 @@ public class StandardTierListController implements TierListController {
             | IndexOutOfBoundsException
             | UnsupportedOperationException ex
     ) {
-      System.err.println(ex.getClass() + ": in 'moveTier' method");
+      System.err.println("[ERROR] --- " + ex.getClass() + ": in 'moveTier' method ---");
     }
   }
 
@@ -219,72 +219,83 @@ public class StandardTierListController implements TierListController {
              | IndexOutOfBoundsException
              | UnsupportedOperationException ex
     ) {
-      System.err.println(ex.getClass() + ": in 'moveTier' method");
+      System.err.println("[ERROR] --- " + ex.getClass() + ": in 'moveTier' method ---");
     }
   }
 
   @Override
-  public void saveTierList() {
+  public boolean saveTierList() {
     try {
       final Path defaultPath = Path.of(System.getProperty("user.home"), "Documents", "OpenTierList");
 
       if (!Files.exists(defaultPath)) {
-        if (!defaultPath.toFile().mkdir())
+        if (!defaultPath.toFile().mkdir()) {
           System.err.println(
-                  "--- Could not create folder 'OpenTierList' in " + System.getProperty("user.home") + "/Documents ---"
+                  "[ERROR] --- Could not create folder 'OpenTierList' in " + System.getProperty("user.home") + "/Documents ---"
           );
+          return false;
+        }
       }
 
       saveTierList(defaultPath.resolve(getTierListName() + ".tson"));
+      return true;
 
     } catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) {
-      System.err.println(ex.getClass() + ": in 'saveTierList' method");
+      System.err.println("[ERROR] --- " + ex.getClass() + ": in 'saveTierList' method ---");
+      return false;
     }
   }
 
   @Override
-  public void saveTierList(Path path) {
+  public boolean saveTierList(Path path) {
     try {
 
       if (!path.toString().endsWith(".tson"))
         path = Path.of(path + ".tson");
 
       dataHandler.save(path.toFile(), tierList);
+      return true;
     } catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) {
-      System.err.println(ex.getClass() + ": in 'saveTierList' method");
+      System.err.println("[ERROR] --- " + ex.getClass() + ": in 'saveTierList' method ---");
+      return false;
     }
   }
 
   @Override
-  public void exportTierList(SPTiered node) {
+  public boolean exportTierList(SPTiered node) {
     final Path defaultPath = Path.of(System.getProperty("user.home"), "Pictures", "OpenTierList");
 
     if (!Files.exists(defaultPath)) {
-      if (!defaultPath.toFile().mkdir())
+      if (!defaultPath.toFile().mkdir()) {
         System.err.println(
-                "--- Could not create folder 'OpenTierList' in " + System.getProperty("user.home") + "/Pictures ---"
+                "[ERROR] --- Could not create folder 'OpenTierList' in " + System.getProperty("user.home") + "/Pictures ---"
         );
+        return false;
+      }
     }
 
     exportTierList(node, defaultPath.resolve(getTierListName() + ".png"));
+    return true;
   }
 
   @Override
-  public void exportTierList(SPTiered node, Path path) {
+  public boolean exportTierList(SPTiered node, Path path) {
     try {
 
       if (!path.toString().endsWith(".png"))
         path = Path.of(path + ".png");
 
       dataHandler.export(path, node);
+      return true;
     } catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) {
-      System.err.println(ex.getClass() + ": in 'saveTierList' method");
+      System.err.println("[ERROR] --- " + ex.getClass() + ": in 'saveTierList' method ---");
+      return false;
     }
   }
 
   @Deprecated @Override
   public void saveTierListAs(String name) throws UnsupportedOperationException {
-    throw new UnsupportedOperationException("--- Deprecated method used ---");
+    throw new UnsupportedOperationException("[ERROR] --- Deprecated method used ---");
   }
 
   @Override
@@ -330,7 +341,7 @@ public class StandardTierListController implements TierListController {
         element = Optional.of(Tier.UNTIERED);
 
     } catch (NullPointerException | IllegalArgumentException ex) {
-      System.err.println(ex.getClass() + ": in 'getTierByElement' method");
+      System.err.println("[ERROR] --- " + ex.getClass() + ": in 'getTierByElement' method ---");
     }
 
     return element;
@@ -354,7 +365,7 @@ public class StandardTierListController implements TierListController {
       if (element.isEmpty())
         throw new TierElementNotFoundException();
     } catch (NullPointerException | IllegalArgumentException ex) {
-      System.err.println(ex.getClass() + ": in 'getElementByHash' method");
+      System.err.println("[ERROR] --- " + ex.getClass() + ": in 'getElementByHash' method ---");
     }
 
     return element;
@@ -373,14 +384,14 @@ public class StandardTierListController implements TierListController {
       if (tier.isEmpty())
         throw new TierNotFoundException();
     } catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) {
-      System.err.println(ex.getClass() + ": in 'getTierByHash' method");
+      System.err.println("[ERROR] --- " + ex.getClass() + ": in 'getTierByHash' method ---");
     }
 
     return tier;
   }
 
   @Override
-  public boolean elementExists(Long id) {
+  public boolean elementExists(Integer hash) {
 
     return Stream
         .concat(
@@ -389,7 +400,7 @@ public class StandardTierListController implements TierListController {
                 .flatMap(t -> t.getTiered().stream()),
             tierList.getUnTiered()
                 .stream())
-        .anyMatch(e -> Objects.equals(e.getId(), id));
+        .anyMatch(e -> Objects.equals(e.hashCode(), hash));
 
   }
 
@@ -399,7 +410,7 @@ public class StandardTierListController implements TierListController {
     try {
       tierList.swapTiered(tier, a, b);
     } catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) {
-      System.err.println(ex.getClass() + ": in 'swapTiered' method");
+      System.err.println("[ERROR] --- " + ex.getClass() + ": in 'swapTiered' method ---");
     }
   }
 
@@ -409,7 +420,7 @@ public class StandardTierListController implements TierListController {
     try {
       tierList.swapUnTiered(a, b);
     } catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) {
-      System.err.println(ex.getClass() + ": in 'swapUnTiered' method");
+      System.err.println("[ERROR] --- " + ex.getClass() + ": in 'swapUnTiered' method ---");
     }
   }
 
@@ -419,7 +430,7 @@ public class StandardTierListController implements TierListController {
     try {
       tierList.moveToTier(tiered, toTier);
     } catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) {
-      System.err.println(ex.getClass() + ": in 'appendTiered' method");
+      System.err.println("[ERROR] --- " + ex.getClass() + ": in 'appendTiered' method ---");
     }
   }
 
@@ -430,7 +441,7 @@ public class StandardTierListController implements TierListController {
       int toIndex = toTier.getTiered().indexOf(toElement);
       tierList.moveToTier(tiered, toTier, toIndex);
     } catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) {
-      System.err.println(ex.getClass() + ": in 'moveTiered' method");
+      System.err.println("[ERROR] --- " + ex.getClass() + ": in 'moveTiered' method ---");
     }
   }
 
@@ -440,7 +451,7 @@ public class StandardTierListController implements TierListController {
     try {
       tierList.moveToTier(tiered, toTier, toIndex);
     } catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) {
-      System.err.println(ex.getClass() + ": in 'moveTiered' method");
+      System.err.println("[ERROR] --- " + ex.getClass() + ": in 'moveTiered' method ---");
     }
   }
 
@@ -458,7 +469,7 @@ public class StandardTierListController implements TierListController {
     try {
       tierList.removeUnTiered(unTiered);
     } catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) {
-      System.err.println(ex.getClass() + ": in 'deleteUnTiered' method");
+      System.err.println("[ERROR] --- " + ex.getClass() + ": in 'deleteUnTiered' method ---");
     }
   }
 
@@ -468,7 +479,7 @@ public class StandardTierListController implements TierListController {
     try {
       tierList.swapTiers(a, b);
     } catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) {
-      System.err.println(ex.getClass() + ": in 'swapTiers' method");
+      System.err.println("[ERROR] --- " + ex.getClass() + ": in 'swapTiers' method ---");
     }
   }
 

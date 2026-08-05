@@ -31,7 +31,7 @@ public record ImagePath(URI uri) {
     try {
       return ImagePath.of(new URI(uri));
     } catch (URISyntaxException _) {
-      System.err.println("--- Invalid url: " + uri + " ---");
+      System.err.println("[ERROR] --- Invalid url: " + uri + " ---");
       return defaultResource();
     }
   }

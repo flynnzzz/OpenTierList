@@ -183,13 +183,13 @@ public interface TierListController {
 
   String getTierListName();
 
-  void saveTierList();
+  boolean saveTierList();
 
-  void saveTierList(Path path);
+  boolean saveTierList(Path path);
 
-  void exportTierList(SPTiered node);
+  boolean exportTierList(SPTiered node);
 
-  void exportTierList(SPTiered node, Path path);
+  boolean exportTierList(SPTiered node, Path path);
 
   @Deprecated void saveTierListAs(String name);
 
@@ -199,7 +199,7 @@ public interface TierListController {
 
   String toString(TierStringFormat format);
 
-  boolean elementExists(Long id);
+  boolean elementExists(Integer hash);
 
   /**
    * Remove an unranked element from the tier list

@@ -2,10 +2,9 @@ package net.flynn.opentierlist.ui.manual;
 
 import javafx.geometry.Pos;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.layout.*;
-import javafx.scene.paint.Paint;
 import net.flynn.opentierlist.controller.TierListController;
 import net.flynn.opentierlist.ui.ConfigHolder;
+import net.flynn.opentierlist.controller.GraphicsController;
 
 /**
  * 
@@ -14,10 +13,12 @@ import net.flynn.opentierlist.ui.ConfigHolder;
  */
 public class SPUnTiered extends ScrollPane {
   private final FPElements unTieredPane;
+  private final GraphicsController graphicsController;
 
-  public SPUnTiered(MainPane parent, TierListController controller) {
+  public SPUnTiered(TierListController controller, GraphicsController graphicsController) {
 
-    this.unTieredPane = new FPElements(parent.getFirstChild(), controller);
+    this.graphicsController = graphicsController;
+    this.unTieredPane = new FPElements(controller, graphicsController);
     setupPane();
   }
 
@@ -26,34 +27,23 @@ public class SPUnTiered extends ScrollPane {
     this.setVbarPolicy(ScrollBarPolicy.NEVER);
 
     this.setFitToWidth(true);
+    this.setPrefWidth(ConfigHolder.DEFAULT_BAR_WIDTH);
 
     this.setPrefHeight(ConfigHolder.DEFAULT_UNRANKED_PANE_MIN_HEIGHT);
 
-    updateBorder(ConfigHolder.DEFAULT_ACCENT_COLOR_LIGHT);
+    graphicsController.setBorder(this, ConfigHolder.DEFAULT_ACCENT_COLOR_LIGHT);
 
     unTieredPane.setPrefWidth(ConfigHolder.DEFAULT_BAR_WIDTH);
 
     unTieredPane.setMaxHeight(ConfigHolder.DEFAULT_UNRANKED_PANE_MAX_HEIGHT);
     unTieredPane.setMinHeight(ConfigHolder.DEFAULT_UNRANKED_PANE_MIN_HEIGHT);
-    unTieredPane.setAlignment(Pos.CENTER);
-
+    unTieredPane.setAlignment(Pos.CENTER_LEFT);
 
     this.setContent(unTieredPane);
   }
 
-  public void updateBorder(String color) {
-    final var border = new Border(
-            new BorderStroke(
-                    Paint.valueOf(color),
-                    BorderStrokeStyle.SOLID,
-                    CornerRadii.EMPTY,
-                    BorderWidths.DEFAULT
-            )
-    );
-    this.setBorder(border);
+  public void update() {
+    graphicsController.updateImages(unTieredPane);
   }
 
-  public void updatePane() {
-    unTieredPane.updateImages();
-  }
 }

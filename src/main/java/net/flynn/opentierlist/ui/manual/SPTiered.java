@@ -6,9 +6,8 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Paint;
-import net.flynn.opentierlist.controller.TierListController;
 import net.flynn.opentierlist.ui.ConfigHolder;
+import net.flynn.opentierlist.controller.GraphicsController;
 
 /**
  * 
@@ -17,25 +16,22 @@ import net.flynn.opentierlist.ui.ConfigHolder;
  */
 public class SPTiered extends ScrollPane {
   private final VBox tiersVBox;
-  private final MainPane parent;
 
-  private final TierListController controller;
-  private final ObservableList<HBTier> tierBoxList;
+    private final GraphicsController graphicsController;
+  private ObservableList<HBTier> tierBoxList;
 
-  public SPTiered(MainPane parent, TierListController controller) {
-    this.parent = parent;
-    this.controller = controller;
+  public SPTiered(GraphicsController graphicsController) {
+    this.graphicsController = graphicsController;
+
     this.tierBoxList = FXCollections.observableArrayList();
     this.tiersVBox = new VBox();
-    this.setupPane();
-  }
-
-  private void loadTiers() {
-    controller.getTiers().forEach(tier -> tierBoxList.add(new HBTier(this, parent.getMainStage(), controller, tier)));
+    setupPane();
   }
 
   private void setupPane() {
-    loadTiers();
+
+    tierBoxList = graphicsController.loadTiers();
+
     tiersVBox.getChildren().addAll(tierBoxList);
 
     this.setContent(tiersVBox);
@@ -43,33 +39,19 @@ public class SPTiered extends ScrollPane {
     this.setVbarPolicy(ScrollBarPolicy.AS_NEEDED);
     this.setHbarPolicy(ScrollBarPolicy.AS_NEEDED);
 
-    updateBorder(ConfigHolder.DEFAULT_ACCENT_COLOR_LIGHT);
+    graphicsController.setBorder(this, ConfigHolder.DEFAULT_ACCENT_COLOR_LIGHT);
 
     tiersVBox.setAlignment(Pos.CENTER);
     tiersVBox.setPadding(new Insets(ConfigHolder.DEFAULT_TIERS_VBOX_PADDING));
   }
 
-  public void updateAllTiers() {
+  public void update() {
     tiersVBox.getChildren().clear();
     tierBoxList.clear();
 
-    loadTiers();
+    tierBoxList = graphicsController.loadTiers();
 
     tiersVBox.getChildren().addAll(tierBoxList);
-  }
-
-  public void updateTierList() {
-    parent.updateTierList();
-  }
-
-  public void updateBorder(String color) {
-    final var border = new Border(
-            new BorderStroke(
-                    Paint.valueOf(color),
-                    BorderStrokeStyle.SOLID,
-                    CornerRadii.EMPTY,
-                    BorderWidths.DEFAULT));
-    this.setBorder(border);
   }
 
   public void hideEditButtons() {
@@ -85,4 +67,5 @@ public class SPTiered extends ScrollPane {
             .map( h -> (HBTier) h )
             .forEach(HBTier::showEditButton);
   }
+
 }
