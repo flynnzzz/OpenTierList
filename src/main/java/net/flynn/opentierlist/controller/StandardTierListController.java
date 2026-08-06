@@ -15,7 +15,7 @@ import net.flynn.opentierlist.model.models.Tier;
 import net.flynn.opentierlist.model.models.TierElement;
 import net.flynn.opentierlist.model.models.TierList;
 import net.flynn.opentierlist.persistence.DataHandler;
-import net.flynn.opentierlist.ui.manual.SPTiered;
+import net.flynn.opentierlist.ui.manual.TieredPane;
 
 /**
  * Main implementation of {@link TierListController}.
@@ -200,11 +200,10 @@ public class StandardTierListController implements TierListController {
     try {
       tierList.moveTier(from, to);
     } catch (
-            NullPointerException
-            | IllegalArgumentException
-            | IndexOutOfBoundsException
-            | UnsupportedOperationException ex
-    ) {
+        NullPointerException
+        | IllegalArgumentException
+        | IndexOutOfBoundsException
+        | UnsupportedOperationException ex) {
       System.err.println("[ERROR] --- " + ex.getClass() + ": in 'moveTier' method ---");
     }
   }
@@ -214,11 +213,10 @@ public class StandardTierListController implements TierListController {
     try {
       tierList.moveTier(from, toIndex);
     } catch (
-             NullPointerException
-             | IllegalArgumentException
-             | IndexOutOfBoundsException
-             | UnsupportedOperationException ex
-    ) {
+        NullPointerException
+        | IllegalArgumentException
+        | IndexOutOfBoundsException
+        | UnsupportedOperationException ex) {
       System.err.println("[ERROR] --- " + ex.getClass() + ": in 'moveTier' method ---");
     }
   }
@@ -231,8 +229,8 @@ public class StandardTierListController implements TierListController {
       if (!Files.exists(defaultPath)) {
         if (!defaultPath.toFile().mkdir()) {
           System.err.println(
-                  "[ERROR] --- Could not create folder 'OpenTierList' in " + System.getProperty("user.home") + "/Documents ---"
-          );
+              "[ERROR] --- Could not create folder 'OpenTierList' in " + System.getProperty("user.home")
+                  + "/Documents ---");
           return false;
         }
       }
@@ -262,14 +260,14 @@ public class StandardTierListController implements TierListController {
   }
 
   @Override
-  public boolean exportTierList(SPTiered node) {
+  public boolean exportTierList(TieredPane node) {
     final Path defaultPath = Path.of(System.getProperty("user.home"), "Pictures", "OpenTierList");
 
     if (!Files.exists(defaultPath)) {
       if (!defaultPath.toFile().mkdir()) {
         System.err.println(
-                "[ERROR] --- Could not create folder 'OpenTierList' in " + System.getProperty("user.home") + "/Pictures ---"
-        );
+            "[ERROR] --- Could not create folder 'OpenTierList' in " + System.getProperty("user.home")
+                + "/Pictures ---");
         return false;
       }
     }
@@ -279,7 +277,7 @@ public class StandardTierListController implements TierListController {
   }
 
   @Override
-  public boolean exportTierList(SPTiered node, Path path) {
+  public boolean exportTierList(TieredPane node, Path path) {
     try {
 
       if (!path.toString().endsWith(".png"))
@@ -293,7 +291,8 @@ public class StandardTierListController implements TierListController {
     }
   }
 
-  @Deprecated @Override
+  @Deprecated
+  @Override
   public void saveTierListAs(String name) throws UnsupportedOperationException {
     throw new UnsupportedOperationException("[ERROR] --- Deprecated method used ---");
   }
@@ -354,13 +353,12 @@ public class StandardTierListController implements TierListController {
     try {
 
       element = Stream
-              .concat(
-                      tierList.getTiers().stream()
-                              .flatMap(t -> t.getTiered().stream()),
-                      tierList.getUnTiered().stream()
-              )
-              .filter(e -> String.valueOf(e.hashCode()).equals(hashCode))
-              .findFirst();
+          .concat(
+              tierList.getTiers().stream()
+                  .flatMap(t -> t.getTiered().stream()),
+              tierList.getUnTiered().stream())
+          .filter(e -> String.valueOf(e.hashCode()).equals(hashCode))
+          .findFirst();
 
       if (element.isEmpty())
         throw new TierElementNotFoundException();
@@ -457,11 +455,13 @@ public class StandardTierListController implements TierListController {
 
   @Override
   @Deprecated
-  public void moveUnTiered(TierElement unTiered, TierElement toElement) { }
+  public void moveUnTiered(TierElement unTiered, TierElement toElement) {
+  }
 
   @Override
   @Deprecated
-  public void moveUnTiered(TierElement unTiered, int toIndex) { }
+  public void moveUnTiered(TierElement unTiered, int toIndex) {
+  }
 
   @Override
   @Deprecated

@@ -11,14 +11,14 @@ import net.flynn.opentierlist.controller.GraphicsController;
  * @version 2.20
  * @since v1.2.5
  */
-public class SPUnTiered extends ScrollPane {
-  private final FPElements unTieredPane;
+public class UnTieredPane extends ScrollPane {
+  private final ElementPane unTieredPane;
   private final GraphicsController graphicsController;
 
-  public SPUnTiered(TierListController controller, GraphicsController graphicsController) {
+  public UnTieredPane(TierListController controller, GraphicsController graphicsController) {
 
     this.graphicsController = graphicsController;
-    this.unTieredPane = new FPElements(controller, graphicsController);
+    this.unTieredPane = new ElementPane(controller, graphicsController);
     setupPane();
   }
 

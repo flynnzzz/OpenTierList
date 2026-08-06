@@ -8,7 +8,7 @@ import java.util.Optional;
 import com.fasterxml.jackson.databind.DatabindException;
 
 import net.flynn.opentierlist.model.models.TierList;
-import net.flynn.opentierlist.ui.manual.SPTiered;
+import net.flynn.opentierlist.ui.manual.TieredPane;
 
 public class DataHandler {
   public DataHandler() {
@@ -22,14 +22,12 @@ public class DataHandler {
     }
   }
 
-  public void export(Path path, SPTiered node) {
+  public void export(Path path, TieredPane node) {
     try {
       TierListWriter.export(path.toFile(), node);
-    }
-    catch (IOException _) {
+    } catch (IOException _) {
       System.err.println(
-              "[ERROR] --- IO exception: could not export Tier List to " + path.getFileName() + " ---"
-      );
+          "[ERROR] --- IO exception: could not export Tier List to " + path.getFileName() + " ---");
     }
   }
 
@@ -38,9 +36,11 @@ public class DataHandler {
     try {
       res = Optional.of(TierListReader.read(file));
     } catch (DatabindException _) {
-      System.err.println("[ERROR] --- Failed to parse tier list from file '" + file.getAbsolutePath() + "', aborting ---");
+      System.err
+          .println("[ERROR] --- Failed to parse tier list from file '" + file.getAbsolutePath() + "', aborting ---");
     } catch (IOException _) {
-      System.err.println("[ERROR] --- Could not load tier list from path '" + file.getAbsolutePath() + "', aborting ---");
+      System.err
+          .println("[ERROR] --- Could not load tier list from path '" + file.getAbsolutePath() + "', aborting ---");
     }
     return res;
   }

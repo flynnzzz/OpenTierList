@@ -46,10 +46,10 @@ import net.flynn.opentierlist.controller.GraphicsController;
  * @version 3.60
  * @since v1.2.5
  */
-public class HBTier extends HBox {
+public class TierBox extends HBox {
 
   private final TextField tierNameLabel;
-  private final FPElements tieredPane;
+  private final ElementPane tieredPane;
 
   private final Button editTierButton;
 
@@ -65,17 +65,17 @@ public class HBTier extends HBox {
   private final TierListController tierListController;
   private final GraphicsController graphicsController;
   private final Tier tier;
-
   private String oldTextValue;
 
-  public HBTier(TierListController tierListController, GraphicsController graphicsController, Tier tier) {
+  public TierBox(TierListController tierListController, GraphicsController graphicsController, Tier tier) {
     this.tierListController = tierListController;
     this.graphicsController = graphicsController;
     this.tier = tier;
+    this.oldTextValue = "";
 
     this.tierNameLabel = new TextField(tier.getName());
     this.editTierButton = new Button();
-    this.tieredPane = new FPElements(tierListController, graphicsController, tier);
+    this.tieredPane = new ElementPane(tierListController, graphicsController, tier);
     setupPane();
   }
 
@@ -187,9 +187,15 @@ public class HBTier extends HBox {
 
     final BorderPane colorPane = new BorderPane();
 
-    final Scene colorMenu = new Scene(colorPane, 200, 150);
+    final Scene colorMenu = new Scene(colorPane, ConfigHolder.COLOR_MENU_WIDTH, ConfigHolder.COLOR_MENU_HEIGHT);
     colorPicker = new ColorPicker();
-    colorPicker.setPadding(new Insets(5, 20, 5, 20));
+    colorPicker.setPadding(
+        new Insets(
+            ConfigHolder.COLOR_PADDING_TOP,
+            ConfigHolder.COLOR_PADDING_RIGHT,
+            ConfigHolder.COLOR_PADDING_BOTTOM,
+            ConfigHolder.COLOR_PADDING_LEFT));
+
     final VBox colorBox = new VBox();
     final Label colorLabel = new Label("Pick a color");
     confirmColor = new Button("Ok");
@@ -197,7 +203,7 @@ public class HBTier extends HBox {
 
     colorBox.getChildren().addAll(colorLabel, colorPicker, confirmColor);
     colorBox.setAlignment(Pos.CENTER);
-    colorBox.setSpacing(15);
+    colorBox.setSpacing(ConfigHolder.COLOR_SPACING);
 
     colorPane.setCenter(colorBox);
     colorStage.setTitle("Color picker");
@@ -210,7 +216,11 @@ public class HBTier extends HBox {
 
   private void setupEditButton() {
     try {
-      final var imageURI = getClass().getResource(ResourceHolder.EDIT_BUTTON_ICON_LIGHT);
+      final String resource = ConfigHolder.getCurrentTheme() == ConfigHolder.Theme.LIGHT
+          ? ResourceHolder.EDIT_BUTTON_ICON_LIGHT
+          : ResourceHolder.EDIT_BUTTON_ICON_DARK;
+
+      final var imageURI = getClass().getResource(resource);
       if (imageURI == null)
         throw new URISyntaxException("imageURI", "[ERROR] --- Default edit tier resource not found, exiting ---");
       editTierButton.setGraphic(new ImageView(new Image(imageURI.toURI().toString())));
@@ -277,11 +287,11 @@ public class HBTier extends HBox {
 
       Node potentialTarget = (Node) event.getTarget();
 
-      while (potentialTarget != null && !(potentialTarget instanceof HBTier)) {
+      while (potentialTarget != null && !(potentialTarget instanceof TierBox)) {
         potentialTarget = potentialTarget.getParent();
       }
       if (potentialTarget != null) {
-        final Tier target = ((HBTier) potentialTarget).getTier();
+        final Tier target = ((TierBox) potentialTarget).getTier();
         tierListController.moveTier(source.get(), target);
       }
     }
@@ -316,11 +326,12 @@ public class HBTier extends HBox {
   public void showEditButton() {
 
   }
+
   public void setButtonTheme(ConfigHolder.Theme theme) {
 
     switch (theme) {
-        case LIGHT -> graphicsController.setGraphic(editTierButton, ResourceHolder.EDIT_BUTTON_ICON_LIGHT);
-        case DARK -> graphicsController.setGraphic(editTierButton, ResourceHolder.EDIT_BUTTON_ICON_DARK);
+      case LIGHT -> graphicsController.setGraphic(editTierButton, ResourceHolder.EDIT_BUTTON_ICON_LIGHT);
+      case DARK -> graphicsController.setGraphic(editTierButton, ResourceHolder.EDIT_BUTTON_ICON_DARK);
     }
 
   }

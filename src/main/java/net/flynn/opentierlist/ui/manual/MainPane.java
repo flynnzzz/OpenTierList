@@ -3,7 +3,6 @@ package net.flynn.opentierlist.ui.manual;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
-import javafx.scene.effect.BlendMode;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -22,8 +21,8 @@ import net.flynn.opentierlist.controller.GraphicsController;
 public class MainPane extends BorderPane {
 
   private final TextField titleLabel;
-  private final SPTiered tieredPane;
-  private final SPUnTiered unTieredPane;
+  private final TieredPane tieredPane;
+  private final UnTieredPane unTieredPane;
   private final Button addTierButton, addElementButton;
   private final MenuBar menuBar;
   private final Menu fileMenu, viewMenu;
@@ -38,8 +37,8 @@ public class MainPane extends BorderPane {
     this.titleLabel = new TextField(tierListController.getTierListName());
 
     this.graphicsController = new GraphicsController(tierListController);
-    this.tieredPane = new SPTiered(graphicsController);
-    this.unTieredPane = new SPUnTiered(tierListController, graphicsController);
+    this.tieredPane = new TieredPane(graphicsController);
+    this.unTieredPane = new UnTieredPane(tierListController, graphicsController);
     this.addTierButton = new Button();
     this.addElementButton = new Button();
     this.menuBar = new MenuBar();
@@ -81,7 +80,6 @@ public class MainPane extends BorderPane {
 
       final MenuItem menuExportAs = new MenuItem("Export as PNG to...\t\t");
       menuExportAs.setOnAction(graphicsController::exportTierListAs);
-
 
       graphicsController.setTheme(ConfigHolder.Theme.LIGHT);
 

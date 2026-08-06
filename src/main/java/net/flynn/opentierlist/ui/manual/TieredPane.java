@@ -14,13 +14,13 @@ import net.flynn.opentierlist.controller.GraphicsController;
  * @version 2.20
  * @since v1.2.5
  */
-public class SPTiered extends ScrollPane {
+public class TieredPane extends ScrollPane {
   private final VBox tiersVBox;
 
   private final GraphicsController graphicsController;
-  private ObservableList<HBTier> tierBoxList;
+  private ObservableList<TierBox> tierBoxList;
 
-  public SPTiered(GraphicsController graphicsController) {
+  public TieredPane(GraphicsController graphicsController) {
     this.graphicsController = graphicsController;
 
     this.tierBoxList = FXCollections.observableArrayList();
@@ -56,16 +56,16 @@ public class SPTiered extends ScrollPane {
 
   public void hideEditButtons() {
     tiersVBox.getChildren().stream()
-            .filter(b -> b instanceof HBTier)
-            .map( h -> (HBTier) h )
-            .forEach(HBTier::hideEditButton);
+        .filter(b -> b instanceof TierBox)
+        .map(h -> (TierBox) h)
+        .forEach(TierBox::hideEditButton);
   }
 
   public void showEditButtons() {
     tiersVBox.getChildren().stream()
-            .filter(b -> b instanceof HBTier)
-            .map( h -> (HBTier) h )
-            .forEach(HBTier::showEditButton);
+        .filter(b -> b instanceof TierBox)
+        .map(h -> (TierBox) h)
+        .forEach(TierBox::showEditButton);
   }
 
   public void setButtonThemes(ConfigHolder.Theme theme) {

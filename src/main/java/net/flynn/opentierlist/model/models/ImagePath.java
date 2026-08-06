@@ -41,7 +41,7 @@ public record ImagePath(URI uri) {
     try {
       return ImagePath.of(new File(uri));
     } catch (IllegalArgumentException _) {
-      System.err.println("--- Invalid url: " + uri + " ---");
+      System.err.println("[ERROR] --- Invalid url: " + uri + " ---");
       return ImagePath.defaultResource();
     }
 
@@ -54,7 +54,7 @@ public record ImagePath(URI uri) {
     try {
       return new ImagePath(url.toURI());
     } catch (URISyntaxException e) {
-      System.err.println("--- Default resource not found, aborting ---");
+      System.err.println("[ERROR] --- Default resource not found, aborting ---");
       System.exit(-1);
       return null;
     }

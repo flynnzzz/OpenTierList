@@ -25,7 +25,6 @@ import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 public class GraphicsController {
 
@@ -33,8 +32,8 @@ public class GraphicsController {
 
   private Stage mainStage;
   private MainPane mainPane;
-  private SPTiered tieredPane;
-  private SPUnTiered unTieredPane;
+  private TieredPane tieredPane;
+  private UnTieredPane unTieredPane;
 
   private final FileChooser tierListFileChooser;
 
@@ -62,17 +61,17 @@ public class GraphicsController {
     alert.show();
   }
 
-  public ObservableList<HBTier> loadTiers() {
+  public ObservableList<TierBox> loadTiers() {
     return FXCollections.observableArrayList(
         tierListController
             .getTiers().stream()
-            .map(t -> new HBTier(tierListController, this, t))
+            .map(t -> new TierBox(tierListController, this, t))
             .toList());
   }
 
-  public ObservableList<IMGElement> loadImages(FPElements parent, List<TierElement> elements) {
+  public ObservableList<ElementView> loadImages(ElementPane parent, List<TierElement> elements) {
 
-    final ObservableList<IMGElement> images = FXCollections.observableArrayList();
+    final ObservableList<ElementView> images = FXCollections.observableArrayList();
 
     elements.forEach(element -> {
 
@@ -88,7 +87,7 @@ public class GraphicsController {
         imageCache.put(element.hashCode(), img);
       }
 
-      var imageViewer = new IMGElement(
+      var imageViewer = new ElementView(
           img, tierListController, this, parent);
       imageViewer.setUserData(element);
       images.add(imageViewer);
@@ -98,7 +97,7 @@ public class GraphicsController {
     return images;
   }
 
-  public void updateImages(FPElements pane) {
+  public void updateImages(ElementPane pane) {
 
     List<TierElement> elements = pane.status() == TieredStatus.TIERED ? pane.getTier().getTiered()
         : tierListController.getUnTiered();
@@ -106,21 +105,45 @@ public class GraphicsController {
     imageCache.keySet()
         .removeIf(hash -> !tierListController.elementExists(hash));
 
-    final List<IMGElement> images = loadImages(pane, elements);
+    final List<ElementView> images = loadImages(pane, elements);
 
     pane.getChildren().clear();
     pane.getChildren().addAll(images);
   }
 
   public void updateTiered() {
+
+    if (tieredPane == null) {
+      System.err.println(
+          "[ERROR] --- Cannot update Tiers: Controller is missing the necessary instance ---");
+      return;
+    }
+
     tieredPane.update();
   }
 
   public void updateUnTiered() {
+    if (unTieredPane == null) {
+      System.err.println(
+          "[ERROR] --- Cannot update untiered: Controller is missing the necessary instance ---");
+      return;
+    }
     unTieredPane.update();
   }
 
   public void updateTierList() {
+
+    if (mainPane == null) {
+      System.err.println(
+          "[ERROR] --- Cannot update Tier List: Controller is missing a MainPane instance ---");
+      return;
+    }
+
+    if (mainStage == null) {
+      System.err.println(
+          "[ERROR] --- Cannot update Tier List: Controller is missing a Stage instance ---");
+      return;
+    }
 
     final String newTitle = tierListController.getTierListName();
     mainPane.updateTitleLabel(newTitle);
@@ -131,11 +154,25 @@ public class GraphicsController {
   }
 
   private void updateBorders(String color) {
+
+    if (tieredPane == null || unTieredPane == null) {
+      System.err.println(
+          "[ERROR] --- Cannot set borders: Controller is missing the necessary instance ---");
+      return;
+    }
+
     setBorder(tieredPane, color);
     setBorder(unTieredPane, color);
   }
 
   public void addElement(ActionEvent ignoredEvent) {
+
+    if (mainStage == null) {
+      System.err.println(
+          "[ERROR] --- Cannot add element: Controller is missing a Stage instance ---");
+      return;
+    }
+
     final var imageFileChooser = new FileChooser();
 
     imageFileChooser.setTitle("Select file");
@@ -172,6 +209,12 @@ public class GraphicsController {
   }
 
   public void parseAndLoadTierList(ActionEvent ignoredEvent) {
+
+    if (mainStage == null) {
+      System.err.println(
+          "[ERROR] --- Cannot parse and load Tier List: Controller is missing a Stage instance ---");
+      return;
+    }
 
     final File toParse = tierListFileChooser.showOpenDialog(mainStage);
 
@@ -221,6 +264,12 @@ public class GraphicsController {
 
   public void saveTierListAs(ActionEvent ignoredEvent) {
 
+    if (mainStage == null) {
+      System.err.println(
+          "[ERROR] --- Cannot save Tier List: Controller is missing a Stage instance ---");
+      return;
+    }
+
     final var saveChooser = createSaveChooser(
         "Save Tier List as...",
         new FileChooser.ExtensionFilter("Tier List json files", "*.tson"),
@@ -245,6 +294,13 @@ public class GraphicsController {
   }
 
   public void exportTierList(ActionEvent ignoredEvent) {
+
+    if (tieredPane == null) {
+      System.err.println(
+          "[ERROR] --- Cannot export Tier List: Controller is missing the necessary instance ---");
+      return;
+    }
+
     if (tierListController.exportTierList(tieredPane)) {
       GraphicsController.alert(
           Alert.AlertType.INFORMATION, "Export successful",
@@ -257,6 +313,18 @@ public class GraphicsController {
   }
 
   public void exportTierListAs(ActionEvent ignoredEvent) {
+
+    if (mainStage == null) {
+      System.err.println(
+          "[ERROR] --- Cannot export Tier List: Controller is missing a Stage instance ---");
+      return;
+    }
+
+    if (tieredPane == null) {
+      System.err.println(
+          "[ERROR] --- Cannot export Tier List: Controller is missing the necessary instance ---");
+      return;
+    }
 
     final var saveChooser = createSaveChooser(
         "Export Tier List as...",
@@ -286,10 +354,22 @@ public class GraphicsController {
   }
 
   public void setStageTitle(String string) {
+    if (mainStage == null) {
+      System.err.println(
+          "[ERROR] --- Cannot set stage title: Controller is missing a Stage instance ---");
+      return;
+    }
     mainStage.setTitle(string);
   }
 
   public void setScrollPaneWidth(TieredStatus status, double width) {
+
+    if (tieredPane == null || unTieredPane == null) {
+      System.err.println(
+          "[ERROR] --- Cannot set width: Controller is missing the necessary instance ---");
+      return;
+    }
+
     switch (status) {
       case TIERED -> tieredPane.setPrefWidth(width);
       case UNTIERED -> unTieredPane.setPrefWidth(width);
@@ -299,11 +379,11 @@ public class GraphicsController {
   public void setBorder(ScrollPane pane, String color) {
 
     final var border = new Border(
-            new BorderStroke(
-                    Paint.valueOf(color),
-                    BorderStrokeStyle.SOLID,
-                    CornerRadii.EMPTY,
-                    BorderWidths.DEFAULT));
+        new BorderStroke(
+            Paint.valueOf(color),
+            BorderStrokeStyle.SOLID,
+            CornerRadii.EMPTY,
+            BorderWidths.DEFAULT));
     pane.setBorder(border);
 
   }
@@ -321,13 +401,25 @@ public class GraphicsController {
     }
   }
 
-  public void setTheme(ConfigHolder.Theme mode) {
+  public void setTheme(ConfigHolder.Theme theme) {
+    if (mainPane == null) {
+      System.err.println(
+          "[ERROR] --- Cannot set theme: Controller is missing a MainPane instance ---");
+      return;
+    }
+
+    if (tieredPane == null) {
+      System.err.println(
+          "[ERROR] --- Cannot set theme: Controller is missing the necessary instance ---");
+      return;
+    }
+
+    ConfigHolder.setCurrentTheme(theme);
 
     final var lightTheme = new NordLight().getUserAgentStylesheet();
     final var darkTheme = new NordDark().getUserAgentStylesheet();
 
-
-    switch (mode) {
+    switch (theme) {
       case LIGHT -> {
         Application.setUserAgentStylesheet(lightTheme);
         mainPane.setButtonGraphics(ConfigHolder.Theme.LIGHT);
@@ -361,11 +453,11 @@ public class GraphicsController {
     this.mainPane = mainPane;
   }
 
-  public void setTieredPane(SPTiered tieredPane) {
+  public void setTieredPane(TieredPane tieredPane) {
     this.tieredPane = tieredPane;
   }
 
-  public void setUnTieredPane(SPUnTiered unTieredPane) {
+  public void setUnTieredPane(UnTieredPane unTieredPane) {
     this.unTieredPane = unTieredPane;
   }
 

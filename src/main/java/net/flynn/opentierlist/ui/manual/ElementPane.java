@@ -21,7 +21,7 @@ import net.flynn.opentierlist.controller.GraphicsController;
  * @version 3.80
  * @since v1.2.5
  */
-public class FPElements extends FlowPane {
+public class ElementPane extends FlowPane {
 
   private final TierListController tierListController;
   private final GraphicsController graphicsController;
@@ -29,22 +29,23 @@ public class FPElements extends FlowPane {
   private final TieredStatus status;
   private final Tier tier;
 
-  public FPElements(TierListController tierListController, GraphicsController graphicsController, Tier tier) {
+  public ElementPane(TierListController tierListController, GraphicsController graphicsController, Tier tier) {
 
     this.tierListController = tierListController;
     this.graphicsController = graphicsController;
     this.tier = tier;
     this.status = tier.equalsTier(Tier.UNTIERED) ? TieredStatus.UNTIERED : TieredStatus.TIERED;
 
-    final List<TierElement> elements = tier.equalsTier(Tier.UNTIERED) ? tierListController.getUnTiered() : tier.getTiered();
+    final List<TierElement> elements = tier.equalsTier(Tier.UNTIERED) ? tierListController.getUnTiered()
+        : tier.getTiered();
     setupPane(graphicsController.loadImages(this, elements));
   }
 
-  public FPElements( TierListController tierListController, GraphicsController graphicsController) {
+  public ElementPane(TierListController tierListController, GraphicsController graphicsController) {
     this(tierListController, graphicsController, Tier.UNTIERED);
   }
 
-  private void setupPane(List<IMGElement> images) {
+  private void setupPane(List<ElementView> images) {
     this.getChildren().addAll(images);
 
     graphicsController.setFlowPaneBorder(this, ConfigHolder.DEFAULT_BAR_BORDER_COLOR);
@@ -94,7 +95,7 @@ public class FPElements extends FlowPane {
 
     Dragboard dragBoard = event.getDragboard();
     if (dragBoard.hasImage() && dragBoard.hasString()
-        && event.getTarget() instanceof FPElements) {
+        && event.getTarget() instanceof ElementPane) {
 
       String elementHash = dragBoard.getString();
       Optional<TierElement> potentialSource = tierListController.getElementByHash(elementHash);
