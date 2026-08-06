@@ -17,7 +17,7 @@ import net.flynn.opentierlist.controller.GraphicsController;
 public class SPTiered extends ScrollPane {
   private final VBox tiersVBox;
 
-    private final GraphicsController graphicsController;
+  private final GraphicsController graphicsController;
   private ObservableList<HBTier> tierBoxList;
 
   public SPTiered(GraphicsController graphicsController) {
@@ -66,6 +66,11 @@ public class SPTiered extends ScrollPane {
             .filter(b -> b instanceof HBTier)
             .map( h -> (HBTier) h )
             .forEach(HBTier::showEditButton);
+  }
+
+  public void setButtonThemes(ConfigHolder.Theme theme) {
+    for (var box : tierBoxList)
+      box.setButtonTheme(theme);
   }
 
 }

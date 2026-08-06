@@ -1,11 +1,9 @@
 package net.flynn.opentierlist.ui.manual;
 
-import atlantafx.base.theme.NordDark;
-import atlantafx.base.theme.NordLight;
-import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
+import javafx.scene.effect.BlendMode;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -60,22 +58,22 @@ public class MainPane extends BorderPane {
   public void initPane() {
 
     {
-      final MenuItem menuNewTierList = new MenuItem("New...\t\t"),
-          menuSaveItem = new MenuItem("Save file...\t\t"),
-          menuSaveItemAs = new MenuItem("Save file to...\t\t"),
-          menuLoadItem = new MenuItem("Load\t\t");
-
+      final MenuItem menuNewTierList = new MenuItem("New...\t\t");
       menuNewTierList.setOnAction(_ -> {
-        tierListController.setTierList(TierList.ofDefaultTiers());
 
+        tierListController.setTierList(TierList.ofDefaultTiers());
         graphicsController.reloadImageCache();
         graphicsController.updateTierList();
+
       });
 
+      final MenuItem menuSaveItem = new MenuItem("Save file...\t\t");
       menuSaveItem.setOnAction(graphicsController::saveTierList);
 
+      final MenuItem menuSaveItemAs = new MenuItem("Save file to...\t\t");
       menuSaveItemAs.setOnAction(graphicsController::saveTierListAs);
 
+      final MenuItem menuLoadItem = new MenuItem("Load\t\t");
       menuLoadItem.setOnAction(graphicsController::parseAndLoadTierList);
 
       final MenuItem menuExport = new MenuItem("Export as PNG...\t\t");
@@ -84,15 +82,13 @@ public class MainPane extends BorderPane {
       final MenuItem menuExportAs = new MenuItem("Export as PNG to...\t\t");
       menuExportAs.setOnAction(graphicsController::exportTierListAs);
 
-      final var lightTheme = new NordLight().getUserAgentStylesheet();
-      final var darkTheme = new NordDark().getUserAgentStylesheet();
 
-      Application.setUserAgentStylesheet(lightTheme);
+      graphicsController.setTheme(ConfigHolder.Theme.LIGHT);
 
       final MenuItem menuLightTheme = new MenuItem("Light Theme\t\t"), menuDarkTheme = new MenuItem("Dark Theme\t\t");
 
-      menuLightTheme.setOnAction(_ -> graphicsController.setTheme(ConfigHolder.Theme.LIGHT, lightTheme));
-      menuDarkTheme.setOnAction(_ -> graphicsController.setTheme(ConfigHolder.Theme.DARK, darkTheme));
+      menuLightTheme.setOnAction(_ -> graphicsController.setTheme(ConfigHolder.Theme.LIGHT));
+      menuDarkTheme.setOnAction(_ -> graphicsController.setTheme(ConfigHolder.Theme.DARK));
 
       fileMenu.getItems().addAll(menuNewTierList, menuSaveItem, menuSaveItemAs, menuLoadItem, menuExport, menuExportAs);
       viewMenu.getItems().addAll(menuLightTheme, menuDarkTheme);
@@ -107,8 +103,8 @@ public class MainPane extends BorderPane {
       addTierButton.setFocusTraversable(false);
       addElementButton.setFocusTraversable(false);
 
-      graphicsController.setGraphic(addElementButton, ResourceHolder.ADD_ELEMENT_BUTTON_ICON);
-      graphicsController.setGraphic(addTierButton, ResourceHolder.ADD_TIER_BUTTON_ICON);
+      graphicsController.setGraphic(addElementButton, ResourceHolder.ADD_ELEMENT_BUTTON_ICON_LIGHT);
+      graphicsController.setGraphic(addTierButton, ResourceHolder.ADD_TIER_BUTTON_ICON_LIGHT);
 
     }
 
@@ -169,7 +165,7 @@ public class MainPane extends BorderPane {
       if (!titleLabel.getText().isBlank()) {
 
         tierListController.setTierListName(titleLabel.getText());
-        graphicsController.setStageTitle(titleLabel.getText());
+        graphicsController.setStageTitle("OpenTL - " + titleLabel.getText());
 
         this.oldTitle = titleLabel.getText();
 
@@ -183,12 +179,22 @@ public class MainPane extends BorderPane {
     addElementButton.setOnAction(graphicsController::addElement);
   }
 
-  public TextField getTitleLabel() {
-    return this.titleLabel;
+  public void setButtonGraphics(ConfigHolder.Theme theme) {
+    switch (theme) {
+      case LIGHT -> {
+        graphicsController.setGraphic(addTierButton, ResourceHolder.ADD_TIER_BUTTON_ICON_LIGHT);
+        graphicsController.setGraphic(addElementButton, ResourceHolder.ADD_ELEMENT_BUTTON_ICON_LIGHT);
+      }
+      case DARK -> {
+        graphicsController.setGraphic(addTierButton, ResourceHolder.ADD_TIER_BUTTON_ICON_DARK);
+        graphicsController.setGraphic(addElementButton, ResourceHolder.ADD_ELEMENT_BUTTON_ICON_DARK);
+      }
+    }
   }
 
-  public void setOldTitle(String title) {
-    this.oldTitle = title;
+  public void updateTitleLabel(String text) {
+    titleLabel.setText(text);
+    this.oldTitle = text;
   }
 
 }

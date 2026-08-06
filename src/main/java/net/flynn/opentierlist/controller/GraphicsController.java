@@ -1,5 +1,7 @@
 package net.flynn.opentierlist.controller;
 
+import atlantafx.base.theme.NordDark;
+import atlantafx.base.theme.NordLight;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -119,55 +121,18 @@ public class GraphicsController {
   }
 
   public void updateTierList() {
-    final var titleLabel = mainPane.getTitleLabel();
 
-    titleLabel.setText(tierListController.getTierListName());
-    mainStage.setTitle(titleLabel.getText());
-    mainPane.setOldTitle(titleLabel.getText());
+    final String newTitle = tierListController.getTierListName();
+    mainPane.updateTitleLabel(newTitle);
+    mainStage.setTitle("OpenTL - " + newTitle);
 
     updateTiered();
     updateUnTiered();
   }
 
-  public void setBorder(ScrollPane pane, String color) {
-
-    final var border = new Border(
-        new BorderStroke(
-            Paint.valueOf(color),
-            BorderStrokeStyle.SOLID,
-            CornerRadii.EMPTY,
-            BorderWidths.DEFAULT));
-    pane.setBorder(border);
-
-  }
-
   private void updateBorders(String color) {
     setBorder(tieredPane, color);
     setBorder(unTieredPane, color);
-  }
-
-  public String titleFocusBehavior(String oldTitle, Boolean changed) {
-    if (changed)
-      oldTitle = mainPane.getTitleLabel().getText();
-    else
-      mainPane.getTitleLabel().setText(oldTitle);
-
-    return oldTitle;
-  }
-
-  public String titleSetOnAction(String oldTitle) {
-
-    final var titleLabel = mainPane.getTitleLabel();
-
-    if (!titleLabel.getText().isBlank()) {
-      tierListController.setTierListName(titleLabel.getText());
-      mainStage.setTitle(titleLabel.getText());
-      oldTitle = titleLabel.getText();
-    }
-    titleLabel.getScene().getRoot().requestFocus();
-
-    return oldTitle;
-
   }
 
   public void addElement(ActionEvent ignoredEvent) {
@@ -220,7 +185,7 @@ public class GraphicsController {
     if (parsedTier.isPresent()) {
       tierListController.setTierList(parsedTier.get());
 
-      mainPane.getTitleLabel().getScene().getRoot().requestFocus();
+      mainStage.requestFocus();
 
       reloadImageCache();
       updateTierList();
@@ -331,6 +296,18 @@ public class GraphicsController {
     }
   }
 
+  public void setBorder(ScrollPane pane, String color) {
+
+    final var border = new Border(
+            new BorderStroke(
+                    Paint.valueOf(color),
+                    BorderStrokeStyle.SOLID,
+                    CornerRadii.EMPTY,
+                    BorderWidths.DEFAULT));
+    pane.setBorder(border);
+
+  }
+
   public void setGraphic(Button button, String resource) {
     try {
       var imageURI = getClass().getResource(resource);
@@ -344,19 +321,25 @@ public class GraphicsController {
     }
   }
 
-  public void setTheme(ConfigHolder.Theme mode, String styleSheet) {
+  public void setTheme(ConfigHolder.Theme mode) {
 
-    Objects.requireNonNull(styleSheet, "[ERROR] --- Style sheet cannot be null ---");
-    if (styleSheet.isBlank())
-      throw new IllegalArgumentException("[ERROR] --- Style sheet cannot be blank ---");
+    final var lightTheme = new NordLight().getUserAgentStylesheet();
+    final var darkTheme = new NordDark().getUserAgentStylesheet();
 
-    Application.setUserAgentStylesheet(styleSheet);
 
     switch (mode) {
-      case ConfigHolder.Theme.LIGHT ->
+      case LIGHT -> {
+        Application.setUserAgentStylesheet(lightTheme);
+        mainPane.setButtonGraphics(ConfigHolder.Theme.LIGHT);
+        tieredPane.setButtonThemes(ConfigHolder.Theme.LIGHT);
         updateBorders(ConfigHolder.DEFAULT_ACCENT_COLOR_LIGHT);
-      case ConfigHolder.Theme.DARK ->
+      }
+      case DARK -> {
+        Application.setUserAgentStylesheet(darkTheme);
+        mainPane.setButtonGraphics(ConfigHolder.Theme.DARK);
+        tieredPane.setButtonThemes(ConfigHolder.Theme.DARK);
         updateBorders(ConfigHolder.DEFAULT_ACCENT_COLOR_DARK);
+      }
     }
   }
 

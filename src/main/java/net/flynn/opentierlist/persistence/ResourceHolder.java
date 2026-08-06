@@ -4,11 +4,15 @@ public class ResourceHolder {
 
   public final static String DEFAULT_ELEMENT_IMAGE = "/no_image.png";
 
-  public final static String EDIT_BUTTON_ICON = "/edit_tier.png";
-  public final static String ADD_ELEMENT_BUTTON_ICON = "/new_element.png";
-  public final static String ADD_TIER_BUTTON_ICON = "/new_tier.png";
+  public final static String EDIT_BUTTON_ICON_LIGHT = "/edit_tier_light.png";
+  public final static String ADD_ELEMENT_BUTTON_ICON_LIGHT = "/new_element_light.png";
+  public final static String ADD_TIER_BUTTON_ICON_LIGHT = "/new_tier_light.png";
+
+  public final static String EDIT_BUTTON_ICON_DARK = "/edit_tier_dark.png";
+  public final static String ADD_ELEMENT_BUTTON_ICON_DARK = "/new_element_dark.png";
+    public final static String ADD_TIER_BUTTON_ICON_DARK = "/new_tier_dark.png";
 
   // placeholder asset
-  public final static String APPLICATION_ICON = EDIT_BUTTON_ICON;
+  public final static String APPLICATION_ICON = EDIT_BUTTON_ICON_LIGHT;
 
 }

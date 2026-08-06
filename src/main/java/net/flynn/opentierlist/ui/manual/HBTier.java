@@ -210,7 +210,7 @@ public class HBTier extends HBox {
 
   private void setupEditButton() {
     try {
-      final var imageURI = getClass().getResource(ResourceHolder.EDIT_BUTTON_ICON);
+      final var imageURI = getClass().getResource(ResourceHolder.EDIT_BUTTON_ICON_LIGHT);
       if (imageURI == null)
         throw new URISyntaxException("imageURI", "[ERROR] --- Default edit tier resource not found, exiting ---");
       editTierButton.setGraphic(new ImageView(new Image(imageURI.toURI().toString())));
@@ -314,6 +314,15 @@ public class HBTier extends HBox {
   }
 
   public void showEditButton() {
-    getChildren().add(editTierButton);
+
   }
+  public void setButtonTheme(ConfigHolder.Theme theme) {
+
+    switch (theme) {
+        case LIGHT -> graphicsController.setGraphic(editTierButton, ResourceHolder.EDIT_BUTTON_ICON_LIGHT);
+        case DARK -> graphicsController.setGraphic(editTierButton, ResourceHolder.EDIT_BUTTON_ICON_DARK);
+    }
+
+  }
+
 }
