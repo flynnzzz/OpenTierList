@@ -61,9 +61,9 @@ public class MainPane extends BorderPane {
 
     {
       final MenuItem menuNewTierList = new MenuItem("New...\t\t"),
-              menuSaveItem = new MenuItem("Save file...\t\t"),
-              menuSaveItemAs = new MenuItem("Save file to...\t\t"),
-              menuLoadItem = new MenuItem("Load\t\t");
+          menuSaveItem = new MenuItem("Save file...\t\t"),
+          menuSaveItemAs = new MenuItem("Save file to...\t\t"),
+          menuLoadItem = new MenuItem("Load\t\t");
 
       menuNewTierList.setOnAction(_ -> {
         tierListController.setTierList(TierList.ofDefaultTiers());
@@ -117,12 +117,10 @@ public class MainPane extends BorderPane {
       buttonsHBox.getChildren().addAll(addTierButton, addElementButton);
 
       buttonsHBox.setPadding(new Insets(
-                      ConfigHolder.DEFAULT_BUTTON_PADDING,
-                      ConfigHolder.DEFAULT_BUTTON_PADDING,
-                      ConfigHolder.DEFAULT_BUTTON_PADDING,
-                      ConfigHolder.DEFAULT_BUTTON_PADDING
-              )
-      );
+          ConfigHolder.DEFAULT_BUTTON_PADDING,
+          ConfigHolder.DEFAULT_BUTTON_PADDING,
+          ConfigHolder.DEFAULT_BUTTON_PADDING,
+          ConfigHolder.DEFAULT_BUTTON_PADDING));
 
       buttonsHBox.setSpacing(ConfigHolder.DEFAULT_BUTTON_SPACING);
       buttonsHBox.setAlignment(Pos.BOTTOM_CENTER);
@@ -131,10 +129,10 @@ public class MainPane extends BorderPane {
       titleLabel.setFocusTraversable(false);
       HBox titleBox = new HBox(titleLabel);
       titleBox.setPadding(new Insets(
-              ConfigHolder.DEFAULT_TITLE_PADDING_TOP,
-              ConfigHolder.DEFAULT_TITLE_PADDING_RIGHT,
-              ConfigHolder.DEFAULT_TITLE_PADDING_BOTTOM,
-              ConfigHolder.DEFAULT_TITLE_PADDING_LEFT));
+          ConfigHolder.DEFAULT_TITLE_PADDING_TOP,
+          ConfigHolder.DEFAULT_TITLE_PADDING_RIGHT,
+          ConfigHolder.DEFAULT_TITLE_PADDING_BOTTOM,
+          ConfigHolder.DEFAULT_TITLE_PADDING_LEFT));
 
       titleBox.setAlignment(Pos.BASELINE_CENTER);
       var centerBox = new VBox(titleBox, tieredPane, buttonsHBox);
@@ -145,13 +143,11 @@ public class MainPane extends BorderPane {
       unrankedBox.setAlignment(Pos.CENTER);
 
       unrankedBox.setPadding(
-              new Insets(
-                      ConfigHolder.DEFAULT_UNRANKED_PADDING_TOP,
-                      ConfigHolder.DEFAULT_UNRANKED_PADDING_RIGHT,
-                      ConfigHolder.DEFAULT_UNRANKED_PADDING_BOTTOM,
-                      ConfigHolder.DEFAULT_UNRANKED_PADDING_LEFT
-              )
-      );
+          new Insets(
+              ConfigHolder.DEFAULT_UNRANKED_PADDING_TOP,
+              ConfigHolder.DEFAULT_UNRANKED_PADDING_RIGHT,
+              ConfigHolder.DEFAULT_UNRANKED_PADDING_BOTTOM,
+              ConfigHolder.DEFAULT_UNRANKED_PADDING_LEFT));
 
       setBottom(unrankedBox);
     }
@@ -161,19 +157,34 @@ public class MainPane extends BorderPane {
 
   private void setupEventHandlers() {
 
-    titleLabel.focusedProperty().addListener( (_, _, changed) ->
-            this.oldTitle = graphicsController.titleFocusBehavior(oldTitle, changed));
+    titleLabel.focusedProperty().addListener((_, _, changed) -> {
+      if (changed)
+        this.oldTitle = titleLabel.getText();
+      else
+        titleLabel.setText(oldTitle);
+    });
 
-    titleLabel.setOnAction(
-            _ -> this.oldTitle = graphicsController.titleSetOnAction(oldTitle)
-    );
+    titleLabel.setOnAction(_ -> {
+
+      if (!titleLabel.getText().isBlank()) {
+
+        tierListController.setTierListName(titleLabel.getText());
+        graphicsController.setStageTitle(titleLabel.getText());
+
+        this.oldTitle = titleLabel.getText();
+
+      }
+
+      titleLabel.getScene().getRoot().requestFocus();
+
+    });
 
     addTierButton.setOnAction(graphicsController::addTier);
     addElementButton.setOnAction(graphicsController::addElement);
   }
 
   public TextField getTitleLabel() {
-    return  this.titleLabel;
+    return this.titleLabel;
   }
 
   public void setOldTitle(String title) {

@@ -118,10 +118,24 @@ public class HBTier extends HBox {
 
   private void setupEventHandlers() {
 
-    tierNameLabel.focusedProperty().addListener( (_, _, now) ->
-            this.oldTextValue = graphicsController.titleFocusBehavior(oldTextValue, now));
-    tierNameLabel.setOnAction( _ ->
-            this.oldTextValue = graphicsController.titleSetOnAction(oldTextValue));
+    // TODO: move to GraphicsController
+    tierNameLabel.focusedProperty().addListener((_, _, changed) -> {
+      if (changed)
+        this.oldTextValue = tierNameLabel.getText();
+      else
+        tierNameLabel.setText(oldTextValue);
+    });
+
+    tierNameLabel.setOnAction(_ -> {
+
+      if (!tierNameLabel.getText().isBlank()) {
+        tierListController.setTierName(tier, tierNameLabel.getText());
+        this.oldTextValue = tierNameLabel.getText();
+      }
+
+      tierNameLabel.getScene().getRoot().requestFocus();
+
+    });
 
     final Tooltip tooltip = new Tooltip("Click to drag and move");
     tierNameLabel.setTooltip(tooltip);
@@ -266,10 +280,10 @@ public class HBTier extends HBox {
       while (potentialTarget != null && !(potentialTarget instanceof HBTier)) {
         potentialTarget = potentialTarget.getParent();
       }
-        if (potentialTarget != null) {
-          final Tier target = ((HBTier) potentialTarget).getTier();
-          tierListController.moveTier(source.get(), target);
-        }
+      if (potentialTarget != null) {
+        final Tier target = ((HBTier) potentialTarget).getTier();
+        tierListController.moveTier(source.get(), target);
+      }
     }
     event.setDropCompleted(true);
     event.consume();
