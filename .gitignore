@@ -1,7 +1,9 @@
 bin/
 *.class
-src/quicktest/
+.idea/
 .vscode
 .project
 .classpath
 .settings
+*.log
+/target
