@@ -1,8 +1,12 @@
 <div align="center">
-  <img src="src/main/resources/logo.png" alt="OpenTL Logo" width="200">
+  <img src="./src/main/resources/logo.png" width="300" alt="OpenTL Logo">
 </div>
 
-# Open Tier List
+## OpenTL: Java-developed Tier List Maker
+
+<div align="center">
+  <img src="./assets/tier_list_example.png" alt="Tier List Example">
+</div>
 
 A **simple tier list maker application** built with JavaFX as a learning project.
 
