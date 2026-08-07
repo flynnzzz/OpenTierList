@@ -22,7 +22,6 @@ public class TieredPane extends ScrollPane {
 
   public TieredPane(GraphicsController graphicsController) {
     this.graphicsController = graphicsController;
-
     this.tierBoxList = FXCollections.observableArrayList();
     this.tiersVBox = new VBox();
     setupPane();
@@ -31,7 +30,6 @@ public class TieredPane extends ScrollPane {
   private void setupPane() {
 
     tierBoxList = graphicsController.loadTiers();
-
     tiersVBox.getChildren().addAll(tierBoxList);
 
     this.setContent(tiersVBox);
@@ -39,10 +37,11 @@ public class TieredPane extends ScrollPane {
     this.setVbarPolicy(ScrollBarPolicy.AS_NEEDED);
     this.setHbarPolicy(ScrollBarPolicy.AS_NEEDED);
 
-    graphicsController.setBorder(this, ConfigHolder.DEFAULT_ACCENT_COLOR_LIGHT);
+    graphicsController.setBorder(this);
 
     tiersVBox.setAlignment(Pos.CENTER);
     tiersVBox.setPadding(new Insets(ConfigHolder.DEFAULT_TIERS_VBOX_PADDING));
+
   }
 
   public void update() {

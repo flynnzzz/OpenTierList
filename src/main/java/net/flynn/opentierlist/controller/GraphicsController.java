@@ -388,6 +388,22 @@ public class GraphicsController {
 
   }
 
+  public void setBorder(ScrollPane pane) {
+
+    final var color = ConfigHolder.getCurrentTheme() == ConfigHolder.Theme.LIGHT
+        ? ConfigHolder.DEFAULT_ACCENT_COLOR_LIGHT
+        : ConfigHolder.DEFAULT_ACCENT_COLOR_DARK;
+
+    final var border = new Border(
+        new BorderStroke(
+            Paint.valueOf(color),
+            BorderStrokeStyle.SOLID,
+            CornerRadii.EMPTY,
+            BorderWidths.DEFAULT));
+    pane.setBorder(border);
+
+  }
+
   public void setGraphic(Button button, String resource) {
     try {
       var imageURI = getClass().getResource(resource);
