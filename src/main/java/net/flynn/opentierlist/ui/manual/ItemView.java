@@ -10,21 +10,21 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
 import net.flynn.opentierlist.controller.TierListController;
 import net.flynn.opentierlist.model.models.Tier;
-import net.flynn.opentierlist.model.models.TierElement;
+import net.flynn.opentierlist.model.models.TierItem;
 import net.flynn.opentierlist.ui.ConfigHolder;
 import net.flynn.opentierlist.controller.GraphicsController;
 
 import java.util.Optional;
 
-public class ElementView extends ImageView {
+public class ItemView extends ImageView {
 
   private final TierListController tierListController;
   private final GraphicsController graphicsController;
 
-  private final ElementPane parent;
+  private final ItemsPane parent;
 
-  public ElementView(
-      Image image, TierListController tierListController, GraphicsController graphicsController, ElementPane parent) {
+  public ItemView(
+      Image image, TierListController tierListController, GraphicsController graphicsController, ItemsPane parent) {
     super(image);
     this.tierListController = tierListController;
     this.graphicsController = graphicsController;
@@ -46,14 +46,14 @@ public class ElementView extends ImageView {
         final var deleteImageMenu = new MenuItem("Delete");
         deleteImageMenu.setOnAction(_ -> {
 
-          if (this.getUserData() instanceof TierElement element) {
-            tierListController.removeElement(element);
+          if (this.getUserData() instanceof TierItem element) {
+            tierListController.removeItem(element);
             parent.getChildren().remove(this);
             graphicsController.updateImages(parent);
           }
         });
 
-        if (this.getUserData() instanceof TierElement element && element.isTiered()) {
+        if (this.getUserData() instanceof TierItem element && element.isTiered()) {
 
           final var unTierImageMenu = new MenuItem("UnTier");
           imageContextMenu.getItems().add(unTierImageMenu);
@@ -122,7 +122,7 @@ public class ElementView extends ImageView {
     Dragboard dragBoard = sourceImage.startDragAndDrop(TransferMode.MOVE);
     var content = new ClipboardContent();
 
-    if (sourceImage.getUserData() instanceof TierElement sourceElement) {
+    if (sourceImage.getUserData() instanceof TierItem sourceElement) {
 
       content.putImage(sourceImage.getImage());
       content.putString(String.valueOf(sourceElement.hashCode()));
@@ -139,7 +139,7 @@ public class ElementView extends ImageView {
     Dragboard dragBoard = event.getDragboard();
     String elementHash = dragBoard.getString();
 
-    Optional<TierElement> potentialSource = tierListController.getElementByHash(elementHash);
+    Optional<TierItem> potentialSource = tierListController.getItemByHash(elementHash);
     if (potentialSource.isEmpty()) {
       System.err.println("[ERROR] --- Element to be dropped was not found ---");
       return;
@@ -148,16 +148,16 @@ public class ElementView extends ImageView {
     EventTarget eventTarget = event.getTarget();
     if (dragBoard.hasImage() && dragBoard.hasString()
         && eventTarget instanceof ImageView targetImage
-        && targetImage.getUserData() instanceof TierElement targetElement) {
+        && targetImage.getUserData() instanceof TierItem targetElement) {
 
-      TierElement sourceElement = potentialSource.get();
+      TierItem sourceElement = potentialSource.get();
 
       if (!sourceElement.equals(targetElement)) {
 
-        Optional<Tier> potentialTargetTier = tierListController.getTierByElement(targetElement);
+        Optional<Tier> potentialTargetTier = tierListController.getTierByItem(targetElement);
 
         potentialTargetTier.ifPresent(
-            targetTier -> tierListController.insertElement(sourceElement, targetTier, targetElement));
+            targetTier -> tierListController.insertItem(sourceElement, targetTier, targetElement));
       }
 
       graphicsController.updateImages(parent);

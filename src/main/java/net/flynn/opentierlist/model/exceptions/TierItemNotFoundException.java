@@ -8,16 +8,16 @@ import java.io.Serial;
  * @version 0.00
  * @since v1.0.0
  */
-public class TierElementNotFoundException extends IndexOutOfBoundsException {
+public class TierItemNotFoundException extends IndexOutOfBoundsException {
 
 	@Serial
     private static final long serialVersionUID = -6509042509524524415L;
 	
-	public TierElementNotFoundException(String message) {
+	public TierItemNotFoundException(String message) {
 		super(message);
 	}
 	
-	public TierElementNotFoundException() {
+	public TierItemNotFoundException() {
 		super();
 	}
 }

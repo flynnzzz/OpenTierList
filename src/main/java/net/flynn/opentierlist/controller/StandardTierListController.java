@@ -9,10 +9,10 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 import net.flynn.opentierlist.model.enums.TierStringFormat;
-import net.flynn.opentierlist.model.exceptions.TierElementNotFoundException;
+import net.flynn.opentierlist.model.exceptions.TierItemNotFoundException;
 import net.flynn.opentierlist.model.exceptions.TierNotFoundException;
 import net.flynn.opentierlist.model.models.Tier;
-import net.flynn.opentierlist.model.models.TierElement;
+import net.flynn.opentierlist.model.models.TierItem;
 import net.flynn.opentierlist.model.models.TierList;
 import net.flynn.opentierlist.persistence.DataHandler;
 import net.flynn.opentierlist.ui.manual.TieredPane;
@@ -43,7 +43,7 @@ public class StandardTierListController implements TierListController {
   }
 
   @Override
-  public void tier(TierElement unTiered, Tier toTier) {
+  public void tier(TierItem unTiered, Tier toTier) {
     try {
       tierList.tier(unTiered, toTier);
     } catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) {
@@ -52,7 +52,7 @@ public class StandardTierListController implements TierListController {
   }
 
   @Override
-  public void tier(TierElement unTiered, Tier toTier, TierElement position) {
+  public void tier(TierItem unTiered, Tier toTier, TierItem position) {
     try {
       tierList.tierInsert(unTiered, toTier, position);
     } catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) {
@@ -61,7 +61,7 @@ public class StandardTierListController implements TierListController {
   }
 
   @Override
-  public void tier(TierElement unTiered, Tier toTier, int toIndex) {
+  public void tier(TierItem unTiered, Tier toTier, int toIndex) {
     try {
       tierList.tierInsert(unTiered, toTier, toIndex);
     } catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) {
@@ -70,7 +70,7 @@ public class StandardTierListController implements TierListController {
   }
 
   @Override
-  public void unTier(TierElement tiered) {
+  public void unTier(TierItem tiered) {
     try {
       tierList.unTier(tiered);
     } catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) {
@@ -79,7 +79,7 @@ public class StandardTierListController implements TierListController {
   }
 
   @Override
-  public void unTier(TierElement tiered, TierElement position) {
+  public void unTier(TierItem tiered, TierItem position) {
     try {
       tierList.unTierInsert(tiered, position);
     } catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) {
@@ -88,7 +88,7 @@ public class StandardTierListController implements TierListController {
   }
 
   @Override
-  public void unTier(TierElement tiered, int toIndex) {
+  public void unTier(TierItem tiered, int toIndex) {
     try {
       tierList.unTierInsert(tiered, toIndex);
     } catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) {
@@ -142,9 +142,9 @@ public class StandardTierListController implements TierListController {
   }
 
   @Override
-  public void addUnTiered(TierElement element) {
+  public void addUnTiered(TierItem item) {
     try {
-      tierList.addElement(element, Tier.UNTIERED);
+      tierList.addItem(item, Tier.UNTIERED);
     } catch (NullPointerException | IllegalArgumentException ex) {
       System.err.println("[ERROR] --- " + ex.getClass() + ": in 'addUnTiered' method ---");
     }
@@ -160,36 +160,36 @@ public class StandardTierListController implements TierListController {
   }
 
   @Override
-  public void removeElement(TierElement element) {
+  public void removeItem(TierItem item) {
     try {
-      tierList.removeElement(element);
+      tierList.removeItem(item);
     } catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) {
       System.err.println("[ERROR] --- " + ex.getClass() + ": in 'deleteTierElement' method ---");
     }
   }
 
   @Override
-  public void moveElement(TierElement element, Tier toTier) {
+  public void moveItem(TierItem item, Tier toTier) {
     try {
-      tierList.moveElement(element, toTier);
+      tierList.moveItem(item, toTier);
     } catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) {
       System.err.println("[ERROR] --- " + ex.getClass() + ": in 'moveElement' method ---");
     }
   }
 
   @Override
-  public void insertElement(TierElement element, Tier toTier, TierElement position) {
+  public void insertItem(TierItem item, Tier toTier, TierItem position) {
     try {
-      tierList.insertElement(element, toTier, position);
+      tierList.insertItem(item, toTier, position);
     } catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) {
       System.err.println("[ERROR] --- " + ex.getClass() + ": in 'moveElement' method ---");
     }
   }
 
   @Override
-  public void insertElement(TierElement element, Tier toTier, int index) {
+  public void insertItem(TierItem item, Tier toTier, int index) {
     try {
-      tierList.insertElement(element, toTier, index);
+      tierList.insertItem(item, toTier, index);
     } catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) {
       System.err.println("[ERROR] --- " + ex.getClass() + ": in 'moveElement' method ---");
     }
@@ -318,7 +318,7 @@ public class StandardTierListController implements TierListController {
   }
 
   @Override
-  public List<TierElement> getUnTiered() {
+  public List<TierItem> getUnTiered() {
     return tierList.getUnTiered();
   }
 
@@ -328,15 +328,15 @@ public class StandardTierListController implements TierListController {
   }
 
   @Override
-  public Optional<Tier> getTierByElement(TierElement e) {
+  public Optional<Tier> getTierByItem(TierItem item) {
     Optional<Tier> element = Optional.empty();
 
     try {
       element = tierList.getTiers().stream()
-          .filter(t -> t.contains(e))
+          .filter(t -> t.contains(item))
           .findFirst();
 
-      if (element.isEmpty() && getUnTiered().contains(e))
+      if (element.isEmpty() && getUnTiered().contains(item))
         element = Optional.of(Tier.UNTIERED);
 
     } catch (NullPointerException | IllegalArgumentException ex) {
@@ -347,8 +347,8 @@ public class StandardTierListController implements TierListController {
   }
 
   @Override
-  public Optional<TierElement> getElementByHash(String hashCode) {
-    Optional<TierElement> element = Optional.empty();
+  public Optional<TierItem> getItemByHash(String hashCode) {
+    Optional<TierItem> element = Optional.empty();
 
     try {
 
@@ -361,7 +361,7 @@ public class StandardTierListController implements TierListController {
           .findFirst();
 
       if (element.isEmpty())
-        throw new TierElementNotFoundException();
+        throw new TierItemNotFoundException();
     } catch (NullPointerException | IllegalArgumentException ex) {
       System.err.println("[ERROR] --- " + ex.getClass() + ": in 'getElementByHash' method ---");
     }
@@ -389,7 +389,7 @@ public class StandardTierListController implements TierListController {
   }
 
   @Override
-  public boolean elementExists(Integer hash) {
+  public boolean itemExists(Integer hash) {
 
     return Stream
         .concat(
@@ -404,7 +404,7 @@ public class StandardTierListController implements TierListController {
 
   @Override
   @Deprecated
-  public void swapTiered(Tier tier, TierElement a, TierElement b) {
+  public void swapTiered(Tier tier, TierItem a, TierItem b) {
     try {
       tierList.swapTiered(tier, a, b);
     } catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) {
@@ -414,7 +414,7 @@ public class StandardTierListController implements TierListController {
 
   @Override
   @Deprecated
-  public void swapUnTiered(TierElement a, TierElement b) {
+  public void swapUnTiered(TierItem a, TierItem b) {
     try {
       tierList.swapUnTiered(a, b);
     } catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) {
@@ -424,7 +424,7 @@ public class StandardTierListController implements TierListController {
 
   @Override
   @Deprecated
-  public void appendTiered(TierElement tiered, Tier toTier) {
+  public void appendTiered(TierItem tiered, Tier toTier) {
     try {
       tierList.moveToTier(tiered, toTier);
     } catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) {
@@ -434,7 +434,7 @@ public class StandardTierListController implements TierListController {
 
   @Override
   @Deprecated
-  public void moveTiered(TierElement tiered, Tier toTier, TierElement toElement) {
+  public void moveTiered(TierItem tiered, Tier toTier, TierItem toElement) {
     try {
       int toIndex = toTier.getTiered().indexOf(toElement);
       tierList.moveToTier(tiered, toTier, toIndex);
@@ -445,7 +445,7 @@ public class StandardTierListController implements TierListController {
 
   @Override
   @Deprecated
-  public void moveTiered(TierElement tiered, Tier toTier, int toIndex) {
+  public void moveTiered(TierItem tiered, Tier toTier, int toIndex) {
     try {
       tierList.moveToTier(tiered, toTier, toIndex);
     } catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) {
@@ -455,17 +455,17 @@ public class StandardTierListController implements TierListController {
 
   @Override
   @Deprecated
-  public void moveUnTiered(TierElement unTiered, TierElement toElement) {
+  public void moveUnTiered(TierItem unTiered, TierItem toElement) {
   }
 
   @Override
   @Deprecated
-  public void moveUnTiered(TierElement unTiered, int toIndex) {
+  public void moveUnTiered(TierItem unTiered, int toIndex) {
   }
 
   @Override
   @Deprecated
-  public void deleteUnTiered(TierElement unTiered) {
+  public void deleteUnTiered(TierItem unTiered) {
     try {
       tierList.removeUnTiered(unTiered);
     } catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException ex) {

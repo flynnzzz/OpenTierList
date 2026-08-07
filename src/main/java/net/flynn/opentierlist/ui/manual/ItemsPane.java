@@ -12,7 +12,7 @@ import javafx.scene.layout.FlowPane;
 import net.flynn.opentierlist.controller.TierListController;
 import net.flynn.opentierlist.model.enums.TieredStatus;
 import net.flynn.opentierlist.model.models.Tier;
-import net.flynn.opentierlist.model.models.TierElement;
+import net.flynn.opentierlist.model.models.TierItem;
 import net.flynn.opentierlist.ui.ConfigHolder;
 import net.flynn.opentierlist.controller.GraphicsController;
 
@@ -21,7 +21,7 @@ import net.flynn.opentierlist.controller.GraphicsController;
  * @version 3.80
  * @since v1.2.5
  */
-public class ElementPane extends FlowPane {
+public class ItemsPane extends FlowPane {
 
   private final TierListController tierListController;
   private final GraphicsController graphicsController;
@@ -29,23 +29,23 @@ public class ElementPane extends FlowPane {
   private final TieredStatus status;
   private final Tier tier;
 
-  public ElementPane(TierListController tierListController, GraphicsController graphicsController, Tier tier) {
+  public ItemsPane(TierListController tierListController, GraphicsController graphicsController, Tier tier) {
 
     this.tierListController = tierListController;
     this.graphicsController = graphicsController;
     this.tier = tier;
     this.status = tier.equalsTier(Tier.UNTIERED) ? TieredStatus.UNTIERED : TieredStatus.TIERED;
 
-    final List<TierElement> elements = tier.equalsTier(Tier.UNTIERED) ? tierListController.getUnTiered()
+    final List<TierItem> items = tier.equalsTier(Tier.UNTIERED) ? tierListController.getUnTiered()
         : tier.getTiered();
-    setupPane(graphicsController.loadImages(this, elements));
+    setupPane(graphicsController.loadImages(this, items));
   }
 
-  public ElementPane(TierListController tierListController, GraphicsController graphicsController) {
+  public ItemsPane(TierListController tierListController, GraphicsController graphicsController) {
     this(tierListController, graphicsController, Tier.UNTIERED);
   }
 
-  private void setupPane(List<ElementView> images) {
+  private void setupPane(List<ItemView> images) {
     this.getChildren().addAll(images);
 
     graphicsController.setFlowPaneBorder(this, ConfigHolder.DEFAULT_BAR_BORDER_COLOR);
@@ -95,10 +95,10 @@ public class ElementPane extends FlowPane {
 
     Dragboard dragBoard = event.getDragboard();
     if (dragBoard.hasImage() && dragBoard.hasString()
-        && event.getTarget() instanceof ElementPane) {
+        && event.getTarget() instanceof ItemsPane) {
 
       String elementHash = dragBoard.getString();
-      Optional<TierElement> potentialSource = tierListController.getElementByHash(elementHash);
+      Optional<TierItem> potentialSource = tierListController.getItemByHash(elementHash);
       if (potentialSource.isEmpty()) {
         System.err.println("[ERROR] --- Element to be dropped was not found ---");
         return;
@@ -106,7 +106,7 @@ public class ElementPane extends FlowPane {
 
       var source = potentialSource.get();
 
-      tierListController.moveElement(source, this.tier);
+      tierListController.moveItem(source, this.tier);
 
       graphicsController.updateImages(this);
 

@@ -12,25 +12,25 @@ import net.flynn.opentierlist.persistence.ResourceHolder;
 
 import static org.junit.Assert.*;
 
-public class TierElementTest {
+public class TierItemTest {
 
-  TierElement defaultTierElement, el1, el2, el3;
+  TierItem defaultTierItem, el1, el2, el3;
 
   @Before
   public void setUp() throws Exception {
 
     final String resource = Objects.requireNonNull(getClass().getResource("/greyyakuza.jpg")).toURI().toString();
 
-    defaultTierElement = new TierElement();
-    el1 = new TierElement("elementName1");
-    el2 = new TierElement("elementName2", resource);
-    el3 = new TierElement(TieredStatus.TIERED, "elementName3", resource);
+    defaultTierItem = new TierItem();
+    el1 = new TierItem("elementName1");
+    el2 = new TierItem("elementName2", resource);
+    el3 = new TierItem(TieredStatus.TIERED, "elementName3", resource);
 
   }
 
   @After
   public void tearDown() {
-    defaultTierElement = null;
+    defaultTierItem = null;
     el1 = null;
     el2 = null;
     el3 = null;
@@ -38,7 +38,7 @@ public class TierElementTest {
 
   @Test
   public void getStatus() {
-    assertEquals(TieredStatus.UNTIERED, defaultTierElement.getStatus());
+    assertEquals(TieredStatus.UNTIERED, defaultTierItem.getStatus());
     assertEquals(TieredStatus.UNTIERED, el1.getStatus());
     assertEquals(TieredStatus.UNTIERED, el2.getStatus());
     assertEquals(TieredStatus.TIERED, el3.getStatus());
@@ -46,7 +46,7 @@ public class TierElementTest {
 
   @Test
   public void isTiered() {
-    assertFalse(defaultTierElement.isTiered());
+    assertFalse(defaultTierItem.isTiered());
     assertFalse(el1.isTiered());
     assertFalse(el2.isTiered());
     assertTrue(el3.isTiered());
@@ -76,34 +76,34 @@ public class TierElementTest {
   }
 
   @Test
-  public void getElementName() {
-    assertEquals("New Element", defaultTierElement.getElementName());
-    assertEquals("elementName1", el1.getElementName());
-    assertEquals("elementName2", el2.getElementName());
-    assertEquals("elementName3", el3.getElementName());
+  public void getItemName() {
+    assertEquals("New Item", defaultTierItem.getItemName());
+    assertEquals("elementName1", el1.getItemName());
+    assertEquals("elementName2", el2.getItemName());
+    assertEquals("elementName3", el3.getItemName());
   }
 
   @Test
-  public void setElementName() {
-    el1.setElementName("newElementName1");
-    assertEquals("newElementName1", el1.getElementName());
-    el1.setElementName("elementName1");
-    assertEquals("elementName1", el1.getElementName());
+  public void setItemName() {
+    el1.setItemName("newElementName1");
+    assertEquals("newElementName1", el1.getItemName());
+    el1.setItemName("elementName1");
+    assertEquals("elementName1", el1.getItemName());
 
-    el2.setElementName("newElementName2");
-    assertEquals("newElementName2", el2.getElementName());
+    el2.setItemName("newElementName2");
+    assertEquals("newElementName2", el2.getItemName());
 
-    el2.setElementName("newNewElementName2");
-    assertEquals("newNewElementName2", el2.getElementName());
+    el2.setItemName("newNewElementName2");
+    assertEquals("newNewElementName2", el2.getItemName());
 
-    el2.setElementName("elementName2");
-    assertEquals("elementName2", el2.getElementName());
+    el2.setItemName("elementName2");
+    assertEquals("elementName2", el2.getItemName());
 
-    assertThrows(IllegalArgumentException.class, () -> el1.setElementName(""));
-    assertThrows(IllegalArgumentException.class, () -> el1.setElementName(" "));
-    assertThrows(IllegalArgumentException.class, () -> el1.setElementName(System.lineSeparator()));
+    assertThrows(IllegalArgumentException.class, () -> el1.setItemName(""));
+    assertThrows(IllegalArgumentException.class, () -> el1.setItemName(" "));
+    assertThrows(IllegalArgumentException.class, () -> el1.setItemName(System.lineSeparator()));
 
-    el1.setElementName("elementName1");
+    el1.setItemName("elementName1");
   }
 
   @Test
@@ -112,8 +112,8 @@ public class TierElementTest {
     String resource = Objects.requireNonNull(getClass().getResource("/greyyakuza.jpg")).toURI().toString();
 
     assertEquals(
-        (Objects.requireNonNull(getClass().getResource(ResourceHolder.DEFAULT_ELEMENT_IMAGE))).toURI().toString(),
-        defaultTierElement.getImageUri()
+        (Objects.requireNonNull(getClass().getResource(ResourceHolder.DEFAULT_ITEM_IMAGE))).toURI().toString(),
+        defaultTierItem.getImageUri()
     );
 
     assertEquals(resource, el2.getImageUri() );
@@ -122,17 +122,17 @@ public class TierElementTest {
   @Test
   public void updateImagePath() throws URISyntaxException {
 
-    var el4 = new TierElement("elementName4", "nonExistentUrl");
+    var el4 = new TierItem("elementName4", "nonExistentUrl");
 
     assertEquals(
-            (Objects.requireNonNull(getClass().getResource(ResourceHolder.DEFAULT_ELEMENT_IMAGE))).toURI().toString(),
+            (Objects.requireNonNull(getClass().getResource(ResourceHolder.DEFAULT_ITEM_IMAGE))).toURI().toString(),
             el4.getImageUri()
     );
 
     el4.updateImagePath();
 
     assertEquals(
-            (Objects.requireNonNull(getClass().getResource(ResourceHolder.DEFAULT_ELEMENT_IMAGE))).toURI().toString(),
+            (Objects.requireNonNull(getClass().getResource(ResourceHolder.DEFAULT_ITEM_IMAGE))).toURI().toString(),
             el4.getImageUri()
     );
 
@@ -149,15 +149,15 @@ public class TierElementTest {
     assertNotEquals(el3, el2);
     assertNotEquals(el1, el3);
 
-    assertNotEquals(el1, new TierElement(el1.getElementName(), el1.getImageUri()));
+    assertNotEquals(el1, new TierItem(el1.getItemName(), el1.getImageUri()));
 
   }
 
   @Test
-  public void equalsElement() {
+  public void equalsItem() {
 
-    assertTrue(el1.equalsElement(new TierElement(el1.getElementName(), el1.getImageUri())));
-    assertFalse(el1.equalsElement(el2));
+    assertTrue(el1.equalsItem(new TierItem(el1.getItemName(), el1.getImageUri())));
+    assertFalse(el1.equalsItem(el2));
 
   }
 }

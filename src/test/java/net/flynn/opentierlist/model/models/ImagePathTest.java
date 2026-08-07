@@ -53,7 +53,7 @@ public class ImagePathTest {
   public void defaultResource() throws URISyntaxException {
     assertEquals(ImagePath.defaultResource(), new ImagePath(
         Objects.requireNonNull(
-            getClass().getResource(ResourceHolder.DEFAULT_ELEMENT_IMAGE)).toURI()));
+            getClass().getResource(ResourceHolder.DEFAULT_ITEM_IMAGE)).toURI()));
   }
 
   @Test

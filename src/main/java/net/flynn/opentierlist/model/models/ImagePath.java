@@ -17,7 +17,7 @@ import net.flynn.opentierlist.persistence.ResourceHolder;
  * @since v1.7.0
  */
 public record ImagePath(URI uri) {
-  private static final String DEFAULT_IMAGE_RESOURCE = ResourceHolder.DEFAULT_ELEMENT_IMAGE;
+  private static final String DEFAULT_IMAGE_RESOURCE = ResourceHolder.DEFAULT_ITEM_IMAGE;
 
   public static ImagePath of(File file) throws IllegalArgumentException {
     if (file != null && file.exists()) {

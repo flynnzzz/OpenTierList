@@ -23,7 +23,7 @@ public class MainPane extends BorderPane {
   private final TextField titleLabel;
   private final TieredPane tieredPane;
   private final UnTieredPane unTieredPane;
-  private final Button addTierButton, addElementButton;
+  private final Button addTierButton, addItemButton;
   private final MenuBar menuBar;
   private final Menu fileMenu, viewMenu;
 
@@ -40,7 +40,7 @@ public class MainPane extends BorderPane {
     this.tieredPane = new TieredPane(graphicsController);
     this.unTieredPane = new UnTieredPane(tierListController, graphicsController);
     this.addTierButton = new Button();
-    this.addElementButton = new Button();
+    this.addItemButton = new Button();
     this.menuBar = new MenuBar();
     this.fileMenu = new Menu("File");
     this.viewMenu = new Menu("View");
@@ -96,19 +96,19 @@ public class MainPane extends BorderPane {
 
     {
       addTierButton.setTooltip(new Tooltip("Add new Tier"));
-      addElementButton.setTooltip(new Tooltip("Add new Element"));
+      addItemButton.setTooltip(new Tooltip("Add new Item"));
 
       addTierButton.setFocusTraversable(false);
-      addElementButton.setFocusTraversable(false);
+      addItemButton.setFocusTraversable(false);
 
-      graphicsController.setGraphic(addElementButton, ResourceHolder.ADD_ELEMENT_BUTTON_ICON_LIGHT);
+      graphicsController.setGraphic(addItemButton, ResourceHolder.ADD_ITEM_BUTTON_ICON_LIGHT);
       graphicsController.setGraphic(addTierButton, ResourceHolder.ADD_TIER_BUTTON_ICON_LIGHT);
 
     }
 
     final HBox buttonsHBox = new HBox();
     {
-      buttonsHBox.getChildren().addAll(addTierButton, addElementButton);
+      buttonsHBox.getChildren().addAll(addTierButton, addItemButton);
 
       buttonsHBox.setPadding(new Insets(
           ConfigHolder.DEFAULT_BUTTON_PADDING,
@@ -174,18 +174,18 @@ public class MainPane extends BorderPane {
     });
 
     addTierButton.setOnAction(graphicsController::addTier);
-    addElementButton.setOnAction(graphicsController::addElement);
+    addItemButton.setOnAction(graphicsController::addItem);
   }
 
   public void setButtonGraphics(ConfigHolder.Theme theme) {
     switch (theme) {
       case LIGHT -> {
         graphicsController.setGraphic(addTierButton, ResourceHolder.ADD_TIER_BUTTON_ICON_LIGHT);
-        graphicsController.setGraphic(addElementButton, ResourceHolder.ADD_ELEMENT_BUTTON_ICON_LIGHT);
+        graphicsController.setGraphic(addItemButton, ResourceHolder.ADD_ITEM_BUTTON_ICON_LIGHT);
       }
       case DARK -> {
         graphicsController.setGraphic(addTierButton, ResourceHolder.ADD_TIER_BUTTON_ICON_DARK);
-        graphicsController.setGraphic(addElementButton, ResourceHolder.ADD_ELEMENT_BUTTON_ICON_DARK);
+        graphicsController.setGraphic(addItemButton, ResourceHolder.ADD_ITEM_BUTTON_ICON_DARK);
       }
     }
   }

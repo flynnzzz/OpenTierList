@@ -49,7 +49,7 @@ import net.flynn.opentierlist.controller.GraphicsController;
 public class TierBox extends HBox {
 
   private final TextField tierNameLabel;
-  private final ElementPane tieredPane;
+  private final ItemsPane tieredPane;
 
   private final Button editTierButton;
 
@@ -75,7 +75,7 @@ public class TierBox extends HBox {
 
     this.tierNameLabel = new TextField(tier.getName());
     this.editTierButton = new Button();
-    this.tieredPane = new ElementPane(tierListController, graphicsController, tier);
+    this.tieredPane = new ItemsPane(tierListController, graphicsController, tier);
     setupPane();
   }
 

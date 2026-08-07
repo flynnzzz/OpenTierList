@@ -16,7 +16,7 @@ import javafx.scene.paint.Paint;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import net.flynn.opentierlist.model.enums.TieredStatus;
-import net.flynn.opentierlist.model.models.TierElement;
+import net.flynn.opentierlist.model.models.TierItem;
 import net.flynn.opentierlist.ui.ConfigHolder;
 import net.flynn.opentierlist.ui.manual.*;
 
@@ -69,11 +69,11 @@ public class GraphicsController {
             .toList());
   }
 
-  public ObservableList<ElementView> loadImages(ElementPane parent, List<TierElement> elements) {
+  public ObservableList<ItemView> loadImages(ItemsPane parent, List<TierItem> items) {
 
-    final ObservableList<ElementView> images = FXCollections.observableArrayList();
+    final ObservableList<ItemView> images = FXCollections.observableArrayList();
 
-    elements.forEach(element -> {
+    items.forEach(element -> {
 
       element.updateImagePath();
       Image img = imageCache.get(element.hashCode());
@@ -87,7 +87,7 @@ public class GraphicsController {
         imageCache.put(element.hashCode(), img);
       }
 
-      var imageViewer = new ElementView(
+      var imageViewer = new ItemView(
           img, tierListController, this, parent);
       imageViewer.setUserData(element);
       images.add(imageViewer);
@@ -97,15 +97,15 @@ public class GraphicsController {
     return images;
   }
 
-  public void updateImages(ElementPane pane) {
+  public void updateImages(ItemsPane pane) {
 
-    List<TierElement> elements = pane.status() == TieredStatus.TIERED ? pane.getTier().getTiered()
+    List<TierItem> items = pane.status() == TieredStatus.TIERED ? pane.getTier().getTiered()
         : tierListController.getUnTiered();
 
     imageCache.keySet()
-        .removeIf(hash -> !tierListController.elementExists(hash));
+        .removeIf(hash -> !tierListController.itemExists(hash));
 
-    final List<ElementView> images = loadImages(pane, elements);
+    final List<ItemView> images = loadImages(pane, items);
 
     pane.getChildren().clear();
     pane.getChildren().addAll(images);
@@ -165,7 +165,7 @@ public class GraphicsController {
     setBorder(unTieredPane, color);
   }
 
-  public void addElement(ActionEvent ignoredEvent) {
+  public void addItem(ActionEvent ignoredEvent) {
 
     if (mainStage == null) {
       System.err.println(
@@ -190,7 +190,7 @@ public class GraphicsController {
     files.forEach(selectedFile -> {
       if (selectedFile != null && selectedFile.exists()) {
         try {
-          final var el = new TierElement(selectedFile.getName(), selectedFile.toURI().toString());
+          final var el = new TierItem(selectedFile.getName(), selectedFile.toURI().toString());
           tierListController.addUnTiered(el);
         } catch (IllegalArgumentException _) {
           System.err.println("[ERROR] --- Resource not found, aborting ---");
