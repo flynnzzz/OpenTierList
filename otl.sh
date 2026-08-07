@@ -11,7 +11,7 @@ if [ ! -f "$JAR_FILE" ]; then
   echo "[ERROR] --- Jar file not found at: $JAR_FILE ---"
 fi
 
-java --module-path $MODULE_PATH \
+nohup java --module-path $MODULE_PATH \
   --add-modules $ADD_MODULES \
   -jar $JAR_FILE \
-  2>>$LOG_FILE
+  >>$LOG_FILE 2>&1 &

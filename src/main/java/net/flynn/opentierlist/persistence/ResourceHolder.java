@@ -10,9 +10,8 @@ public class ResourceHolder {
 
   public final static String EDIT_BUTTON_ICON_DARK = "/edit_tier_dark.png";
   public final static String ADD_ELEMENT_BUTTON_ICON_DARK = "/new_element_dark.png";
-    public final static String ADD_TIER_BUTTON_ICON_DARK = "/new_tier_dark.png";
+  public final static String ADD_TIER_BUTTON_ICON_DARK = "/new_tier_dark.png";
 
-  // placeholder asset
-  public final static String APPLICATION_ICON = EDIT_BUTTON_ICON_LIGHT;
+  public final static String APPLICATION_ICON = "/logo_transparent.png";
 
 }
