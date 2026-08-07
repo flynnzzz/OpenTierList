@@ -1,10 +1,10 @@
-# Open Tier List
-
-A **simple tier list maker application** built with JavaFX as a learning project.
-
 <div align="center">
   <img src="src/main/resources/logo.png" alt="OpenTL Logo" width="200">
 </div>
+
+# Open Tier List
+
+A **simple tier list maker application** built with JavaFX as a learning project.
 
 ---
 
@@ -28,7 +28,7 @@ A **simple tier list maker application** built with JavaFX as a learning project
 
 #### Linux
 
-**Download the latest release** from the [releases](https://github.com/flynzzz/OpenTierList/releases) page. The release includes:
+**Download the latest release** from the [releases](https://github.com/flynnzzz/OpenTierList/releases) page. The release includes:
 
 - The application JAR file
 - Required JavaFX runtime JARs and binaries
