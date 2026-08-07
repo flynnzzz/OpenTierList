@@ -2,13 +2,21 @@
   <img src="./src/main/resources/logo.png" width="300" alt="OpenTL Logo">
 </div>
 
+<br/>
+<br/>
+
+<div align="center">
 ## OpenTL: Java-developed Tier List Maker
+</div>
+
+<br/>
+<br/>
 
 <div align="center">
   <img src="./assets/tier_list_example.png" alt="Tier List Example">
 </div>
 
-A **simple tier list maker application** built with JavaFX as a learning project.
+### A **simple tier list maker application** built with JavaFX as a learning project
 
 ---
 
@@ -131,9 +139,10 @@ This project was created as a **learning exercise** to explore:
 
 ---
 
-## Future TODOs
+## Future TODOs and improvements
 
 - Keyboard navigation and shortcuts
 - Undo/redo functionality
+- Better UI / model separation
 
 ---
